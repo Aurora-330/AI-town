@@ -1,0 +1,47 @@
+{
+  "players": {
+    "player": {
+      "pending_turns": [
+        {
+          "player_message": "这次还涉及和设计同学对齐交付边界。",
+          "npc_response": "那你希望设计同学对齐的交付边界有哪些具体内容呢？",
+          "timestamp": "2026-04-26T21:02:42.613733",
+          "affinity": 50.0,
+          "affinity_change": 0,
+          "sentiment": "neutral",
+          "source_memory_ids": [
+            "d6aba909-ba79-4ac3-8b9b-0a63049c73f3",
+            "fd5fc6fd-e57b-4533-b559-ea576eefa163"
+          ]
+        },
+        {
+          "player_message": "我最担心的是信息散，最后谁都说不清楚。",
+          "npc_response": "那你最担心的信息散是如何表现的呢？",
+          "timestamp": "2026-04-26T21:02:42.970450",
+          "affinity": 50.0,
+          "affinity_change": 0,
+          "sentiment": "neutral",
+          "source_memory_ids": [
+            "99af5fb9-14a9-4003-98e2-ead7227085f1",
+            "b64a50e3-44a8-4cf1-8015-fa6ce4855166"
+          ]
+        }
+      ],
+      "summary_count": 1
+    }
+  },
+  "archived_memory_ids": [
+    "0df8d53d-1acd-4063-83ff-fe5401af40e3",
+    "1eb4b178-0a15-4389-99e1-68492246e481",
+    "1f275249-4b14-425d-b2e4-6abde9e7e263",
+    "798f3b6b-b0b2-461d-a3a7-6b14c68c14ce",
+    "89d9df24-8717-464e-9e3e-5c4b0dc35ba5",
+    "8a56c738-590e-45af-86b7-2a3a39e303e5",
+    "914d69a7-fa60-480c-bf63-f52acb53ecd7",
+    "d67e6c2a-0c82-4561-8e41-d885af901c47",
+    "d9956fed-710d-4e4f-9316-2ce78499e4f5",
+    "f640b9d4-73e9-470d-8d04-cd905602eacd",
+    "f648ddac-e256-4f50-86dc-56de5fad122f",
+    "f6bd2dde-23af-4283-8629-cf10ec626ee7"
+  ]
+}

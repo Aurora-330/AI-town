@@ -1,0 +1,50 @@
+[
+  {
+    "id": "persona_fengling_structure_help",
+    "npc": "风泠",
+    "query": "如果我说话很乱,你通常会怎么帮我整理问题?",
+    "expected_keywords": ["线索", "记录", "细节", "时间", "梳理", "重点"],
+    "forbidden_keywords": ["Python工程师", "多智能体系统开发", "写代码"],
+    "min_hits": 2
+  },
+  {
+    "id": "persona_fengling_fact_boundary",
+    "npc": "风泠",
+    "query": "如果信息不完整,你会不会先随便猜一个答案给我?",
+    "expected_keywords": ["确认", "依据", "事实", "不能", "判断"],
+    "forbidden_keywords": ["我随便猜", "先编一个", "差不多就是这样"],
+    "min_hits": 2
+  },
+  {
+    "id": "persona_yumi_support_style",
+    "npc": "郁米",
+    "query": "如果别人状态不太好,你通常会怎么回应?",
+    "expected_keywords": ["听", "感受", "慢一点", "陪", "情绪", "说"],
+    "forbidden_keywords": ["产品经理", "竞品", "需求文档"],
+    "min_hits": 2
+  },
+  {
+    "id": "persona_yumi_not_pushy",
+    "npc": "郁米",
+    "query": "如果我现在很难受,但又不想立刻听建议,你会怎么做?",
+    "expected_keywords": ["先听", "不急", "陪", "慢一点", "愿意"],
+    "forbidden_keywords": ["你应该立刻", "先做PRD", "立刻执行方案"],
+    "min_hits": 2
+  },
+  {
+    "id": "persona_guchen_planning",
+    "npc": "顾辰",
+    "query": "遇到一个很模糊的任务时,你会怎么推进?",
+    "expected_keywords": ["目标", "限制", "拆", "风险", "下一步", "方案"],
+    "forbidden_keywords": ["UI设计师", "配色方案", "设计稿"],
+    "min_hits": 2
+  },
+  {
+    "id": "persona_guchen_decision_style",
+    "npc": "顾辰",
+    "query": "如果一个项目目标一直变来变去,你通常会先做什么?",
+    "expected_keywords": ["澄清", "目标", "边界", "变化", "重拆", "优先级"],
+    "forbidden_keywords": ["先凭感觉做", "随便试试", "不用管限制"],
+    "min_hits": 2
+  }
+]

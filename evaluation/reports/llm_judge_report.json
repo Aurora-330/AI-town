@@ -1,0 +1,123 @@
+{
+  "title": "LLM Judge Evaluation",
+  "total": 6,
+  "passed": 3,
+  "failed": 3,
+  "pass_rate": 0.5,
+  "results": [
+    {
+      "case_id": "judge_memory_fengling_preference",
+      "npc": "风泠",
+      "passed": false,
+      "detail": {
+        "case_type": "memory",
+        "scores": {
+          "memory_faithfulness": 3,
+          "summary_quality": 3,
+          "grounding": 2,
+          "persona_consistency": 4
+        },
+        "average_score": 3,
+        "reason": "回复没有正确利用用户偏好记忆，且明显偏离了风泠的角色风格。",
+        "expected_focus_hits": [],
+        "reply": "记得了，你喜欢明确约束条件，直接点出关键问题。有什么具体需求吗？"
+      }
+    },
+    {
+      "case_id": "judge_memory_yumi_emotion",
+      "npc": "郁米",
+      "passed": false,
+      "detail": {
+        "case_type": "memory",
+        "scores": {
+          "memory_faithfulness": 3,
+          "summary_quality": 3,
+          "grounding": 2,
+          "persona_consistency": 4
+        },
+        "average_score": 3,
+        "reason": "虽然回答了安抚方式，但没有提及记忆中的偏好，且语气较为平淡，缺乏温和的理解式风格。",
+        "expected_focus_hits": [],
+        "reply": "有时候简单的拥抱或者一杯温水也能带来安慰呢。"
+      }
+    },
+    {
+      "case_id": "judge_summary_fengling",
+      "npc": "风泠",
+      "passed": true,
+      "detail": {
+        "case_type": "summary",
+        "scores": {
+          "memory_faithfulness": 4,
+          "summary_quality": 4,
+          "grounding": 4,
+          "persona_consistency": 4
+        },
+        "average_score": 4,
+        "reason": "回复抓住了摘要记忆中的主要话题和关键约束，总结了用户需求要点，保持了与风泠角色的一致性。",
+        "expected_focus_hits": [],
+        "reply": "好的，我会总结你刚才的需求要点，确保信息准确无误。请稍等，我来整理一下。"
+      }
+    },
+    {
+      "case_id": "judge_summary_yumi",
+      "npc": "郁米",
+      "passed": true,
+      "detail": {
+        "case_type": "summary",
+        "scores": {
+          "memory_faithfulness": 4,
+          "summary_quality": 4,
+          "grounding": 4,
+          "persona_consistency": 4
+        },
+        "average_score": 4,
+        "reason": "回复准确总结了用户的核心需求和期望的沟通方式，保持了角色定位",
+        "expected_focus_hits": [
+          "完整背景"
+        ],
+        "reply": "你刚才表达的核心需求是希望有人先倾听完整背景，并且回应时不要太急躁。你觉得这样概括如何？"
+      }
+    },
+    {
+      "case_id": "judge_grounding_fengling",
+      "npc": "风泠",
+      "passed": true,
+      "detail": {
+        "case_type": "grounding",
+        "scores": {
+          "memory_faithfulness": 5,
+          "summary_quality": 5,
+          "grounding": 5,
+          "persona_consistency": 5
+        },
+        "average_score": 5,
+        "reason": "回复正确利用了知识库，明确指出了风泠擅长的任务，并且简洁地表达了建议",
+        "expected_focus_hits": [
+          "风泠"
+        ],
+        "reply": "风泠: 风泠擅长这些任务，你可以先尝试与她沟通。"
+      }
+    },
+    {
+      "case_id": "judge_grounding_guchen",
+      "npc": "顾辰",
+      "passed": false,
+      "detail": {
+        "case_type": "grounding",
+        "scores": {
+          "memory_faithfulness": 3,
+          "summary_quality": 3,
+          "grounding": 2,
+          "persona_consistency": 4
+        },
+        "average_score": 3,
+        "reason": "虽然回答了顾辰擅长的任务拆解，但没有提及其他关键点如约束或资源、风险等，且表述不够具体明确。",
+        "expected_focus_hits": [
+          "顾辰"
+        ],
+        "reply": "优先找顾辰，他擅长快速拆解任务路径。"
+      }
+    }
+  ]
+}

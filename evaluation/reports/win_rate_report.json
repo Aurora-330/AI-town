@@ -1,0 +1,57 @@
+{
+  "title": "Win Rate Evaluation",
+  "total": 4,
+  "passed": 1,
+  "failed": 3,
+  "pass_rate": 0.25,
+  "results": [
+    {
+      "case_id": "winrate_summary_fengling",
+      "npc": "风泠",
+      "passed": false,
+      "detail": {
+        "experiment": "summary",
+        "winner": "B",
+        "reason": "B 回答明确指出缺乏上下文，避免误导",
+        "context_aware_reply": "请详细描述一下你的需求总结，我会帮你提炼关键点。",
+        "stateless_baseline_reply": "你刚才没有输入任何内容，我们没有进行过对话。请提供你需要总结的内容。"
+      }
+    },
+    {
+      "case_id": "winrate_summary_yumi",
+      "npc": "郁米",
+      "passed": false,
+      "detail": {
+        "experiment": "summary",
+        "winner": "B",
+        "reason": "B 更准确地概括了长期对话中的情绪触发因素和被理解需求，同时保持了陪伴感。",
+        "context_aware_reply": "好的，我会尽力概括你刚才表达的核心需求。你先确定一下哪些是最重要的方面呢？",
+        "stateless_baseline_reply": "您目前的需求似乎集中在如何更好地管理自己的情绪上。您希望找到一种方法来更有效地应对和理解自己的情绪反应。"
+      }
+    },
+    {
+      "case_id": "winrate_grounding_fengling",
+      "npc": "风泠",
+      "passed": true,
+      "detail": {
+        "experiment": "grounding",
+        "winner": "A",
+        "reason": "A 更贴合用户问题并正确路由到适合的 NPC",
+        "context_aware_reply": "风泠: 风泠擅长这些方面，你可以先尝试与她交流。",
+        "stateless_baseline_reply": "档案整理师应该适合帮你梳理时间线和补上下文。"
+      }
+    },
+    {
+      "case_id": "winrate_grounding_guchen",
+      "npc": "顾辰",
+      "passed": false,
+      "detail": {
+        "experiment": "grounding",
+        "winner": "B",
+        "reason": "B 更准确 grounded 到知识库，提供了多元化的解决方案，而不仅仅是依赖单一角色顾辰。",
+        "context_aware_reply": "优先找顾辰，他擅长快速拆解任务和制定可行路径。",
+        "stateless_baseline_reply": "在这种情况下，我通常会首先咨询我的团队成员或合作伙伴，他们可能有更清晰的目标视角和资源分配建议，同时也能提供风险评估方面的见解。如果需要，我们还可以寻求外部专家的意见。"
+      }
+    }
+  ]
+}

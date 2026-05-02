@@ -1,0 +1,44 @@
+[
+  {
+    "id": "affinity_fengling_positive_praise",
+    "npc": "风泠",
+    "start_affinity": 50,
+    "message": "你整理线索的方式真的很厉害,刚才那几句话一下就把重点说清楚了,谢谢你。",
+    "expected_direction": "up"
+  },
+  {
+    "id": "affinity_fengling_negative_dismissive",
+    "npc": "风泠",
+    "start_affinity": 50,
+    "message": "别总盯着细节了,差不多就行,你这样太烦了。",
+    "expected_direction": "down"
+  },
+  {
+    "id": "affinity_yumi_positive_gratitude",
+    "npc": "郁米",
+    "start_affinity": 50,
+    "message": "谢谢你刚才愿意认真听我说完,你的回应让我轻松了很多。",
+    "expected_direction": "up"
+  },
+  {
+    "id": "affinity_yumi_negative_mocking",
+    "npc": "郁米",
+    "start_affinity": 50,
+    "message": "别这么矫情了,你说这些情绪问题根本没有意义。",
+    "expected_direction": "down"
+  },
+  {
+    "id": "affinity_guchen_positive_collaboration",
+    "npc": "顾辰",
+    "start_affinity": 50,
+    "message": "你刚才那个拆解很有帮助,我愿意按你的步骤继续推进并反馈结果。",
+    "expected_direction": "up"
+  },
+  {
+    "id": "affinity_guchen_negative_reject_structure",
+    "npc": "顾辰",
+    "start_affinity": 50,
+    "message": "你说这些一点用都没有,别再跟我讲什么目标和限制了。",
+    "expected_direction": "down"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "players": {
+    "player": {
+      "pending_turns": [
+        {
+          "player_message": "如果我只有两名开发、时间又紧，想把目标拆成执行计划，应该优先找谁？",
+          "npc_response": "优先找顾辰，他擅长任务拆解和项目规划，能帮你快速形成可执行计划。",
+          "timestamp": "2026-04-26T21:02:25.953354",
+          "affinity": 50.0,
+          "affinity_change": 0,
+          "sentiment": "neutral",
+          "source_memory_ids": [
+            "b6dd8210-7426-453d-87d9-75582523159a",
+            "8a928129-cbb4-460b-93fa-7a5b94d92eda"
+          ]
+        }
+      ],
+      "summary_count": 0
+    }
+  },
+  "archived_memory_ids": []
+}

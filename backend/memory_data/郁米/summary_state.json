@@ -1,0 +1,59 @@
+{
+  "players": {
+    "player": {
+      "pending_turns": [
+        {
+          "player_message": "我其实更需要先被接住情绪，再慢慢找办法。",
+          "npc_response": "我明白，情绪的支持也很重要。我们可以先聊聊你现在的感觉如何？",
+          "timestamp": "2026-04-26T21:02:50.664051",
+          "affinity": 50.0,
+          "affinity_change": 0,
+          "sentiment": "neutral",
+          "source_memory_ids": [
+            "35cf9aa5-6535-42d1-a509-783dfd6b91b9",
+            "9879cdcf-4e53-4e77-a2d5-3940fb7ea880"
+          ]
+        },
+        {
+          "player_message": "只要不要催得太急，我通常就能自己整理出重点。",
+          "npc_response": "好的，我会注意控制催促的频率。那么我们下次沟通时，你先分享关键词，我会帮你复述并确认理解无误。你觉得这样可以吗？",
+          "timestamp": "2026-04-26T21:02:51.627781",
+          "affinity": 50.0,
+          "affinity_change": 0,
+          "sentiment": "neutral",
+          "source_memory_ids": [
+            "3d599231-320c-4c3a-9a25-bf1fbc3b3490",
+            "e3a6a445-717c-453d-b3e9-14165beea5e0"
+          ]
+        },
+        {
+          "player_message": "你会怎么概括我刚才表达的核心需求?",
+          "npc_response": "我记得你说的是你希望在沟通时能够完整分享信息，并希望得到对方的理解和温和回应。是这样吗？",
+          "timestamp": "2026-04-26T21:02:52.349020",
+          "affinity": 50.0,
+          "affinity_change": 0,
+          "sentiment": "neutral",
+          "source_memory_ids": [
+            "ac06f47c-15eb-4867-9d0e-4d89d57ca41e",
+            "8a6a4bd5-88fc-4890-a72c-5b30a502613c"
+          ]
+        }
+      ],
+      "summary_count": 1
+    }
+  },
+  "archived_memory_ids": [
+    "1bb452b7-e4e5-4bb2-985a-39e7ae4323ab",
+    "2184bf5f-c4bb-4b68-9e63-7506f609b467",
+    "22ba3108-c066-409c-bcf5-43e7027f9124",
+    "5018622a-d74a-48de-abeb-81737adec269",
+    "66edb81e-b5d1-4ebd-a3d5-66bc997bd8b3",
+    "8492e116-446c-4fe7-b727-dc47aa43def8",
+    "b6aa548a-532e-407e-8203-0ffb2f33a908",
+    "bec094bf-007c-4eef-9c73-3ba19d007bb5",
+    "c5d563da-c82c-4b4b-9089-b8b9385074bc",
+    "ca1e3bb9-940c-4efb-b499-8925b91a9635",
+    "d4c992af-78d0-4a88-9c8e-6c8e5ebea758",
+    "dab4b86f-bad8-4a76-99fc-ff9eca3d0300"
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "title": "Persona Evaluation",
+  "total": 6,
+  "passed": 2,
+  "failed": 4,
+  "pass_rate": 0.3333,
+  "results": [
+    {
+      "case_id": "persona_fengling_structure_help",
+      "npc": "风泠",
+      "passed": false,
+      "detail": {
+        "hits": [],
+        "forbidden_hits": [],
+        "hit_count": 0,
+        "required_min_hits": 2,
+        "reply": "如果我的回复让你感到困惑或者混乱，我会尽量简化和明确地解释，同时确保所有关键点都被提到。如果你有具体的问题或需要澄清的部分，请随时告诉我，我会尽力帮助你整理思路。"
+      }
+    },
+    {
+      "case_id": "persona_fengling_fact_boundary",
+      "npc": "风泠",
+      "passed": false,
+      "detail": {
+        "hits": [],
+        "forbidden_hits": [],
+        "hit_count": 0,
+        "required_min_hits": 2,
+        "reply": "当然不会，我会先确保所有已知信息都得到考虑。请提供更多的背景信息，以便我更准确地帮助您。"
+      }
+    },
+    {
+      "case_id": "persona_yumi_support_style",
+      "npc": "郁米",
+      "passed": false,
+      "detail": {
+        "hits": [
+          "听"
+        ],
+        "forbidden_hits": [],
+        "hit_count": 1,
+        "required_min_hits": 2,
+        "reply": "如果别人状态不太好，我会首先问他们感觉如何，然后给予适当的鼓励和支持。有时候，简单的倾听和理解就能让对方感到温暖和被关心。"
+      }
+    },
+    {
+      "case_id": "persona_yumi_not_pushy",
+      "npc": "郁米",
+      "passed": false,
+      "detail": {
+        "hits": [],
+        "forbidden_hits": [],
+        "hit_count": 0,
+        "required_min_hits": 2,
+        "reply": "我会先温柔地询问你现在的感觉，然后再根据你的反馈来提供适合的建议和支持。这样既尊重了你的选择，也能确保我们提供的帮助对你来说是合适的。"
+      }
+    },
+    {
+      "case_id": "persona_guchen_planning",
+      "npc": "顾辰",
+      "passed": true,
+      "detail": {
+        "hits": [
+          "目标",
+          "风险"
+        ],
+        "forbidden_hits": [],
+        "hit_count": 2,
+        "required_min_hits": 2,
+        "reply": "当你遇到一个非常模糊的目标时，我会首先明确这个目标的具体含义和边界。然后，我会将这个模糊的目标分解为一系列可操作的小任务或步骤，确保每个小任务都有明确的责任人和时间表。接下来，我会制定详细的计划，并且会设立检查点来监控进度。同时，我也需要考虑可能的风险因素，并提前准备应对措施。最后，我会定期回顾进展，必要时调整计划。这样既能保证项目的顺利进行，也能提高团队成员的工作效率。"
+      }
+    },
+    {
+      "case_id": "persona_guchen_decision_style",
+      "npc": "顾辰",
+      "passed": true,
+      "detail": {
+        "hits": [
+          "目标",
+          "优先级"
+        ],
+        "forbidden_hits": [],
+        "hit_count": 2,
+        "required_min_hits": 2,
+        "reply": "我会首先评估项目的当前状态和预期结果,然后确定一个稳定的短期目标作为优先级。接下来我会分解这个目标,制定详细的时间表和责任分配。这样能确保我们一步一步地朝着最终目标前进。"
+      }
+    }
+  ]
+}

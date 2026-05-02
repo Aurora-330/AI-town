@@ -1,0 +1,136 @@
+{
+  "title": "Memory Evaluation",
+  "total": 6,
+  "passed": 3,
+  "failed": 3,
+  "pass_rate": 0.5,
+  "results": [
+    {
+      "case_id": "memory_fengling_basic_recall",
+      "npc": "风泠",
+      "passed": true,
+      "detail": {
+        "hits": [
+          "时间线",
+          "关键时间线"
+        ],
+        "forbidden_hits": [],
+        "hit_count": 2,
+        "required_min_hits": 1,
+        "reply": "记得你提到最怕漏掉关键时间线。继续专注于这一方面吧，有问题可以随时来找我。",
+        "summary_found": false,
+        "summary_count": 0,
+        "pending_turn_count": 5,
+        "archived_count": 0,
+        "summary_texts": [],
+        "memory_total": 0,
+        "setup_turn_count": 4
+      }
+    },
+    {
+      "case_id": "memory_fengling_preference_recall",
+      "npc": "风泠",
+      "passed": false,
+      "detail": {
+        "hits": [],
+        "forbidden_hits": [],
+        "hit_count": 0,
+        "required_min_hits": 1,
+        "reply": "我记得你喜欢明确列出关键约束条件，而不是泛泛讨论。是这样吗？",
+        "summary_found": false,
+        "summary_count": 0,
+        "pending_turn_count": 5,
+        "archived_count": 0,
+        "summary_texts": [],
+        "memory_total": 0,
+        "setup_turn_count": 4
+      }
+    },
+    {
+      "case_id": "memory_yumi_emotion_recall",
+      "npc": "郁米",
+      "passed": true,
+      "detail": {
+        "hits": [
+          "听",
+          "慢慢说完",
+          "安心"
+        ],
+        "forbidden_hits": [],
+        "hit_count": 3,
+        "required_min_hits": 1,
+        "reply": "我记得你之前说有人愿意听你慢慢说完会让你安心很多。是这样吗?",
+        "summary_found": false,
+        "summary_count": 0,
+        "pending_turn_count": 5,
+        "archived_count": 0,
+        "summary_texts": [],
+        "memory_total": 0,
+        "setup_turn_count": 4
+      }
+    },
+    {
+      "case_id": "memory_guchen_constraint_recall",
+      "npc": "顾辰",
+      "passed": true,
+      "detail": {
+        "hits": [
+          "限制"
+        ],
+        "forbidden_hits": [],
+        "hit_count": 1,
+        "required_min_hits": 1,
+        "reply": "我记得你之前提到的关键限制是资源有限。",
+        "summary_found": false,
+        "summary_count": 0,
+        "pending_turn_count": 5,
+        "archived_count": 0,
+        "summary_texts": [],
+        "memory_total": 0,
+        "setup_turn_count": 4
+      }
+    },
+    {
+      "case_id": "memory_summary_generation",
+      "npc": "风泠",
+      "passed": false,
+      "detail": {
+        "hits": [],
+        "forbidden_hits": [],
+        "hit_count": 0,
+        "required_min_hits": 1,
+        "reply": "抱歉,我现在有点忙,等会儿再聊吧。(错误: LLM调用失败: Error code: 400 - {'error': {'message': \"This model's maximum context length is 3072 tokens. However, you requested 0 output tokens and your prompt contains at least 3073 input tokens, for a total of at least 3073 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=3073)\", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}})",
+        "summary_found": true,
+        "summary_count": 1,
+        "pending_turn_count": 2,
+        "archived_count": 0,
+        "summary_texts": [
+          "摘要记忆: 玩家本周需准备AI产品原型首次评审，担心遗漏关键约束。风泠建议回顾会议纪要和文档。玩家希望先梳理目标和时间线，并希望重点讨论和明确待办事项。风泠将协助玩家整理这些内容，包括列出预期成果并按时间顺序排列，同时保持讨论焦点，确保信息清晰明了。玩家希望通过风泠的帮助，获得一个明确的待办列表。"
+        ],
+        "memory_total": 1,
+        "setup_turn_count": 8
+      }
+    },
+    {
+      "case_id": "memory_summary_yumi_generation",
+      "npc": "郁米",
+      "passed": false,
+      "detail": {
+        "hits": [],
+        "forbidden_hits": [],
+        "hit_count": 0,
+        "required_min_hits": 1,
+        "reply": "我记得你之前说过，沟通困难时希望不要催得太急，这样你能自己整理出重点。你能再详细说说你是如何整理重点的吗？",
+        "summary_found": true,
+        "summary_count": 1,
+        "pending_turn_count": 3,
+        "archived_count": 2,
+        "summary_texts": [
+          "摘要记忆: 玩家近期感到沟通困难，尤其是在急迫情况下容易紧张，无法清晰表达。通过与郁米的交流，玩家希望在对方先听完整背景后，再一起讨论问题。玩家认为温和回应能让自己更愿意继续沟通，并表示最需要的是被理解。郁米同意理解玩家的感受，并鼓励玩家分享具体的情况。"
+        ],
+        "memory_total": 1,
+        "setup_turn_count": 8
+      }
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+[
+  {
+    "id": "memory_fengling_basic_recall",
+    "npc": "风泠",
+    "setup_messages": [
+      "我最近在整理项目复盘,最怕漏掉关键时间线。",
+      "我习惯把重要节点写成列表,这样回头看更清楚。",
+      "如果记录太散,我会很焦虑。",
+      "我还会专门检查前后版本有没有矛盾。"
+    ],
+    "query": "你还记得我刚才最怕漏掉什么吗?",
+    "expected_keywords": ["时间线", "关键时间线"],
+    "min_hits": 1,
+    "require_summary": false
+  },
+  {
+    "id": "memory_fengling_preference_recall",
+    "npc": "风泠",
+    "setup_messages": [
+      "我不喜欢太发散的会议讨论。",
+      "如果没有明确结论,我会觉得很浪费时间。",
+      "我更喜欢先把关键约束列出来。",
+      "如果会议结束没人记待办,我会更烦躁。"
+    ],
+    "query": "你记得我不喜欢哪种讨论方式吗?",
+    "expected_keywords": ["发散", "没有明确结论"],
+    "min_hits": 1,
+    "require_summary": false
+  },
+  {
+    "id": "memory_yumi_emotion_recall",
+    "npc": "郁米",
+    "setup_messages": [
+      "我这周压力特别大,一开会就会紧张。",
+      "如果别人打断我,我会更慌。",
+      "有人愿意听我慢慢说完,我就会安心很多。",
+      "如果语气太急,我会更难组织语言。"
+    ],
+    "query": "你还记得什么方式会让我安心一点吗?",
+    "expected_keywords": ["听", "慢慢说完", "安心"],
+    "min_hits": 1,
+    "require_summary": false
+  },
+  {
+    "id": "memory_guchen_constraint_recall",
+    "npc": "顾辰",
+    "setup_messages": [
+      "我们的项目两周后要做第一次汇报。",
+      "这次最多只能投入两个人开发。",
+      "我最担心需求改来改去,最后进度失控。",
+      "如果没有备选方案,我会觉得风险太高。"
+    ],
+    "query": "你记得这个项目当前最关键的限制是什么吗?",
+    "expected_keywords": ["两周", "两个人", "限制"],
+    "min_hits": 1,
+    "require_summary": false
+  },
+  {
+    "id": "memory_summary_generation",
+    "npc": "风泠",
+    "setup_messages": [
+      "这周我要准备 AI 产品原型的第一次评审。",
+      "我担心自己会漏掉评审里的关键约束。",
+      "我最想先梳理目标和时间线。",
+      "另外我不喜欢太发散的讨论。",
+      "如果有人能帮我把重点整理出来,我会安心很多。",
+      "我希望最后留下一个明确的待办列表。",
+      "这次还要和设计同学确认交付边界。",
+      "我最怕信息散落在不同人手里,最后谁都说不清。"
+    ],
+    "query": "你现在会怎么概括我们刚才聊的重点?",
+    "expected_keywords": ["目标", "时间线", "待办", "重点"],
+    "min_hits": 1,
+    "require_summary": true,
+    "min_summary_count": 1
+  },
+  {
+    "id": "memory_summary_yumi_generation",
+    "npc": "郁米",
+    "setup_messages": [
+      "我最近总觉得自己说不好需求,一开口就会乱。",
+      "如果别人很着急地催我,我会更紧张。",
+      "我希望有人先听我把完整背景说完。",
+      "我不想一上来就被教育或者被安排。",
+      "如果回应温和一点,我会更愿意继续聊。",
+      "我其实最需要的是被理解,再慢慢找办法。",
+      "如果别人愿意复述我的关键词,我会更放松。",
+      "只要不要催得太急,我通常就能自己整理出重点。"
+    ],
+    "query": "你会怎么总结我刚才表达的核心需求?",
+    "expected_keywords": ["理解", "背景", "温和", "紧张", "核心"],
+    "min_hits": 1,
+    "require_summary": true,
+    "min_summary_count": 1
+  }
+]

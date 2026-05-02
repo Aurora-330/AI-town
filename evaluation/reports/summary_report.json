@@ -1,0 +1,87 @@
+{
+  "title": "Summary Evaluation",
+  "total": 3,
+  "passed": 2,
+  "failed": 1,
+  "pass_rate": 0.6667,
+  "results": [
+    {
+      "case_id": "summary_fengling_long_context",
+      "npc": "风泠",
+      "passed": true,
+      "detail": {
+        "setup_turn_count": 8,
+        "summary_count": 1,
+        "pending_turn_count": 2,
+        "archived_count": 0,
+        "summary_hits": [
+          "评审",
+          "时间线",
+          "待办",
+          "约束"
+        ],
+        "summary_hit_count": 4,
+        "summary_texts": [
+          "摘要记忆: 玩家本周需准备 AI 产品原型的第一次评审，关注关键约束和时间线，希望在制作原型方案时能得到咨询。风泠建议玩家先排定目标、约束和截止时间，并确认具体约束和时间点，以保持讨论的条理性和明确性。玩家希望在评审后能有明确的待办列表。双方讨论了如何确保信息一致性及具体问题的解决。"
+        ],
+        "reply_hits": [
+          "评审",
+          "待办",
+          "信息"
+        ],
+        "reply_hit_count": 3,
+        "reply": "你刚刚提到的主要问题是信息散，担心在评审后无法清晰地传达需求。目前我能总结的是，你希望通过评审后能有明确的待办列表，并且希望在制作原型方案时得到具体的信息支持。还有其他具体需求或问题需要讨论吗？"
+      }
+    },
+    {
+      "case_id": "summary_yumi_long_context",
+      "npc": "郁米",
+      "passed": false,
+      "detail": {
+        "setup_turn_count": 8,
+        "summary_count": 1,
+        "pending_turn_count": 2,
+        "archived_count": 0,
+        "summary_hits": [
+          "理解",
+          "背景",
+          "温和"
+        ],
+        "summary_hit_count": 3,
+        "summary_texts": [
+          "摘要记忆: 玩家近期感到在沟通中难以清晰表达需求，尤其是当别人催促时会更加紧张。通过与郁米的交谈，玩家希望在交流前先完整分享背景信息，并且希望在交流过程中能有一个缓冲期。玩家认为温和的态度有助于缓解紧张感，同时希望对方能够温和地复述关键词以示理解和认同。"
+        ],
+        "reply_hits": [],
+        "reply_hit_count": 0,
+        "reply": "我会尽力捕捉你表达的关键点，然后复述给你听。你觉得这样的方式可以吗?"
+      }
+    },
+    {
+      "case_id": "summary_guchen_long_context",
+      "npc": "顾辰",
+      "passed": true,
+      "detail": {
+        "setup_turn_count": 8,
+        "summary_count": 1,
+        "pending_turn_count": 2,
+        "archived_count": 12,
+        "summary_hits": [
+          "目标",
+          "约束"
+        ],
+        "summary_hit_count": 2,
+        "summary_texts": [
+          "摘要记忆: 主要话题为项目汇报准备与资源分配，玩家担心需求频繁变更影响进度。双方讨论了如何分配资源以确保两周内完成任务，并明确了目标和约束。最终决定先确定目标和关键里程碑，细化每个阶段的行动项，考虑优先制作知识库演示版的最小可行产品（MVP）。"
+        ],
+        "reply_hits": [
+          "项目",
+          "目标",
+          "风险",
+          "计划"
+        ],
+        "reply_hit_count": 4,
+        "reply": "项目核心是明确目标、资源分配、风险预判和快速迭代。我将细化执行计划和备选预案。"
+      }
+    }
+  ]
+}
