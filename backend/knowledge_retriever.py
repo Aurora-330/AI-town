@@ -7,9 +7,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 import hashlib
 import re
 
@@ -31,6 +31,9 @@ class KnowledgeChunk:
     tags: List[str]
     chunk_index: int
     score: float = 0.0
+    raw_score: float = 0.0
+    rerank_score: float = 0.0
+    debug_signals: Dict[str, object] = field(default_factory=dict)
 
     def to_payload(self) -> Dict:
         """转换为Qdrant payload"""
@@ -54,6 +57,9 @@ class KnowledgeChunk:
             "tags": self.tags,
             "chunk_index": self.chunk_index,
             "score": round(self.score, 4),
+            "raw_score": round(self.raw_score, 4),
+            "rerank_score": round(self.rerank_score, 4),
+            "debug_signals": self.debug_signals,
         }
 
 
@@ -61,6 +67,10 @@ class KnowledgeRetriever:
     """独立的外部知识检索器"""
 
     SUPPORTED_SUFFIXES = {".md", ".markdown", ".txt"}
+    KNOWN_NPCS = ("风泠", "郁米", "顾辰")
+    CANDIDATE_MULTIPLIER = 4
+    MIN_RERANK_SCORE = 0.22
+    CROSS_NPC_FILTER_THRESHOLD = 0.28
 
     def __init__(self):
         self.enabled = settings.KNOWLEDGE_ENABLED
@@ -153,17 +163,57 @@ class KnowledgeRetriever:
         self._client.upsert(collection_name=self.collection_name, points=points)
         return {"documents": len(self._iter_documents()), "chunks": len(chunks)}
 
-    def search(self, query: str, limit: Optional[int] = None, scope: str = "global") -> List[KnowledgeChunk]:
+    def search(
+        self,
+        query: str,
+        limit: Optional[int] = None,
+        scope: str = "global",
+        npc_name: str = "",
+        allow_cross_npc: bool = False,
+    ) -> List[KnowledgeChunk]:
+        """兼容旧接口，只返回结果列表。"""
+        results, _ = self.search_with_debug(
+            query=query,
+            limit=limit,
+            scope=scope,
+            npc_name=npc_name,
+            allow_cross_npc=allow_cross_npc,
+        )
+        return results
+
+    def search_with_debug(
+        self,
+        query: str,
+        limit: Optional[int] = None,
+        scope: str = "global",
+        npc_name: str = "",
+        allow_cross_npc: bool = False,
+    ) -> Tuple[List[KnowledgeChunk], Dict]:
         """检索外部知识块"""
         if not self.available() or not query.strip():
-            return []
+            return [], {
+                "scope": scope,
+                "limit": limit or self.top_k,
+                "candidate_count": 0,
+                "selected_count": 0,
+                "selected_or_filtered_reason": "retriever_unavailable_or_empty_query",
+                "candidates": [],
+            }
 
         try:
             if not self._client.collection_exists(self.collection_name):
-                return []
+                return [], {
+                    "scope": scope,
+                    "limit": limit or self.top_k,
+                    "candidate_count": 0,
+                    "selected_count": 0,
+                    "selected_or_filtered_reason": "collection_missing",
+                    "candidates": [],
+                }
 
             vector = self._get_embedder().encode(query, normalize_embeddings=True).tolist()
-            search_limit = limit or self.top_k
+            result_limit = limit or self.top_k
+            search_limit = max(result_limit * self.CANDIDATE_MULTIPLIER, result_limit)
             search_filter = models.Filter(
                 must=[
                     models.FieldCondition(
@@ -182,10 +232,11 @@ class KnowledgeRetriever:
             )
             hits = response.points
 
-            results = []
+            candidates = []
             for hit in hits:
                 payload = hit.payload or {}
-                results.append(
+                raw_score = float(hit.score or 0.0)
+                candidates.append(
                     KnowledgeChunk(
                         point_id=str(hit.id),
                         content=payload.get("content", ""),
@@ -194,18 +245,193 @@ class KnowledgeRetriever:
                         scope=payload.get("scope", "global"),
                         tags=payload.get("tags", []),
                         chunk_index=payload.get("chunk_index", 0),
-                        score=float(hit.score or 0.0),
+                        score=raw_score,
+                        raw_score=raw_score,
                     )
                 )
-            return results
+            selected, debug_info = self._rerank_and_filter_chunks(
+                query=query,
+                npc_name=npc_name,
+                candidates=candidates,
+                limit=result_limit,
+                scope=scope,
+                allow_cross_npc=allow_cross_npc,
+            )
+            return selected, debug_info
         except Exception as e:
             print(f"⚠️  外部知识检索失败，已自动降级: {e}")
-            return []
+            return [], {
+                "scope": scope,
+                "limit": limit or self.top_k,
+                "candidate_count": 0,
+                "selected_count": 0,
+                "selected_or_filtered_reason": f"search_failed:{e}",
+                "candidates": [],
+            }
+
+    def _rerank_and_filter_chunks(
+        self,
+        query: str,
+        npc_name: str,
+        candidates: List[KnowledgeChunk],
+        limit: int,
+        scope: str,
+        allow_cross_npc: bool,
+    ) -> Tuple[List[KnowledgeChunk], Dict]:
+        """对候选知识块做轻量重排与低价值过滤。"""
+        seen_dedup_keys = set()
+        reranked: List[KnowledgeChunk] = []
+        candidate_logs: List[Dict] = []
+        query_keywords = self._extract_query_keywords(query)
+
+        for chunk in candidates:
+            final_score, signals = self._score_chunk(
+                query=query,
+                query_keywords=query_keywords,
+                npc_name=npc_name,
+                chunk=chunk,
+                allow_cross_npc=allow_cross_npc,
+            )
+            chunk.rerank_score = final_score
+            chunk.score = final_score
+            chunk.debug_signals = signals
+
+            dedup_key = (chunk.source, self._normalize_text(chunk.content)[:120])
+            filtered_reason = self._decide_filter_reason(
+                chunk=chunk,
+                final_score=final_score,
+                signals=signals,
+                allow_cross_npc=allow_cross_npc,
+                seen_dedup_keys=seen_dedup_keys,
+                dedup_key=dedup_key,
+            )
+
+            candidate_logs.append(
+                {
+                    "id": chunk.point_id,
+                    "title": chunk.title,
+                    "source": chunk.source,
+                    "raw_score": round(chunk.raw_score, 4),
+                    "rerank_score": round(final_score, 4),
+                    "signals": signals,
+                    "filtered_reason": filtered_reason or "",
+                }
+            )
+
+            if filtered_reason:
+                continue
+
+            seen_dedup_keys.add(dedup_key)
+            reranked.append(chunk)
+
+        reranked.sort(key=lambda item: item.rerank_score, reverse=True)
+        selected = reranked[:limit]
+
+        return selected, {
+            "scope": scope,
+            "limit": limit,
+            "candidate_count": len(candidates),
+            "selected_count": len(selected),
+            "selected_or_filtered_reason": "reranked_and_filtered",
+            "candidates": candidate_logs,
+        }
+
+    def _score_chunk(
+        self,
+        query: str,
+        query_keywords: List[str],
+        npc_name: str,
+        chunk: KnowledgeChunk,
+        allow_cross_npc: bool,
+    ) -> Tuple[float, Dict[str, object]]:
+        """综合角色相关性、关键词命中和原始向量分数。"""
+        normalized_title = self._normalize_text(chunk.title)
+        normalized_content = self._normalize_text(chunk.content)
+        normalized_source = self._normalize_text(chunk.source)
+        tag_text = self._normalize_text(" ".join(chunk.tags))
+
+        title_hits = sum(1 for keyword in query_keywords if keyword and keyword in normalized_title)
+        content_hits = sum(1 for keyword in query_keywords if keyword and keyword in normalized_content)
+        tag_hits = sum(1 for keyword in query_keywords if keyword and keyword in tag_text)
+
+        mentioned_npcs = [
+            name for name in self.KNOWN_NPCS
+            if name in chunk.content or name in chunk.title or name in chunk.source or name in chunk.tags
+        ]
+        other_npcs = [name for name in mentioned_npcs if name != npc_name]
+
+        npc_match_bonus = 0.0
+        other_npc_penalty = 0.0
+        if npc_name and npc_name in mentioned_npcs:
+            npc_match_bonus += 0.18
+        if npc_name and other_npcs and npc_name not in mentioned_npcs and not allow_cross_npc:
+            other_npc_penalty -= min(0.18 * len(other_npcs), 0.36)
+        elif npc_name and other_npcs and npc_name in mentioned_npcs:
+            other_npc_penalty -= min(0.05 * len(other_npcs), 0.10)
+
+        generic_bonus = 0.03 if not mentioned_npcs else 0.0
+        title_bonus = min(title_hits * 0.05, 0.15)
+        content_bonus = min(content_hits * 0.025, 0.15)
+        tag_bonus = min(tag_hits * 0.03, 0.09)
+
+        final_score = (
+            chunk.raw_score
+            + npc_match_bonus
+            + other_npc_penalty
+            + generic_bonus
+            + title_bonus
+            + content_bonus
+            + tag_bonus
+        )
+
+        return final_score, {
+            "npc_name": npc_name,
+            "title_hits": title_hits,
+            "content_hits": content_hits,
+            "tag_hits": tag_hits,
+            "mentioned_npcs": mentioned_npcs,
+            "npc_match_bonus": round(npc_match_bonus, 4),
+            "other_npc_penalty": round(other_npc_penalty, 4),
+            "generic_bonus": round(generic_bonus, 4),
+            "title_bonus": round(title_bonus, 4),
+            "content_bonus": round(content_bonus, 4),
+            "tag_bonus": round(tag_bonus, 4),
+        }
+
+    def _decide_filter_reason(
+        self,
+        chunk: KnowledgeChunk,
+        final_score: float,
+        signals: Dict[str, object],
+        allow_cross_npc: bool,
+        seen_dedup_keys: set,
+        dedup_key: tuple,
+    ) -> str:
+        """决定候选知识块是否应被过滤。"""
+        if dedup_key in seen_dedup_keys:
+            return "duplicate_source_or_content"
+
+        mentioned_npcs = signals.get("mentioned_npcs", [])
+        npc_name = signals.get("npc_name", "")
+        if (
+            final_score < self.CROSS_NPC_FILTER_THRESHOLD
+            and npc_name
+            and mentioned_npcs
+            and npc_name not in mentioned_npcs
+            and not allow_cross_npc
+        ):
+            return "cross_npc_mismatch"
+
+        if final_score < self.MIN_RERANK_SCORE:
+            return "score_too_low"
+
+        return ""
 
     def build_prompt_context(
         self,
         query: str,
         chunks: List[KnowledgeChunk],
+        npc_name: str = "",
         max_chars_per_chunk: int = 220,
         total_budget: int = 360,
     ) -> str:
@@ -222,6 +448,7 @@ class KnowledgeRetriever:
             snippet = self._extract_hit_snippet(
                 query=query,
                 content=chunk.content,
+                npc_name=npc_name,
                 max_chars=max_chars_per_chunk,
             )
             if not snippet:
@@ -237,11 +464,24 @@ class KnowledgeRetriever:
             used_chars += len(snippet)
         return "\n".join(lines)
 
-    def _extract_hit_snippet(self, query: str, content: str, max_chars: int = 220) -> str:
+    def _extract_hit_snippet(
+        self,
+        query: str,
+        content: str,
+        npc_name: str = "",
+        max_chars: int = 220,
+    ) -> str:
         """根据查询词提取命中片段"""
         text = re.sub(r"\s+", " ", content).strip()
         if len(text) <= max_chars:
-            return text
+            return self._prefer_npc_focused_text(content=content, fallback_text=text, npc_name=npc_name, max_chars=max_chars)
+
+        npc_focused = self._extract_npc_focused_section(content=content, npc_name=npc_name)
+        if npc_focused:
+            focused_text = re.sub(r"\s+", " ", npc_focused).strip()
+            if len(focused_text) <= max_chars:
+                return focused_text
+            text = focused_text
 
         keywords = self._extract_query_keywords(query)
         lowered = text.lower()
@@ -270,6 +510,28 @@ class KnowledgeRetriever:
             snippet = snippet + "..."
         return snippet
 
+    def _extract_npc_focused_section(self, content: str, npc_name: str) -> str:
+        """从多角色文档里优先抽取当前 NPC 对应段落。"""
+        if not npc_name:
+            return ""
+
+        paragraphs = self._split_paragraphs(content)
+        if not paragraphs:
+            return ""
+
+        matched = [paragraph for paragraph in paragraphs if npc_name in paragraph]
+        if matched:
+            return "\n\n".join(matched)
+        return ""
+
+    def _prefer_npc_focused_text(self, content: str, fallback_text: str, npc_name: str, max_chars: int) -> str:
+        """短文本场景下也优先截取当前 NPC 对应段落。"""
+        npc_focused = self._extract_npc_focused_section(content, npc_name)
+        chosen = npc_focused or fallback_text
+        if len(chosen) <= max_chars:
+            return chosen
+        return chosen[:max_chars].rstrip()
+
     def _extract_query_keywords(self, query: str) -> List[str]:
         """提取查询中的关键短语"""
         tokens = [
@@ -279,6 +541,12 @@ class KnowledgeRetriever:
         ]
         # 优先保留较长关键词，提升中文片段命中质量
         return sorted(set(tokens), key=len, reverse=True)
+
+    def _normalize_text(self, text: object) -> str:
+        """统一做轻量文本归一化，便于命中判断。"""
+        if isinstance(text, list):
+            text = " ".join(str(item) for item in text)
+        return re.sub(r"\s+", " ", str(text or "")).strip().lower()
 
     def _load_document_chunks(self, path: Path) -> List[KnowledgeChunk]:
         """读取并切块单个文档"""

@@ -97,14 +97,38 @@ def log_knowledge_retrieval(
     dialogue_logger.info(f"📚 外部知识命中{count}条: query={query}")
     if retrieval_details:
         dialogue_logger.info(
-            "  🔎 scope=%s limit=%s selected=%s reason=%s"
+            "  🔎 scope=%s limit=%s candidates=%s selected=%s reason=%s"
             % (
                 retrieval_details.get("scope", "global"),
                 retrieval_details.get("limit", "-"),
+                retrieval_details.get("candidate_count", "-"),
                 retrieval_details.get("selected_count", count),
                 retrieval_details.get("selected_or_filtered_reason", ""),
             )
         )
+        for candidate in retrieval_details.get("candidates", [])[:5]:
+            dialogue_logger.info(
+                "    candidate title=%s raw=%.3f rerank=%.3f filtered=%s"
+                % (
+                    candidate.get("title", "未知文档"),
+                    float(candidate.get("raw_score", 0.0)),
+                    float(candidate.get("rerank_score", 0.0)),
+                    candidate.get("filtered_reason", "") or "kept",
+                )
+            )
+            signals = candidate.get("signals", {})
+            if signals:
+                dialogue_logger.info(
+                    "      signals: hits(title=%s,content=%s,tags=%s) npc_bonus=%s other_penalty=%s mentioned=%s"
+                    % (
+                        signals.get("title_hits", 0),
+                        signals.get("content_hits", 0),
+                        signals.get("tag_hits", 0),
+                        signals.get("npc_match_bonus", 0.0),
+                        signals.get("other_npc_penalty", 0.0),
+                        signals.get("mentioned_npcs", []),
+                    )
+                )
     if hits:
         for i, hit in enumerate(hits[:3], 1):
             title = hit.get("title", "未知文档")
@@ -122,6 +146,17 @@ def log_prompt_assembly(npc_name: str, sections: dict):
     """记录 prompt 拼装后的区块大小，便于观察上下文预算。"""
     parts = [f"{name}={size}" for name, size in sections.items()]
     dialogue_logger.info(f"🧱 Prompt组装: npc={npc_name} " + ", ".join(parts))
+
+def log_knowledge_prompt_context(npc_name: str, knowledge_context: str):
+    """记录最终注入 prompt 的知识片段，便于区分原始知识块与最终截取结果。"""
+    if not knowledge_context:
+        dialogue_logger.info(f"📎 最终知识片段: npc={npc_name} <empty>")
+        return
+
+    preview = knowledge_context.replace("\n", " ").strip()
+    if len(preview) > 180:
+        preview = preview[:177].rstrip() + "..."
+    dialogue_logger.info(f"📎 最终知识片段: npc={npc_name} {preview}")
 
 def log_generating_response():
     """记录正在生成回复"""

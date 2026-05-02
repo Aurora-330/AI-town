@@ -22,7 +22,7 @@ from logger import (
     log_affinity_change, log_memory_saved, log_dialogue_end, log_info,
     log_summary_trigger, log_summary_created, log_summary_skipped,
     log_knowledge_retrieval, log_safety_decision, log_memory_write_decision,
-    log_prompt_assembly
+    log_prompt_assembly, log_knowledge_prompt_context
 )
 
 # NPC角色配置
@@ -384,23 +384,18 @@ class NPCAgentManager:
 
             if self.knowledge_retriever:
                 knowledge_scope = self._select_knowledge_scope(npc_name)
-                knowledge_chunks = self.knowledge_retriever.search(
+                knowledge_chunks, knowledge_debug = self.knowledge_retriever.search_with_debug(
                     query=message,
                     limit=self.KNOWLEDGE_RETRIEVAL_LIMIT,
                     scope=knowledge_scope,
+                    npc_name=npc_name,
+                    allow_cross_npc=(query_mode == "routing"),
                 )
                 log_knowledge_retrieval(
                     npc_name,
                     message,
                     [chunk.to_dict() for chunk in knowledge_chunks],
-                    retrieval_details={
-                        "scope": knowledge_scope,
-                        "limit": self.KNOWLEDGE_RETRIEVAL_LIMIT,
-                        "selected_count": len(knowledge_chunks),
-                        "selected_or_filtered_reason": (
-                            "vector_top_k_selected" if knowledge_chunks else "no_hit_in_scope"
-                        ),
-                    },
+                    retrieval_details=knowledge_debug,
                 )
 
             # ⭐ 3. 构建增强的提示词 (包含好感度和记忆上下文)
@@ -409,7 +404,8 @@ class NPCAgentManager:
                 episodic_memories=episodic_memories,
                 working_memories=working_memories
             )
-            knowledge_context = self._build_knowledge_context(message, knowledge_chunks)
+            knowledge_context = self._build_knowledge_context(npc_name, message, knowledge_chunks)
+            log_knowledge_prompt_context(npc_name, knowledge_context)
             response_guidance = self._build_response_guidance(
                 npc_name=npc_name,
                 query=message,
@@ -617,7 +613,7 @@ class NPCAgentManager:
 
         return "\n".join(context_parts)
 
-    def _build_knowledge_context(self, query: str, knowledge_chunks: List[KnowledgeChunk]) -> str:
+    def _build_knowledge_context(self, npc_name: str, query: str, knowledge_chunks: List[KnowledgeChunk]) -> str:
         """构建外部知识上下文，保持与记忆区块分离"""
         if not knowledge_chunks or not self.knowledge_retriever:
             return ""
@@ -625,6 +621,7 @@ class NPCAgentManager:
         return self.knowledge_retriever.build_prompt_context(
             query=query,
             chunks=knowledge_chunks,
+            npc_name=npc_name,
             max_chars_per_chunk=self.KNOWLEDGE_CHUNK_BUDGET,
             total_budget=self.KNOWLEDGE_TOTAL_BUDGET,
         )
