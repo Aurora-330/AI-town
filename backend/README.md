@@ -137,6 +137,8 @@ backend/
 ├── config.py            # 配置文件
 ├── models.py            # 数据模型(Pydantic)
 ├── agents.py            # NPC Agent系统
+├── prompt_builder.py    # Prompt模板加载与渲染
+├── prompts/             # system/runtime/summary prompt模板
 ├── batch_generator.py   # 批量对话生成器
 ├── safety.py            # 最小安全编排层
 ├── state_manager.py     # NPC状态管理器
@@ -144,6 +146,20 @@ backend/
 ├── requirements.txt     # Python依赖
 └── README.md           # 本文件
 ```
+
+### Prompt模块化说明
+
+当前 `agents.py` 的主聊天链、摘要链仍保持原有行为与接口不变，但 prompt 文本已抽离到 `backend/prompts/` 下统一管理，并通过 `prompt_builder.py` 渲染。
+
+- `system/`：NPC系统提示词与安全边界
+- `runtime/`：好感度上下文与回答约束
+- `summary/`：摘要记忆生成提示词
+
+兼容性约束：
+
+- 不修改 `/chat`、`/npcs`、`/memories`、`/affinity` 这些现有接口形状
+- 模板文件缺失时会回退到内置 prompt，避免因模板问题直接中断聊天链路
+- 现有安全、记忆、好感度流程继续沿用，只增加可维护性和日志可观察性
 
 ## 🎨 核心设计
 

@@ -52,7 +52,12 @@ def log_affinity(npc_name: str, affinity: float, level: str):
     """记录当前好感度"""
     dialogue_logger.info(f"💖 当前好感度: {affinity:.1f}/100 ({level})")
 
-def log_memory_retrieval(npc_name: str, count: int, memories: list = None):
+def log_memory_retrieval(
+    npc_name: str,
+    count: int,
+    memories: list = None,
+    layer_details: dict | None = None,
+):
     """记录记忆检索"""
     dialogue_logger.info(f"🧠 检索到{count}条相关记忆")
     if memories:
@@ -60,11 +65,46 @@ def log_memory_retrieval(npc_name: str, count: int, memories: list = None):
         for i, mem in enumerate(memories[:3], 1):
             content = mem.content[:50] + "..." if len(mem.content) > 50 else mem.content
             dialogue_logger.info(f"    {i}. {content}")
+    if layer_details:
+        query = layer_details.get("query", "")
+        if query:
+            dialogue_logger.info(f"  🔎 memory_query={query}")
+        for layer in layer_details.get("layers", []):
+            dialogue_logger.info(
+                "  - tier=%s candidates=%s selected=%s ids=%s"
+                % (
+                    layer.get("memory_tier", "unknown"),
+                    layer.get("candidate_count", 0),
+                    layer.get("selected_count", 0),
+                    layer.get("selected_ids", []),
+                )
+            )
+            importance_summary = layer.get("importance_summary", [])
+            if importance_summary:
+                dialogue_logger.info(f"    importance={importance_summary}")
+            filtered_reason = layer.get("filtered_reason")
+            if filtered_reason:
+                dialogue_logger.info(f"    filtered_reason={filtered_reason}")
 
-def log_knowledge_retrieval(npc_name: str, query: str, hits: list = None):
+def log_knowledge_retrieval(
+    npc_name: str,
+    query: str,
+    hits: list = None,
+    retrieval_details: dict | None = None,
+):
     """记录外部知识检索"""
     count = len(hits or [])
     dialogue_logger.info(f"📚 外部知识命中{count}条: query={query}")
+    if retrieval_details:
+        dialogue_logger.info(
+            "  🔎 scope=%s limit=%s selected=%s reason=%s"
+            % (
+                retrieval_details.get("scope", "global"),
+                retrieval_details.get("limit", "-"),
+                retrieval_details.get("selected_count", count),
+                retrieval_details.get("selected_or_filtered_reason", ""),
+            )
+        )
     if hits:
         for i, hit in enumerate(hits[:3], 1):
             title = hit.get("title", "未知文档")
@@ -77,6 +117,11 @@ def log_knowledge_retrieval(npc_name: str, query: str, hits: list = None):
             )
     else:
         dialogue_logger.info("    0. 未命中外部知识")
+
+def log_prompt_assembly(npc_name: str, sections: dict):
+    """记录 prompt 拼装后的区块大小，便于观察上下文预算。"""
+    parts = [f"{name}={size}" for name, size in sections.items()]
+    dialogue_logger.info(f"🧱 Prompt组装: npc={npc_name} " + ", ".join(parts))
 
 def log_generating_response():
     """记录正在生成回复"""

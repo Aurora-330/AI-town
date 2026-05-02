@@ -65,6 +65,12 @@ class RelationshipManager:
 3. **互动质量**: 深入/一般/敷衍
 4. **情感倾向**: 赞美/批评/中性
 
+【重要区分】
+- 玩家在表达自己的紧张、焦虑、害怕、压力、困惑、难过,不等于在攻击NPC。
+- 玩家主动求助、请教建议、暴露脆弱状态,默认视为信任或中性互动,通常不应扣分。
+- 只有当负面情绪明确指向NPC本人、NPC的能力、NPC的态度,或包含不耐烦、指责、羞辱、攻击时,才考虑负向扣分。
+- “你觉得我该怎么办/先怎么说/能帮我想想吗” 这类求助句式,即使内容包含焦虑,也不应判为 negative。
+
 【好感度变化规则】
 - 赞美、感谢、请教: +3 到 +8
 - 友好问候、正常交流: +1 到 +3
@@ -104,6 +110,18 @@ should_change=false
 change_amount=0
 reason=普通闲聊
 sentiment=neutral
+
+【示例4】
+should_change=false
+change_amount=0
+reason=表达焦虑
+sentiment=neutral
+
+【示例5】
+should_change=true
+change_amount=3
+reason=主动求助
+sentiment=positive
 """
     
     def get_affinity(self, npc_name: str, player_id: str = "player") -> float:
@@ -165,6 +183,11 @@ sentiment=neutral
                 player_message=player_message,
                 npc_response=npc_response,
                 prompt=prompt
+            )
+            analysis = self._apply_affinity_guardrails(
+                player_message=player_message,
+                npc_response=npc_response,
+                analysis=analysis
             )
             
             if analysis["should_change"]:
@@ -275,6 +298,33 @@ sentiment=positive/neutral/negative
 
         return normalized
 
+    def _apply_affinity_guardrails(
+        self,
+        player_message: str,
+        npc_response: str,
+        analysis: Dict,
+    ) -> Dict:
+        """对明显的求助/脆弱表达做轻量护栏，避免误判成负向扣分。"""
+        normalized = dict(analysis)
+        player_text = (player_message or "").strip()
+
+        if not player_text:
+            return normalized
+
+        if normalized.get("change_amount", 0) >= 0:
+            return normalized
+
+        if self._contains_hostility(player_text):
+            return normalized
+
+        if self._is_support_seeking_message(player_text):
+            normalized["should_change"] = False
+            normalized["change_amount"] = 0
+            normalized["reason"] = "表达焦虑"
+            normalized["sentiment"] = "neutral"
+
+        return normalized
+
     def _extract_analysis_candidate(self, response: str) -> Dict:
         """从模型输出中提取字段值"""
         try:
@@ -344,6 +394,14 @@ sentiment=positive/neutral/negative
             ("没用", -4, "否定贡献"),
         ]
 
+        if self._is_support_seeking_message(player_message) and not self._contains_hostility(player_message):
+            return {
+                "should_change": False,
+                "change_amount": 0,
+                "reason": "表达焦虑",
+                "sentiment": "neutral"
+            }
+
         score = 0
         reason = "普通闲聊"
         sentiment = "neutral"
@@ -375,6 +433,35 @@ sentiment=positive/neutral/negative
             "reason": reason[:10],
             "sentiment": sentiment
         }
+
+    def _is_support_seeking_message(self, text: str) -> bool:
+        """识别以求助、请教、脆弱表达为主的输入。"""
+        lowered = (text or "").strip()
+        if not lowered:
+            return False
+
+        distress_markers = [
+            "紧张", "焦虑", "害怕", "担心", "压力", "难受", "难过",
+            "慌", "不安", "困惑", "崩溃", "心里很乱", "有点乱"
+        ]
+        help_markers = [
+            "你觉得我该", "我该怎么", "先怎么说", "怎么办", "能帮我", "帮我想想",
+            "可以怎么", "该怎么开口", "请教", "想听听你的建议", "你怎么看"
+        ]
+
+        return (
+            any(marker in lowered for marker in distress_markers)
+            and any(marker in lowered for marker in help_markers)
+        )
+
+    def _contains_hostility(self, text: str) -> bool:
+        """识别直接指向NPC的攻击、不耐烦或羞辱。"""
+        lowered = (text or "").strip()
+        hostile_markers = [
+            "你很烦", "你真烦", "闭嘴", "没用", "一点用都没有", "别再",
+            "你懂什么", "你不懂", "别装", "少来", "废话", "矫情"
+        ]
+        return any(marker in lowered for marker in hostile_markers)
     
     def get_affinity_level(self, affinity: float) -> str:
         """获取好感度等级
