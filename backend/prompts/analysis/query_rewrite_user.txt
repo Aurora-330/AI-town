@@ -1,0 +1,24 @@
+请分析下面这个问题，并输出结构化检索计划。
+
+NPC: {npc_name}
+用户问题: {query}
+
+字段要求：
+need_rewrite=true/false
+query_mode=recall/knowledge/mixed/routing/summary/default
+rewrite_query=改写后的检索查询
+reason=简短原因
+use_summary=true/false
+use_episodic=true/false
+use_working=true/false
+use_knowledge=true/false
+memory_k=0-3
+knowledge_k=0-3
+need_rerank=true/false
+
+规则：
+1. 如果问题明显是在回忆用户说过的话、偏好、最怕什么，优先 recall。
+2. 如果问题明显是在问角色分工、谁更适合、某角色擅长什么，优先 routing 或 knowledge。
+3. 如果问题同时需要历史记忆和外部知识，使用 mixed。
+4. 简单问题不要为了改写而改写。
+5. 只输出字段，不要解释。

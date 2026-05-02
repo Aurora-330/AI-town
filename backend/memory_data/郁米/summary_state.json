@@ -1,57 +1,8 @@
 {
   "players": {
     "player": {
-      "pending_turns": [
-        {
-          "player_message": "别人催我的时候我会很紧张，你觉得我该先怎么说？",
-          "npc_response": "玩家, 先简单分享一下你现在的感觉和关键词, 我来确认理解。",
-          "timestamp": "2026-05-02T21:35:37.651939",
-          "affinity": 53.0,
-          "affinity_change": 3,
-          "sentiment": "positive",
-          "source_memory_ids": [
-            "cd16f761-88f3-461e-ba52-f689e8ecbce5",
-            "4266dc9d-49b3-4ced-a23a-c392bdbcd2ab"
-          ]
-        },
-        {
-          "player_message": "别人催我的时候我会很紧张，你觉得我该先怎么说？",
-          "npc_response": "先简单分享你此时的关键感受吧，这样我能更好地理解你。",
-          "timestamp": "2026-05-02T21:42:47.990691",
-          "affinity": 53.0,
-          "affinity_change": 3,
-          "sentiment": "positive",
-          "source_memory_ids": [
-            "fbd84502-5053-4002-8337-b39527af3008",
-            "1600a8a1-eb93-4ed4-b5c7-4bb3d076dc67"
-          ]
-        },
-        {
-          "player_message": "别人催我的时候我会很紧张，你觉得我该先怎么说？",
-          "npc_response": "先简要分享你当时的感觉和关键点，我会帮你确认理解。",
-          "timestamp": "2026-05-02T21:45:59.931870",
-          "affinity": 53.0,
-          "affinity_change": 3,
-          "sentiment": "positive",
-          "source_memory_ids": [
-            "0c38301c-cdf7-4853-9d60-c8fa1c210926",
-            "ae57be1a-da84-4d3f-bb19-b11b54b99432"
-          ]
-        },
-        {
-          "player_message": "别人催我的时候我会很紧张，你觉得我该先怎么说？",
-          "npc_response": "先简要分享你的紧张感觉，我会帮你确认理解。",
-          "timestamp": "2026-05-02T22:15:20.196722",
-          "affinity": 53.0,
-          "affinity_change": 3,
-          "sentiment": "positive",
-          "source_memory_ids": [
-            "c0c9c03b-2cab-4150-88d3-4ed54cd8d623",
-            "a2823eeb-2024-4590-940a-9c4c21daad0c"
-          ]
-        }
-      ],
-      "summary_count": 2
+      "pending_turns": [],
+      "summary_count": 3
     }
   },
   "archived_memory_ids": [

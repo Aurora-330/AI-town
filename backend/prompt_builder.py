@@ -97,6 +97,33 @@ player_id: {player_id}
 对话记录：
 {transcript}
 """,
+        "analysis/query_rewrite_system.txt": """你是一个检索前置分析助手。你的任务不是回答用户，而是把用户问题转换成结构化检索计划。
+
+请严格输出字段，不要解释，不要输出 markdown，不要输出额外文本。""",
+        "analysis/query_rewrite_user.txt": """请分析下面这个问题，并输出结构化检索计划。
+
+NPC: {npc_name}
+用户问题: {query}
+
+字段要求：
+need_rewrite=true/false
+query_mode=recall/knowledge/mixed/routing/summary/default
+rewrite_query=改写后的检索查询
+reason=简短原因
+use_summary=true/false
+use_episodic=true/false
+use_working=true/false
+use_knowledge=true/false
+memory_k=0-3
+knowledge_k=0-3
+need_rerank=true/false
+
+规则：
+1. 如果问题明显是在回忆用户说过的话、偏好、最怕什么，优先 recall。
+2. 如果问题明显是在问角色分工、谁更适合、某角色擅长什么，优先 routing 或 knowledge。
+3. 如果问题同时需要历史记忆和外部知识，使用 mixed。
+4. 简单问题不要为了改写而改写。
+5. 只输出字段，不要解释。""",
     }
 
     def __init__(self, base_dir: Path | None = None):
@@ -157,6 +184,24 @@ player_id: {player_id}
                         "player_id": player_id,
                         "summary_style": summary_style,
                         "transcript": transcript,
+                    },
+                ),
+            },
+        ]
+
+    def build_query_analysis_messages(self, npc_name: str, query: str) -> list[dict[str, str]]:
+        return [
+            {
+                "role": "system",
+                "content": self.render("analysis/query_rewrite_system.txt", {}),
+            },
+            {
+                "role": "user",
+                "content": self.render(
+                    "analysis/query_rewrite_user.txt",
+                    {
+                        "npc_name": npc_name,
+                        "query": query,
                     },
                 ),
             },

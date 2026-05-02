@@ -13,6 +13,18 @@
             "b6dd8210-7426-453d-87d9-75582523159a",
             "8a928129-cbb4-460b-93fa-7a5b94d92eda"
           ]
+        },
+        {
+          "player_message": "如果我现在目标有点乱、资源也有限，先找谁更合适？",
+          "npc_response": "我推荐你先找顾辰，他擅长任务拆解，能帮助你清晰目标和资源，制定可行计划。",
+          "timestamp": "2026-05-02T22:30:44.442481",
+          "affinity": 53.0,
+          "affinity_change": 3,
+          "sentiment": "positive",
+          "source_memory_ids": [
+            "90bb6b32-e829-483e-9713-76a32b4472c2",
+            "33801eac-a50f-4df1-bd44-7cc0345060b9"
+          ]
         }
       ],
       "summary_count": 0

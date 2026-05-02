@@ -69,6 +69,8 @@ def log_memory_retrieval(
         query = layer_details.get("query", "")
         if query:
             dialogue_logger.info(f"  🔎 memory_query={query}")
+        if "memory_budget" in layer_details:
+            dialogue_logger.info(f"  🔢 memory_budget={layer_details.get('memory_budget', 0)}")
         for layer in layer_details.get("layers", []):
             dialogue_logger.info(
                 "  - tier=%s candidates=%s selected=%s ids=%s"
@@ -159,6 +161,42 @@ def log_knowledge_prompt_context(npc_name: str, knowledge_context: str):
     if len(preview) > 180:
         preview = preview[:177].rstrip() + "..."
     dialogue_logger.info(f"📎 最终知识片段: npc={npc_name} {preview}")
+
+def log_query_analysis(npc_name: str, original_query: str, analysis: dict):
+    """记录查询分析与改写结果。"""
+    dialogue_logger.info(
+        "🧭 查询分析: npc=%s mode=%s need_rewrite=%s reason=%s"
+        % (
+            npc_name,
+            analysis.get("query_mode", "default"),
+            analysis.get("need_rewrite", False),
+            analysis.get("reason", ""),
+        )
+    )
+    dialogue_logger.info(
+        "  original_query=%s"
+        % original_query
+    )
+    dialogue_logger.info(
+        "  rewrite_query=%s"
+        % analysis.get("rewrite_query", original_query)
+    )
+
+def log_retrieval_plan(npc_name: str, plan: dict):
+    """记录最终采用的检索计划。"""
+    dialogue_logger.info(
+        "🗺️ 检索计划: npc=%s summary=%s episodic=%s working=%s knowledge=%s memory_k=%s knowledge_k=%s rerank=%s"
+        % (
+            npc_name,
+            plan.get("use_summary", False),
+            plan.get("use_episodic", False),
+            plan.get("use_working", False),
+            plan.get("use_knowledge", False),
+            plan.get("memory_k", 0),
+            plan.get("knowledge_k", 0),
+            plan.get("need_rerank", True),
+        )
+    )
 
 def log_generating_response():
     """记录正在生成回复"""

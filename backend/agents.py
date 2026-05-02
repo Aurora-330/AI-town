@@ -14,6 +14,7 @@ from datetime import datetime
 from relationship_manager import RelationshipManager
 from knowledge_retriever import KnowledgeRetriever, KnowledgeChunk
 from prompt_builder import PromptBuilder
+from retrieval_planner import RetrievalPlanner
 from safety import SafetyOrchestrator
 from config import settings as _settings  # 触发 backend/.env 加载与 embedding 默认值设置
 from logger import (
@@ -22,7 +23,8 @@ from logger import (
     log_affinity_change, log_memory_saved, log_dialogue_end, log_info,
     log_summary_trigger, log_summary_created, log_summary_skipped,
     log_knowledge_retrieval, log_safety_decision, log_memory_write_decision,
-    log_prompt_assembly, log_knowledge_prompt_context
+    log_prompt_assembly, log_knowledge_prompt_context,
+    log_query_analysis, log_retrieval_plan
 )
 
 # NPC角色配置
@@ -231,11 +233,13 @@ class NPCAgentManager:
         self.memories: Dict[str, MemoryManager] = {}  # ⭐ NPC记忆管理器
         self.relationship_manager: Optional[RelationshipManager] = None  # ⭐ 好感度管理器
         self.knowledge_retriever: Optional[KnowledgeRetriever] = None  # ⭐ 外部知识检索器
+        self.retrieval_planner: Optional[RetrievalPlanner] = None  # ⭐ 查询改写与检索规划器
         self.safety = SafetyOrchestrator(self.llm)
 
         # 初始化好感度管理器
         if self.llm:
             self.relationship_manager = RelationshipManager(self.llm)
+            self.retrieval_planner = RetrievalPlanner(self.llm, self.prompt_builder)
 
         self.knowledge_retriever = self._create_knowledge_retriever()
 
@@ -360,7 +364,11 @@ class NPCAgentManager:
                 )
                 log_affinity(npc_name, affinity, affinity_level)
 
-            query_mode = self._classify_query_mode(message)
+            query_analysis = self._analyze_query(npc_name, message)
+            log_query_analysis(npc_name, message, query_analysis)
+            log_retrieval_plan(npc_name, query_analysis)
+            query_mode = query_analysis["query_mode"]
+            retrieval_query = query_analysis["rewrite_query"] if query_analysis.get("need_rewrite") else message
 
             # ⭐ 2. 检索相关记忆
             summary_memories = []
@@ -371,8 +379,9 @@ class NPCAgentManager:
                 summary_memories, episodic_memories, working_memories, memory_debug = self._retrieve_memory_layers(
                     memory_manager=memory_manager,
                     npc_name=npc_name,
-                    query=message,
-                    player_id=player_id
+                    query=retrieval_query,
+                    player_id=player_id,
+                    retrieval_plan=query_analysis,
                 )
                 relevant_memories = summary_memories + episodic_memories + working_memories
                 log_memory_retrieval(
@@ -382,11 +391,11 @@ class NPCAgentManager:
                     layer_details=memory_debug,
                 )
 
-            if self.knowledge_retriever:
+            if self.knowledge_retriever and query_analysis.get("use_knowledge", True):
                 knowledge_scopes = self._select_knowledge_scopes(npc_name)
                 knowledge_chunks, knowledge_debug = self.knowledge_retriever.search_with_debug(
-                    query=message,
-                    limit=self.KNOWLEDGE_RETRIEVAL_LIMIT,
+                    query=retrieval_query,
+                    limit=max(1, int(query_analysis.get("knowledge_k", self.KNOWLEDGE_RETRIEVAL_LIMIT))),
                     scope=knowledge_scopes[0],
                     npc_name=npc_name,
                     allow_cross_npc=(query_mode == "routing"),
@@ -394,7 +403,7 @@ class NPCAgentManager:
                 )
                 log_knowledge_retrieval(
                     npc_name,
-                    message,
+                    retrieval_query,
                     [chunk.to_dict() for chunk in knowledge_chunks],
                     retrieval_details=knowledge_debug,
                 )
@@ -562,6 +571,25 @@ class NPCAgentManager:
             return self.prompt_builder.build_response_guidance("summary")
 
         return ""
+
+    def _analyze_query(self, npc_name: str, query: str) -> Dict:
+        """查询改写与检索规划入口。失败时回退规则策略。"""
+        if self.retrieval_planner:
+            return self.retrieval_planner.analyze(npc_name=npc_name, query=query)
+
+        return {
+            "need_rewrite": False,
+            "query_mode": self._classify_query_mode(query),
+            "rewrite_query": query,
+            "reason": "planner_unavailable",
+            "use_summary": True,
+            "use_episodic": True,
+            "use_working": True,
+            "use_knowledge": True,
+            "memory_k": 2,
+            "knowledge_k": 1,
+            "need_rerank": True,
+        }
     
     def _build_memory_context(
         self,
@@ -902,24 +930,35 @@ class NPCAgentManager:
         memory_manager: MemoryManager,
         npc_name: str,
         query: str,
-        player_id: str
+        player_id: str,
+        retrieval_plan: Optional[Dict] = None,
     ) -> tuple[List[MemoryItem], List[MemoryItem], List[MemoryItem], Dict]:
         """按 summary / episodic / working 三层检索记忆"""
         summary_state = self._load_summary_state(npc_name)
         archived_ids = set(summary_state.get("archived_memory_ids", []))
 
-        episodic_results = memory_manager.retrieve_memories(
-            query=query,
-            memory_types=["episodic"],
-            limit=12,
-            min_importance=0.3
-        )
-        working_results = memory_manager.retrieve_memories(
-            query=query,
-            memory_types=["working"],
-            limit=self.WORKING_RETRIEVAL_LIMIT + 2,
-            min_importance=0.3
-        )
+        retrieval_plan = retrieval_plan or {}
+        use_summary = retrieval_plan.get("use_summary", True)
+        use_episodic = retrieval_plan.get("use_episodic", True)
+        use_working = retrieval_plan.get("use_working", True)
+        memory_budget = max(0, int(retrieval_plan.get("memory_k", 2)))
+
+        episodic_results = []
+        working_results = []
+        if use_summary or use_episodic:
+            episodic_results = memory_manager.retrieve_memories(
+                query=query,
+                memory_types=["episodic"],
+                limit=12,
+                min_importance=0.3
+            )
+        if use_working:
+            working_results = memory_manager.retrieve_memories(
+                query=query,
+                memory_types=["working"],
+                limit=self.WORKING_RETRIEVAL_LIMIT + 2,
+                min_importance=0.3
+            )
 
         summary_memories = []
         episodic_memories = []
@@ -937,30 +976,43 @@ class NPCAgentManager:
         episodic_memories.sort(key=lambda item: item.importance, reverse=True)
         filtered_working.sort(key=lambda item: item.importance, reverse=True)
 
-        selected_summary = summary_memories[:self.SUMMARY_RETRIEVAL_LIMIT]
-        selected_episodic = episodic_memories[:self.EPISODIC_RETRIEVAL_LIMIT]
-        selected_working = filtered_working[:self.WORKING_RETRIEVAL_LIMIT]
+        selected_summary = []
+        selected_episodic = []
+        selected_working = []
+        remaining_budget = memory_budget
+
+        if use_summary and remaining_budget > 0:
+            selected_summary = summary_memories[: min(self.SUMMARY_RETRIEVAL_LIMIT, remaining_budget)]
+            remaining_budget -= len(selected_summary)
+
+        if use_episodic and remaining_budget > 0:
+            selected_episodic = episodic_memories[: min(self.EPISODIC_RETRIEVAL_LIMIT, remaining_budget)]
+            remaining_budget -= len(selected_episodic)
+
+        if use_working and remaining_budget > 0:
+            selected_working = filtered_working[: min(self.WORKING_RETRIEVAL_LIMIT, remaining_budget)]
 
         debug_info = {
             "query": query,
+            "memory_budget": memory_budget,
             "layers": [
                 self._build_memory_layer_debug(
                     "summary",
                     summary_memories,
                     selected_summary,
-                    "sorted_by_importance_and_capped_by_limit",
+                    "disabled_by_plan" if not use_summary else "sorted_by_importance_and_capped_by_limit",
                 ),
                 self._build_memory_layer_debug(
                     "episodic",
                     episodic_memories,
                     selected_episodic,
-                    "archived_ids_removed_then_sorted_by_importance",
+                    "disabled_by_plan" if not use_episodic else "archived_ids_removed_then_sorted_by_importance",
                 ),
                 self._build_memory_layer_debug(
                     "working",
                     filtered_working,
                     selected_working,
-                    "archived_ids_removed_then_sorted_by_importance",
+                    "disabled_by_plan" if not use_working else "archived_ids_removed_then_sorted_by_importance",
                 ),
             ],
         }
