@@ -97,9 +97,10 @@ def log_knowledge_retrieval(
     dialogue_logger.info(f"📚 外部知识命中{count}条: query={query}")
     if retrieval_details:
         dialogue_logger.info(
-            "  🔎 scope=%s limit=%s candidates=%s selected=%s reason=%s"
+            "  🔎 scope=%s scopes=%s limit=%s candidates=%s selected=%s reason=%s"
             % (
                 retrieval_details.get("scope", "global"),
+                retrieval_details.get("scopes", [retrieval_details.get("scope", "global")]),
                 retrieval_details.get("limit", "-"),
                 retrieval_details.get("candidate_count", "-"),
                 retrieval_details.get("selected_count", count),
@@ -119,8 +120,9 @@ def log_knowledge_retrieval(
             signals = candidate.get("signals", {})
             if signals:
                 dialogue_logger.info(
-                    "      signals: hits(title=%s,content=%s,tags=%s) npc_bonus=%s other_penalty=%s mentioned=%s"
+                    "      signals: scope_bonus=%s hits(title=%s,content=%s,tags=%s) npc_bonus=%s other_penalty=%s mentioned=%s"
                     % (
+                        signals.get("scope_bonus", 0.0),
                         signals.get("title_hits", 0),
                         signals.get("content_hits", 0),
                         signals.get("tag_hits", 0),

@@ -170,6 +170,7 @@ class KnowledgeRetriever:
         scope: str = "global",
         npc_name: str = "",
         allow_cross_npc: bool = False,
+        scopes: Optional[List[str]] = None,
     ) -> List[KnowledgeChunk]:
         """兼容旧接口，只返回结果列表。"""
         results, _ = self.search_with_debug(
@@ -178,6 +179,7 @@ class KnowledgeRetriever:
             scope=scope,
             npc_name=npc_name,
             allow_cross_npc=allow_cross_npc,
+            scopes=scopes,
         )
         return results
 
@@ -188,11 +190,14 @@ class KnowledgeRetriever:
         scope: str = "global",
         npc_name: str = "",
         allow_cross_npc: bool = False,
+        scopes: Optional[List[str]] = None,
     ) -> Tuple[List[KnowledgeChunk], Dict]:
         """检索外部知识块"""
+        requested_scopes = self._normalize_scopes(scopes or [scope])
         if not self.available() or not query.strip():
             return [], {
-                "scope": scope,
+                "scope": requested_scopes[0] if requested_scopes else scope,
+                "scopes": requested_scopes,
                 "limit": limit or self.top_k,
                 "candidate_count": 0,
                 "selected_count": 0,
@@ -203,7 +208,8 @@ class KnowledgeRetriever:
         try:
             if not self._client.collection_exists(self.collection_name):
                 return [], {
-                    "scope": scope,
+                    "scope": requested_scopes[0] if requested_scopes else scope,
+                    "scopes": requested_scopes,
                     "limit": limit or self.top_k,
                     "candidate_count": 0,
                     "selected_count": 0,
@@ -214,54 +220,56 @@ class KnowledgeRetriever:
             vector = self._get_embedder().encode(query, normalize_embeddings=True).tolist()
             result_limit = limit or self.top_k
             search_limit = max(result_limit * self.CANDIDATE_MULTIPLIER, result_limit)
-            search_filter = models.Filter(
-                must=[
-                    models.FieldCondition(
-                        key="scope",
-                        match=models.MatchValue(value=scope),
-                    )
-                ]
-            )
-
-            response = self._client.query_points(
-                collection_name=self.collection_name,
-                query=vector,
-                limit=search_limit,
-                with_payload=True,
-                query_filter=search_filter,
-            )
-            hits = response.points
-
             candidates = []
-            for hit in hits:
-                payload = hit.payload or {}
-                raw_score = float(hit.score or 0.0)
-                candidates.append(
-                    KnowledgeChunk(
-                        point_id=str(hit.id),
-                        content=payload.get("content", ""),
-                        source=payload.get("source", ""),
-                        title=payload.get("title", "未知文档"),
-                        scope=payload.get("scope", "global"),
-                        tags=payload.get("tags", []),
-                        chunk_index=payload.get("chunk_index", 0),
-                        score=raw_score,
-                        raw_score=raw_score,
-                    )
+            for current_scope in requested_scopes:
+                search_filter = models.Filter(
+                    must=[
+                        models.FieldCondition(
+                            key="scope",
+                            match=models.MatchValue(value=current_scope),
+                        )
+                    ]
                 )
+
+                response = self._client.query_points(
+                    collection_name=self.collection_name,
+                    query=vector,
+                    limit=search_limit,
+                    with_payload=True,
+                    query_filter=search_filter,
+                )
+                hits = response.points
+                for hit in hits:
+                    payload = hit.payload or {}
+                    raw_score = float(hit.score or 0.0)
+                    candidates.append(
+                        KnowledgeChunk(
+                            point_id=str(hit.id),
+                            content=payload.get("content", ""),
+                            source=payload.get("source", ""),
+                            title=payload.get("title", "未知文档"),
+                            scope=payload.get("scope", current_scope),
+                            tags=payload.get("tags", []),
+                            chunk_index=payload.get("chunk_index", 0),
+                            score=raw_score,
+                            raw_score=raw_score,
+                        )
+                    )
             selected, debug_info = self._rerank_and_filter_chunks(
                 query=query,
                 npc_name=npc_name,
                 candidates=candidates,
                 limit=result_limit,
-                scope=scope,
+                scope=requested_scopes[0] if requested_scopes else scope,
+                scopes=requested_scopes,
                 allow_cross_npc=allow_cross_npc,
             )
             return selected, debug_info
         except Exception as e:
             print(f"⚠️  外部知识检索失败，已自动降级: {e}")
             return [], {
-                "scope": scope,
+                "scope": requested_scopes[0] if requested_scopes else scope,
+                "scopes": requested_scopes,
                 "limit": limit or self.top_k,
                 "candidate_count": 0,
                 "selected_count": 0,
@@ -276,6 +284,7 @@ class KnowledgeRetriever:
         candidates: List[KnowledgeChunk],
         limit: int,
         scope: str,
+        scopes: List[str],
         allow_cross_npc: bool,
     ) -> Tuple[List[KnowledgeChunk], Dict]:
         """对候选知识块做轻量重排与低价值过滤。"""
@@ -329,6 +338,7 @@ class KnowledgeRetriever:
 
         return selected, {
             "scope": scope,
+            "scopes": scopes,
             "limit": limit,
             "candidate_count": len(candidates),
             "selected_count": len(selected),
@@ -370,12 +380,14 @@ class KnowledgeRetriever:
             other_npc_penalty -= min(0.05 * len(other_npcs), 0.10)
 
         generic_bonus = 0.03 if not mentioned_npcs else 0.0
+        scope_bonus = 0.12 if chunk.scope.startswith("npc:") and npc_name and chunk.scope == f"npc:{npc_name}" else 0.0
         title_bonus = min(title_hits * 0.05, 0.15)
         content_bonus = min(content_hits * 0.025, 0.15)
         tag_bonus = min(tag_hits * 0.03, 0.09)
 
         final_score = (
             chunk.raw_score
+            + scope_bonus
             + npc_match_bonus
             + other_npc_penalty
             + generic_bonus
@@ -386,6 +398,7 @@ class KnowledgeRetriever:
 
         return final_score, {
             "npc_name": npc_name,
+            "scope_bonus": round(scope_bonus, 4),
             "title_hits": title_hits,
             "content_hits": content_hits,
             "tag_hits": tag_hits,
@@ -547,6 +560,18 @@ class KnowledgeRetriever:
         if isinstance(text, list):
             text = " ".join(str(item) for item in text)
         return re.sub(r"\s+", " ", str(text or "")).strip().lower()
+
+    def _normalize_scopes(self, scopes: List[str]) -> List[str]:
+        """归一化 scope 列表，保持顺序并去重。"""
+        normalized = []
+        seen = set()
+        for scope in scopes:
+            cleaned = str(scope or "").strip()
+            if not cleaned or cleaned in seen:
+                continue
+            seen.add(cleaned)
+            normalized.append(cleaned)
+        return normalized or ["global"]
 
     def _load_document_chunks(self, path: Path) -> List[KnowledgeChunk]:
         """读取并切块单个文档"""

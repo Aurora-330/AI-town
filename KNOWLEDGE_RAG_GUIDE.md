@@ -11,7 +11,8 @@
 1. Memory retrieval 仍由现有 `MemoryManager` 负责。
 2. Knowledge retrieval 使用独立的 Qdrant collection，默认是 `hello_agents_knowledge`。
 3. `chat` API 的输入输出结构保持不变，只在内部 prompt 中新增 `knowledge_context`。
-4. 第一阶段只使用 `global` scope，不把 memory 和 knowledge 混成统一检索池。
+4. 当前阶段采用 `npc-specific first, global fallback`：优先查当前 NPC 的专属知识域，再回退到 `global`。
+5. 仍然不把 memory 和 knowledge 混成统一检索池。
 
 ## 使用方式
 
@@ -22,6 +23,23 @@
 ```
 
 入库完成后，`/chat` 会在命中外部知识时自动把结果作为单独区块注入 prompt。
+
+当前推荐目录结构：
+
+```text
+knowledge_base/
+├── global/
+└── npc/
+    ├── 风泠/
+    ├── 郁米/
+    └── 顾辰/
+```
+
+检索顺序：
+
+1. 先查 `npc:<当前角色名>`
+2. 再查 `global`
+3. 候选结果统一做轻量重排和过滤
 
 ## 调试建议
 

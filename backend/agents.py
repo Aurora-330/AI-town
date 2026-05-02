@@ -383,13 +383,14 @@ class NPCAgentManager:
                 )
 
             if self.knowledge_retriever:
-                knowledge_scope = self._select_knowledge_scope(npc_name)
+                knowledge_scopes = self._select_knowledge_scopes(npc_name)
                 knowledge_chunks, knowledge_debug = self.knowledge_retriever.search_with_debug(
                     query=message,
                     limit=self.KNOWLEDGE_RETRIEVAL_LIMIT,
-                    scope=knowledge_scope,
+                    scope=knowledge_scopes[0],
                     npc_name=npc_name,
                     allow_cross_npc=(query_mode == "routing"),
+                    scopes=knowledge_scopes,
                 )
                 log_knowledge_retrieval(
                     npc_name,
@@ -892,9 +893,9 @@ class NPCAgentManager:
         chunks = self.knowledge_retriever.search(query=query, limit=limit)
         return [chunk.to_dict() for chunk in chunks]
 
-    def _select_knowledge_scope(self, npc_name: str) -> str:
-        """当前保持 global 主链不变，统一从这里收口，方便后续安全扩展 scope 策略。"""
-        return "global"
+    def _select_knowledge_scopes(self, npc_name: str) -> List[str]:
+        """优先检索 NPC 专属知识域，再回退到 global。"""
+        return [f"npc:{npc_name}", "global"]
 
     def _retrieve_memory_layers(
         self,
