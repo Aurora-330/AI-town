@@ -1,0 +1,845 @@
+{
+  "title": "Retrieval Diagnostics Evaluation",
+  "summary": {
+    "total": 6,
+    "passed": 0,
+    "pass_rate": 0.0,
+    "avg_semantic_rank": null,
+    "avg_lexical_rank": 1.33,
+    "avg_final_rank": null,
+    "diagnostic_counts": {
+      "chunk_structure_risk": 2,
+      "prompt_clipping_risk": 6,
+      "rerank_underweighting_suspected": 6
+    },
+    "by_category": {
+      "chunk_structure": {
+        "total": 1,
+        "passed": 0,
+        "pass_rate": 0.0
+      },
+      "lexical_rerank": {
+        "total": 3,
+        "passed": 0,
+        "pass_rate": 0.0
+      },
+      "prompt_budget": {
+        "total": 1,
+        "passed": 0,
+        "pass_rate": 0.0
+      },
+      "title_signal": {
+        "total": 1,
+        "passed": 0,
+        "pass_rate": 0.0
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "global_precise_place_location",
+      "npc": "global",
+      "category": "lexical_rerank",
+      "passed": false,
+      "detail": {
+        "query": "绮梦咖啡馆在哪里",
+        "scopes": [
+          "global"
+        ],
+        "expected_source": "global/locations.md",
+        "expected_chunk_index": 0,
+        "semantic_rank": null,
+        "lexical_rank": 2,
+        "final_rank": null,
+        "final_top_hit_source": "global/locations.md",
+        "final_top_hit_chunk_index": 3,
+        "final_top_hit_score": 0.5677,
+        "query_terms": [
+          "绮梦咖啡馆在哪里",
+          "绮梦",
+          "梦咖",
+          "咖啡",
+          "啡馆",
+          "馆在",
+          "在哪",
+          "哪里"
+        ],
+        "query_keywords": [
+          "绮梦咖啡馆在哪里"
+        ],
+        "query_term_overlap_with_gold": [
+          "咖啡",
+          "啡馆",
+          "梦咖",
+          "绮梦"
+        ],
+        "gold_keyword_hits": [
+          "绮梦咖啡馆",
+          "位置",
+          "星环主观测层",
+          "0.8"
+        ],
+        "source_keyword_coverage": {
+          "chunk_0": [
+            "绮梦咖啡馆",
+            "位置",
+            "星环主观测层",
+            "0.8"
+          ],
+          "chunk_1": [
+            "位置"
+          ],
+          "chunk_2": [
+            "位置"
+          ],
+          "chunk_3": [
+            "位置"
+          ]
+        },
+        "source_chunks_with_keyword_hits": 4,
+        "semantic_candidate_count": 8,
+        "lexical_candidate_count": 3,
+        "final_candidate_count": 8,
+        "gold_candidate_log": {
+          "raw_score": 0.0,
+          "semantic_score": 0.0,
+          "lexical_score": 0.8405,
+          "rerank_score": 0.533,
+          "retrieval_sources": [
+            "lexical"
+          ],
+          "filtered_reason": "duplicate_source_or_content",
+          "signals": {
+            "npc_name": "",
+            "semantic_score": 0.0,
+            "lexical_score": 0.8405,
+            "retrieval_sources": [
+              "lexical"
+            ],
+            "source_hits": 0,
+            "source_exact_match": false,
+            "explicit_doc_reference": true,
+            "lexical_dominant": true,
+            "scope_bonus": 0.0,
+            "title_hits": 0,
+            "content_hits": 0,
+            "tag_hits": 0,
+            "mentioned_npcs": [
+              "顾辰"
+            ],
+            "target_npcs": [],
+            "npc_match_bonus": 0.0,
+            "other_npc_penalty": 0.0,
+            "target_npc_bonus": 0.0,
+            "target_npc_penalty": 0.0,
+            "generic_bonus": 0.0,
+            "title_bonus": 0.0,
+            "content_bonus": 0.0,
+            "tag_bonus": 0.0,
+            "source_bonus": 0.0,
+            "lexical_bonus": 0.353,
+            "explicit_doc_bonus": 0.0,
+            "lexical_dominant_bonus": 0.12,
+            "lexical_only_bonus": 0.06
+          }
+        },
+        "knowledge_context_preview": "【外部知识】\n[新伊甸星环小镇地标建筑说明 | score=0.568] ## 奇点实验室 **位置**：星环核心动力轴心区，也是小镇的物理中心。 **首席工程师**：顾辰 **简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。 **特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程图以及各种复杂的备选方案板。顾辰在这里维持着小",
+        "knowledge_context_tokens": 287,
+        "knowledge_context_caps": {
+          "default": 180,
+          "knowledge": 420,
+          "routing": 320,
+          "mixed": 140
+        },
+        "knowledge_context_clipping_risks": {
+          "default": true,
+          "knowledge": false,
+          "routing": false,
+          "mixed": true
+        },
+        "diagnostics": {
+          "lexical_tokenization_issue": false,
+          "rerank_underweighting_suspected": true,
+          "chunk_structure_risk": false,
+          "prompt_clipping_risk": true
+        }
+      }
+    },
+    {
+      "case_id": "global_precise_event_time",
+      "npc": "global",
+      "category": "lexical_rerank",
+      "passed": false,
+      "detail": {
+        "query": "静默纪念日是什么时候",
+        "scopes": [
+          "global"
+        ],
+        "expected_source": "global/history_and_rules.md",
+        "expected_chunk_index": 1,
+        "semantic_rank": null,
+        "lexical_rank": 1,
+        "final_rank": null,
+        "final_top_hit_source": "global/history_and_rules.md",
+        "final_top_hit_chunk_index": 3,
+        "final_top_hit_score": 0.5704,
+        "query_terms": [
+          "静默纪念日是什么时候",
+          "静默",
+          "默纪",
+          "纪念",
+          "念日",
+          "日是",
+          "是什",
+          "什么",
+          "么时",
+          "时候"
+        ],
+        "query_keywords": [
+          "静默纪念日是什么时候"
+        ],
+        "query_term_overlap_with_gold": [
+          "念日",
+          "纪念",
+          "静默",
+          "默纪"
+        ],
+        "gold_keyword_hits": [
+          "静默纪念日",
+          "12月31日",
+          "20:00",
+          "20:05"
+        ],
+        "source_keyword_coverage": {
+          "chunk_0": [],
+          "chunk_1": [
+            "静默纪念日",
+            "12月31日",
+            "20:00",
+            "20:05"
+          ],
+          "chunk_2": [],
+          "chunk_3": []
+        },
+        "source_chunks_with_keyword_hits": 1,
+        "semantic_candidate_count": 8,
+        "lexical_candidate_count": 1,
+        "final_candidate_count": 7,
+        "gold_candidate_log": {
+          "raw_score": 0.0,
+          "semantic_score": 0.0,
+          "lexical_score": 1.0,
+          "rerank_score": 0.6,
+          "retrieval_sources": [
+            "lexical"
+          ],
+          "filtered_reason": "duplicate_source_or_content",
+          "signals": {
+            "npc_name": "",
+            "semantic_score": 0.0,
+            "lexical_score": 1.0,
+            "retrieval_sources": [
+              "lexical"
+            ],
+            "source_hits": 0,
+            "source_exact_match": false,
+            "explicit_doc_reference": false,
+            "lexical_dominant": true,
+            "scope_bonus": 0.0,
+            "title_hits": 0,
+            "content_hits": 0,
+            "tag_hits": 0,
+            "mentioned_npcs": [
+              "郁米"
+            ],
+            "target_npcs": [],
+            "npc_match_bonus": 0.0,
+            "other_npc_penalty": 0.0,
+            "target_npc_bonus": 0.0,
+            "target_npc_penalty": 0.0,
+            "generic_bonus": 0.0,
+            "title_bonus": 0.0,
+            "content_bonus": 0.0,
+            "tag_bonus": 0.0,
+            "source_bonus": 0.0,
+            "lexical_bonus": 0.42,
+            "explicit_doc_bonus": 0.0,
+            "lexical_dominant_bonus": 0.12,
+            "lexical_only_bonus": 0.06
+          }
+        },
+        "knowledge_context_preview": "【外部知识】\n[小镇常识与重大历史事件 | score=0.570] 2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。\n[小镇常识与重大历史事件 | score=0.313] ## 特色节庆 - **微陨石雨观测季**：每年星环历 7月15日 开始，持续三天。这段时间小镇会穿过天鹅座碎片带。大量微陨石撞击能量护盾，摩擦产生五颜六色的能量涟漪。这是小",
+        "knowledge_context_tokens": 304,
+        "knowledge_context_caps": {
+          "default": 180,
+          "knowledge": 420,
+          "routing": 320,
+          "mixed": 140
+        },
+        "knowledge_context_clipping_risks": {
+          "default": true,
+          "knowledge": false,
+          "routing": false,
+          "mixed": true
+        },
+        "diagnostics": {
+          "lexical_tokenization_issue": false,
+          "rerank_underweighting_suspected": true,
+          "chunk_structure_risk": false,
+          "prompt_clipping_risk": true
+        }
+      }
+    },
+    {
+      "case_id": "npc_precise_profile_preference",
+      "npc": "郁米",
+      "category": "lexical_rerank",
+      "passed": false,
+      "detail": {
+        "query": "郁米喜欢什么",
+        "scopes": [
+          "npc:郁米"
+        ],
+        "expected_source": "npc/郁米/profile.md",
+        "expected_chunk_index": 1,
+        "semantic_rank": null,
+        "lexical_rank": 1,
+        "final_rank": null,
+        "final_top_hit_source": "npc/郁米/profile.md",
+        "final_top_hit_chunk_index": 0,
+        "final_top_hit_score": 0.7084,
+        "query_terms": [
+          "郁米喜欢什么",
+          "郁米",
+          "米喜",
+          "喜欢",
+          "欢什",
+          "什么"
+        ],
+        "query_keywords": [
+          "郁米喜欢什么"
+        ],
+        "query_term_overlap_with_gold": [
+          "喜欢",
+          "郁米"
+        ],
+        "gold_keyword_hits": [],
+        "source_keyword_coverage": {
+          "chunk_0": [
+            "伯爵红茶",
+            "小绿",
+            "日记",
+            "钢笔"
+          ],
+          "chunk_1": []
+        },
+        "source_chunks_with_keyword_hits": 1,
+        "semantic_candidate_count": 2,
+        "lexical_candidate_count": 2,
+        "final_candidate_count": 2,
+        "gold_candidate_log": {
+          "raw_score": 0.0,
+          "semantic_score": 0.0,
+          "lexical_score": 1.0,
+          "rerank_score": 1.04,
+          "retrieval_sources": [
+            "lexical"
+          ],
+          "filtered_reason": "duplicate_source_or_content",
+          "signals": {
+            "npc_name": "郁米",
+            "semantic_score": 0.0,
+            "lexical_score": 1.0,
+            "retrieval_sources": [
+              "lexical"
+            ],
+            "source_hits": 0,
+            "source_exact_match": false,
+            "explicit_doc_reference": false,
+            "lexical_dominant": true,
+            "scope_bonus": 0.12,
+            "title_hits": 0,
+            "content_hits": 0,
+            "tag_hits": 0,
+            "mentioned_npcs": [
+              "风泠",
+              "郁米",
+              "顾辰"
+            ],
+            "target_npcs": [
+              "郁米"
+            ],
+            "npc_match_bonus": 0.18,
+            "other_npc_penalty": -0.1,
+            "target_npc_bonus": 0.24,
+            "target_npc_penalty": 0.0,
+            "generic_bonus": 0.0,
+            "title_bonus": 0.0,
+            "content_bonus": 0.0,
+            "tag_bonus": 0.0,
+            "source_bonus": 0.0,
+            "lexical_bonus": 0.42,
+            "explicit_doc_bonus": 0.0,
+            "lexical_dominant_bonus": 0.12,
+            "lexical_only_bonus": 0.06
+          }
+        },
+        "knowledge_context_preview": "【外部知识】\n[郁米专属档案 | score=0.708] # 郁米专属档案\n[郁米专属档案 | score=0.651] ## 与其他NPC的羁绊与相处模式 - **与风泠**：郁米是全镇最容易察觉风泠疲惫的人。两人经常在绮梦咖啡馆一起喝失重抹茶。风泠喜欢在下班后给郁米塞一些搞笑的古代音频碎片逗她开心。郁米会在电台里专门为风泠播放隐秘的加油暗号。 - **与顾辰**：顾辰是郁米最大的安全后盾。星环历0039年，电台遭到不明恶意信号的频率攻击。顾辰立刻封锁了全镇路由，并亲自为",
+        "knowledge_context_tokens": 189,
+        "knowledge_context_caps": {
+          "default": 180,
+          "knowledge": 420,
+          "mixed": 140
+        },
+        "knowledge_context_clipping_risks": {
+          "default": true,
+          "knowledge": false,
+          "mixed": true
+        },
+        "diagnostics": {
+          "lexical_tokenization_issue": false,
+          "rerank_underweighting_suspected": true,
+          "chunk_structure_risk": true,
+          "prompt_clipping_risk": true
+        }
+      }
+    },
+    {
+      "case_id": "title_reference_landmarks_doc",
+      "npc": "global",
+      "category": "title_signal",
+      "passed": false,
+      "detail": {
+        "query": "新伊甸星环小镇地标建筑说明里主要写了什么",
+        "scopes": [
+          "global"
+        ],
+        "expected_source": "global/locations.md",
+        "expected_chunk_index": 0,
+        "semantic_rank": null,
+        "lexical_rank": 1,
+        "final_rank": null,
+        "final_top_hit_source": "global/locations.md",
+        "final_top_hit_chunk_index": 0,
+        "final_top_hit_score": 0.6335,
+        "query_terms": [
+          "新伊甸星环小镇地标建筑说明里主要写了什么",
+          "新伊",
+          "伊甸",
+          "甸星",
+          "星环",
+          "环小",
+          "小镇",
+          "镇地",
+          "地标",
+          "标建",
+          "建筑",
+          "筑说",
+          "说明",
+          "明里",
+          "里主",
+          "主要",
+          "要写",
+          "写了",
+          "了什",
+          "什么"
+        ],
+        "query_keywords": [
+          "新伊甸星环小镇地标建筑说明里主要写了什么"
+        ],
+        "query_term_overlap_with_gold": [
+          "伊甸",
+          "地标",
+          "小镇",
+          "建筑",
+          "新伊",
+          "星环",
+          "标建",
+          "环小",
+          "甸星",
+          "筑说",
+          "说明",
+          "镇地"
+        ],
+        "gold_keyword_hits": [
+          "绮梦咖啡馆"
+        ],
+        "source_keyword_coverage": {
+          "chunk_0": [
+            "绮梦咖啡馆"
+          ],
+          "chunk_1": [
+            "旧日档案馆"
+          ],
+          "chunk_2": [
+            "银河电台"
+          ],
+          "chunk_3": [
+            "奇点实验室"
+          ]
+        },
+        "source_chunks_with_keyword_hits": 4,
+        "semantic_candidate_count": 8,
+        "lexical_candidate_count": 8,
+        "final_candidate_count": 8,
+        "gold_candidate_log": {
+          "raw_score": 0.0,
+          "semantic_score": 0.0,
+          "lexical_score": 1.0,
+          "rerank_score": 0.6,
+          "retrieval_sources": [
+            "lexical"
+          ],
+          "filtered_reason": "duplicate_source_or_content",
+          "signals": {
+            "npc_name": "",
+            "semantic_score": 0.0,
+            "lexical_score": 1.0,
+            "retrieval_sources": [
+              "lexical"
+            ],
+            "source_hits": 0,
+            "source_exact_match": false,
+            "explicit_doc_reference": true,
+            "lexical_dominant": true,
+            "scope_bonus": 0.0,
+            "title_hits": 0,
+            "content_hits": 0,
+            "tag_hits": 0,
+            "mentioned_npcs": [
+              "顾辰"
+            ],
+            "target_npcs": [],
+            "npc_match_bonus": 0.0,
+            "other_npc_penalty": 0.0,
+            "target_npc_bonus": 0.0,
+            "target_npc_penalty": 0.0,
+            "generic_bonus": 0.0,
+            "title_bonus": 0.0,
+            "content_bonus": 0.0,
+            "tag_bonus": 0.0,
+            "source_bonus": 0.0,
+            "lexical_bonus": 0.42,
+            "explicit_doc_bonus": 0.0,
+            "lexical_dominant_bonus": 0.12,
+            "lexical_only_bonus": 0.06
+          }
+        },
+        "knowledge_context_preview": "【外部知识】\n[新伊甸星环小镇地标建筑说明 | score=0.633] # 新伊甸星环小镇地标建筑说明 ## 绮梦咖啡馆 **位置**：星环主观测层，紧贴着巨大的全景抗压玻璃。 **简介**：新伊甸星环小镇最受欢迎的公共休息区。由于位于星环边缘，这里的重力场被人工设定为标准重力的 0.8倍。居民们走在这里会有微微的轻盈感。连咖啡杯里的拉花都不容易散开。 **特色**： - **失重抹茶**：通过特定微重力发泡引擎打出的抹茶束。需要在它飘散前喝掉。 - **深空冷萃**：使用",
+        "knowledge_context_tokens": 297,
+        "knowledge_context_caps": {
+          "default": 180,
+          "knowledge": 420,
+          "routing": 320
+        },
+        "knowledge_context_clipping_risks": {
+          "default": true,
+          "knowledge": false,
+          "routing": false
+        },
+        "diagnostics": {
+          "lexical_tokenization_issue": false,
+          "rerank_underweighting_suspected": true,
+          "chunk_structure_risk": true,
+          "prompt_clipping_risk": true
+        }
+      }
+    },
+    {
+      "case_id": "single_chunk_bundle_place_gravity_feature",
+      "npc": "global",
+      "category": "chunk_structure",
+      "passed": false,
+      "detail": {
+        "query": "绮梦咖啡馆在哪里，重力是多少，有什么特色",
+        "scopes": [
+          "global"
+        ],
+        "expected_source": "global/locations.md",
+        "expected_chunk_index": 0,
+        "semantic_rank": null,
+        "lexical_rank": 2,
+        "final_rank": null,
+        "final_top_hit_source": "global/locations.md",
+        "final_top_hit_chunk_index": 3,
+        "final_top_hit_score": 0.5529,
+        "query_terms": [
+          "绮梦咖啡馆在哪里",
+          "绮梦",
+          "梦咖",
+          "咖啡",
+          "啡馆",
+          "馆在",
+          "在哪",
+          "哪里",
+          "重力是多少",
+          "重力",
+          "力是",
+          "是多",
+          "多少",
+          "有什么特色",
+          "有什",
+          "什么",
+          "么特",
+          "特色"
+        ],
+        "query_keywords": [
+          "绮梦咖啡馆在哪里",
+          "有什么特色",
+          "重力是多少"
+        ],
+        "query_term_overlap_with_gold": [
+          "咖啡",
+          "啡馆",
+          "梦咖",
+          "特色",
+          "绮梦",
+          "重力"
+        ],
+        "gold_keyword_hits": [
+          "星环主观测层",
+          "0.8",
+          "失重抹茶",
+          "深空冷萃"
+        ],
+        "source_keyword_coverage": {
+          "chunk_0": [
+            "星环主观测层",
+            "0.8",
+            "失重抹茶",
+            "深空冷萃"
+          ],
+          "chunk_1": [],
+          "chunk_2": [],
+          "chunk_3": []
+        },
+        "source_chunks_with_keyword_hits": 1,
+        "semantic_candidate_count": 8,
+        "lexical_candidate_count": 6,
+        "final_candidate_count": 8,
+        "gold_candidate_log": {
+          "raw_score": 0.0,
+          "semantic_score": 0.0,
+          "lexical_score": 0.9918,
+          "rerank_score": 0.5966,
+          "retrieval_sources": [
+            "lexical"
+          ],
+          "filtered_reason": "duplicate_source_or_content",
+          "signals": {
+            "npc_name": "",
+            "semantic_score": 0.0,
+            "lexical_score": 0.9918,
+            "retrieval_sources": [
+              "lexical"
+            ],
+            "source_hits": 0,
+            "source_exact_match": false,
+            "explicit_doc_reference": true,
+            "lexical_dominant": true,
+            "scope_bonus": 0.0,
+            "title_hits": 0,
+            "content_hits": 0,
+            "tag_hits": 0,
+            "mentioned_npcs": [
+              "顾辰"
+            ],
+            "target_npcs": [],
+            "npc_match_bonus": 0.0,
+            "other_npc_penalty": 0.0,
+            "target_npc_bonus": 0.0,
+            "target_npc_penalty": 0.0,
+            "generic_bonus": 0.0,
+            "title_bonus": 0.0,
+            "content_bonus": 0.0,
+            "tag_bonus": 0.0,
+            "source_bonus": 0.0,
+            "lexical_bonus": 0.4166,
+            "explicit_doc_bonus": 0.0,
+            "lexical_dominant_bonus": 0.12,
+            "lexical_only_bonus": 0.06
+          }
+        },
+        "knowledge_context_preview": "【外部知识】\n[新伊甸星环小镇地标建筑说明 | score=0.553] ## 奇点实验室 **位置**：星环核心动力轴心区，也是小镇的物理中心。 **首席工程师**：顾辰 **简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。 **特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程图以及各种复杂的备选方案板。顾辰在这里维持着小",
+        "knowledge_context_tokens": 288,
+        "knowledge_context_caps": {
+          "default": 180,
+          "knowledge": 420,
+          "mixed": 140
+        },
+        "knowledge_context_clipping_risks": {
+          "default": true,
+          "knowledge": false,
+          "mixed": true
+        },
+        "diagnostics": {
+          "lexical_tokenization_issue": false,
+          "rerank_underweighting_suspected": true,
+          "chunk_structure_risk": false,
+          "prompt_clipping_risk": true
+        }
+      }
+    },
+    {
+      "case_id": "broad_global_query_prompt_budget",
+      "npc": "global",
+      "category": "prompt_budget",
+      "passed": false,
+      "detail": {
+        "query": "请介绍一下这个小镇的重要地点、基础规则、节庆和重大历史事件，尽量给我一个比较完整的概览",
+        "scopes": [
+          "global"
+        ],
+        "expected_source": "global/history_and_rules.md",
+        "expected_chunk_index": 0,
+        "semantic_rank": null,
+        "lexical_rank": 1,
+        "final_rank": null,
+        "final_top_hit_source": "global/history_and_rules.md",
+        "final_top_hit_chunk_index": 3,
+        "final_top_hit_score": 0.6727,
+        "query_terms": [
+          "请介绍一下这个小镇的重要地点",
+          "请介",
+          "介绍",
+          "绍一",
+          "一下",
+          "下这",
+          "这个",
+          "个小",
+          "小镇",
+          "镇的",
+          "的重",
+          "重要",
+          "要地",
+          "地点",
+          "基础规则",
+          "基础",
+          "础规",
+          "规则",
+          "节庆和重大历史事件",
+          "节庆",
+          "庆和",
+          "和重",
+          "重大",
+          "大历",
+          "历史",
+          "史事",
+          "事件",
+          "尽量给我一个比较完整的概览",
+          "尽量",
+          "量给",
+          "给我",
+          "我一",
+          "一个",
+          "个比",
+          "比较",
+          "较完",
+          "完整",
+          "整的",
+          "的概",
+          "概览"
+        ],
+        "query_keywords": [
+          "请介绍一下这个小镇的重要地点",
+          "尽量给我一个比较完整的概览",
+          "节庆和重大历史事件",
+          "基础规则"
+        ],
+        "query_term_overlap_with_gold": [
+          "事件",
+          "历史",
+          "史事",
+          "基础",
+          "大历",
+          "小镇",
+          "重大"
+        ],
+        "gold_keyword_hits": [
+          "基础常识",
+          "通用货币",
+          "环境重力",
+          "能量护盾"
+        ],
+        "source_keyword_coverage": {
+          "chunk_0": [
+            "基础常识",
+            "通用货币",
+            "环境重力",
+            "能量护盾"
+          ],
+          "chunk_1": [
+            "能量护盾"
+          ],
+          "chunk_2": [],
+          "chunk_3": []
+        },
+        "source_chunks_with_keyword_hits": 2,
+        "semantic_candidate_count": 8,
+        "lexical_candidate_count": 8,
+        "final_candidate_count": 8,
+        "gold_candidate_log": {
+          "raw_score": 0.0,
+          "semantic_score": 0.0,
+          "lexical_score": 1.0,
+          "rerank_score": 0.63,
+          "retrieval_sources": [
+            "lexical"
+          ],
+          "filtered_reason": "duplicate_source_or_content",
+          "signals": {
+            "npc_name": "",
+            "semantic_score": 0.0,
+            "lexical_score": 1.0,
+            "retrieval_sources": [
+              "lexical"
+            ],
+            "source_hits": 0,
+            "source_exact_match": false,
+            "explicit_doc_reference": false,
+            "lexical_dominant": true,
+            "scope_bonus": 0.0,
+            "title_hits": 0,
+            "content_hits": 0,
+            "tag_hits": 0,
+            "mentioned_npcs": [],
+            "target_npcs": [],
+            "npc_match_bonus": 0.0,
+            "other_npc_penalty": 0.0,
+            "target_npc_bonus": 0.0,
+            "target_npc_penalty": 0.0,
+            "generic_bonus": 0.03,
+            "title_bonus": 0.0,
+            "content_bonus": 0.0,
+            "tag_bonus": 0.0,
+            "source_bonus": 0.0,
+            "lexical_bonus": 0.42,
+            "explicit_doc_bonus": 0.0,
+            "lexical_dominant_bonus": 0.12,
+            "lexical_only_bonus": 0.06
+          }
+        },
+        "knowledge_context_preview": "【外部知识】\n[小镇常识与重大历史事件 | score=0.673] 2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。\n[新伊甸星环小镇地标建筑说明 | score=0.496] ## 奇点实验室 **位置**：星环核心动力轴心区，也是小镇的物理中心。 **首席工程师**：顾辰 **简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是",
+        "knowledge_context_tokens": 287,
+        "knowledge_context_caps": {
+          "default": 180,
+          "knowledge": 420,
+          "routing": 320,
+          "mixed": 140
+        },
+        "knowledge_context_clipping_risks": {
+          "default": true,
+          "knowledge": false,
+          "routing": false,
+          "mixed": true
+        },
+        "diagnostics": {
+          "lexical_tokenization_issue": false,
+          "rerank_underweighting_suspected": true,
+          "chunk_structure_risk": false,
+          "prompt_clipping_risk": true
+        }
+      }
+    }
+  ]
+}

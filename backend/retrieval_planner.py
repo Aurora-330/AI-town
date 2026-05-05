@@ -44,7 +44,9 @@ class RetrievalPlanner:
     def analyze(self, npc_name: str, query: str) -> Dict:
         """输出结构化查询分析结果。"""
         if not self.llm:
-            return self._fallback_plan(query)
+            result = self._fallback_plan(query)
+            result["original_query"] = query
+            return result
 
         messages = self.prompt_builder.build_query_analysis_messages(
             npc_name=npc_name,
@@ -53,14 +55,18 @@ class RetrievalPlanner:
 
         try:
             raw = self.llm.invoke(messages)
-            return self._parse_plan(raw)
+            result = self._parse_plan(raw, query=query)
+            result["original_query"] = query
+            return result
         except Exception:
-            return self._fallback_plan(query)
+            result = self._fallback_plan(query)
+            result["original_query"] = query
+            return result
 
-    def _parse_plan(self, response: str) -> Dict:
+    def _parse_plan(self, response: str, query: str) -> Dict:
         candidate = self._extract_candidate(response)
         validated = QueryAnalysisPlan.model_validate(candidate)
-        result = self._normalize_plan(validated.model_dump())
+        result = self._normalize_plan(validated.model_dump(), query=query)
 
         if not result["need_rewrite"]:
             result["rewrite_query"] = result["rewrite_query"] or candidate.get("original_query", "") or "原问题保持不变"
@@ -108,11 +114,14 @@ class RetrievalPlanner:
         recall_markers = [
             "你记得", "还记得", "记不记得", "我刚才", "我之前", "我说过", "偏好", "最怕"
         ]
-        routing_markers = ["谁适合", "先找谁", "找谁", "优先找谁", "谁来处理"]
+        routing_markers = ["谁适合", "先找谁", "找谁", "优先找谁", "谁来处理", "哪个npc", "更适合"]
         summary_markers = ["怎么总结", "概括", "总结", "重点是什么", "核心需求"]
-        emotional_markers = ["紧张", "焦虑", "害怕", "被理解", "怎么开口", "先被理解"]
+        knowledge_markers = self._knowledge_markers()
+        emotional_markers = ["紧张", "焦虑", "害怕", "被理解", "先被理解", "情绪", "安慰"]
+        mixed_markers = self._mixed_advice_markers()
 
-        if any(marker in text for marker in routing_markers):
+        lowered = text.lower()
+        if any(marker in lowered for marker in routing_markers):
             return self._normalize_plan({
                 "need_rewrite": True,
                 "query_mode": "routing",
@@ -124,6 +133,20 @@ class RetrievalPlanner:
                 "use_knowledge": True,
                 "memory_k": 0,
                 "knowledge_k": 2,
+                "need_rerank": True,
+            })
+        if self._is_mixed_query(text):
+            return self._normalize_plan({
+                "need_rewrite": True,
+                "query_mode": "mixed",
+                "rewrite_query": text,
+                "reason": "记忆+建议",
+                "use_summary": True,
+                "use_episodic": True,
+                "use_working": True,
+                "use_knowledge": True,
+                "memory_k": 2,
+                "knowledge_k": 1,
                 "need_rerank": True,
             })
         if any(marker in text for marker in recall_markers):
@@ -154,7 +177,21 @@ class RetrievalPlanner:
                 "knowledge_k": 0,
                 "need_rerank": False,
             })
-        if any(marker in text for marker in emotional_markers):
+        if any(marker in text for marker in knowledge_markers) or re.search(r"[A-Za-z0-9_./-]{4,}", text):
+            return self._normalize_plan({
+                "need_rewrite": False,
+                "query_mode": "knowledge",
+                "rewrite_query": text,
+                "reason": "知识问答",
+                "use_summary": False,
+                "use_episodic": False,
+                "use_working": False,
+                "use_knowledge": True,
+                "memory_k": 0,
+                "knowledge_k": 2,
+                "need_rerank": True,
+            })
+        if any(marker in text for marker in emotional_markers) and any(marker in text for marker in mixed_markers):
             return self._normalize_plan({
                 "need_rewrite": True,
                 "query_mode": "mixed",
@@ -176,16 +213,17 @@ class RetrievalPlanner:
             "use_summary": True,
             "use_episodic": True,
             "use_working": True,
-            "use_knowledge": True,
+            "use_knowledge": not self._is_memory_reflection_default(text),
             "memory_k": 2,
-            "knowledge_k": 1,
+            "knowledge_k": 0 if self._is_memory_reflection_default(text) else 1,
             "need_rerank": True,
         })
 
-    def _normalize_plan(self, plan: Dict) -> Dict:
+    def _normalize_plan(self, plan: Dict, query: str = "") -> Dict:
         """按 query_mode 做轻量兜底，避免识别正确但执行策略失真。"""
         normalized = dict(plan)
-        mode = normalized.get("query_mode", "default")
+        mode = self._infer_mode_from_query(query or normalized.get("rewrite_query", "")) or normalized.get("query_mode", "default")
+        normalized["query_mode"] = mode
 
         if mode == "summary":
             normalized["need_rewrite"] = False
@@ -198,6 +236,7 @@ class RetrievalPlanner:
             normalized["need_rerank"] = False
 
         if mode == "routing":
+            normalized["need_rewrite"] = False
             normalized["use_summary"] = False
             normalized["use_episodic"] = False
             normalized["use_working"] = False
@@ -205,10 +244,37 @@ class RetrievalPlanner:
             normalized["memory_k"] = 0
             normalized["knowledge_k"] = max(2, int(normalized.get("knowledge_k", 0)))
 
+        if mode == "knowledge":
+            normalized["need_rewrite"] = False
+            normalized["use_summary"] = False
+            normalized["use_episodic"] = False
+            normalized["use_working"] = False
+            normalized["use_knowledge"] = True
+            normalized["memory_k"] = 0
+            normalized["knowledge_k"] = max(2, int(normalized.get("knowledge_k", 0)))
+            normalized["need_rerank"] = True
+
+        if mode == "mixed":
+            normalized["use_summary"] = True
+            normalized["use_episodic"] = True
+            normalized["use_working"] = bool(normalized.get("use_working", False))
+            normalized["use_knowledge"] = True
+            normalized["memory_k"] = max(2, int(normalized.get("memory_k", 0)))
+            normalized["knowledge_k"] = max(1, int(normalized.get("knowledge_k", 0)))
+            normalized["need_rerank"] = True
+
         if mode == "recall":
             normalized["use_knowledge"] = False
             normalized["knowledge_k"] = 0
             normalized["memory_k"] = max(1, int(normalized.get("memory_k", 0)))
+
+        if mode == "default" and self._is_memory_reflection_default(query or normalized.get("rewrite_query", "")):
+            normalized["use_summary"] = True
+            normalized["use_episodic"] = True
+            normalized["use_working"] = True
+            normalized["use_knowledge"] = False
+            normalized["knowledge_k"] = 0
+            normalized["memory_k"] = max(2, int(normalized.get("memory_k", 0)))
 
         if not normalized.get("use_knowledge", False):
             normalized["knowledge_k"] = 0
@@ -220,3 +286,55 @@ class RetrievalPlanner:
             normalized["memory_k"] = 0
 
         return normalized
+
+    def _infer_mode_from_query(self, query: str) -> str:
+        """用确定性规则兜底 query_mode，避免被 LLM 偶发误判带偏。"""
+        text = (query or "").strip()
+        lowered = text.lower()
+        emotional_markers = [
+            "紧张", "焦虑", "害怕", "委屈", "难过", "压力", "崩溃", "被理解", "情绪", "情绪支持",
+        ]
+        advice_markers = self._mixed_advice_markers()
+
+        if any(marker in text for marker in ["怎么总结", "概括", "总结", "重点是什么", "核心需求"]):
+            return "summary"
+        if any(marker in lowered for marker in ["谁适合", "先找谁", "找谁", "优先找谁", "谁来处理", "哪个npc", "更适合"]):
+            return "routing"
+        if self._is_mixed_query(text):
+            return "mixed"
+        if any(marker in text for marker in self._knowledge_markers()):
+            return "knowledge"
+        if re.search(r"[A-Za-z0-9_./-]{4,}", text):
+            return "knowledge"
+        if any(marker in text for marker in ["你记得", "还记得", "记不记得", "我刚才", "我之前", "我说过", "偏好", "最怕"]):
+            return "recall"
+        return "default"
+
+    def _is_mixed_query(self, text: str) -> bool:
+        recall_markers = ["你记得", "还记得", "记不记得", "我刚才", "我之前", "我说过", "偏好", "最怕"]
+        emotional_markers = ["紧张", "焦虑", "害怕", "被理解", "先被理解", "情绪", "安慰"]
+        advice_markers = self._mixed_advice_markers()
+        has_recall = any(marker in text for marker in recall_markers)
+        has_emotion = any(marker in text for marker in emotional_markers)
+        has_advice = any(marker in text for marker in advice_markers)
+        return has_advice and (has_recall or has_emotion)
+
+    def _mixed_advice_markers(self) -> list[str]:
+        return [
+            "怎么办", "怎么说", "怎么开口", "怎么回复", "该怎么", "先怎么", "如何表达", "开口", "建议",
+            "开口建议", "先讲", "讲哪几部分", "哪几部分", "怎么讲", "表达方式",
+        ]
+
+    def _knowledge_markers(self) -> list[str]:
+        return [
+            "擅长什么", "主要写了什么", "怎么定义", "怎么写", "区别", "规则", "手册", "示例", "文档",
+            "术语", "概念", "标准", "模板",
+        ]
+
+    def _is_memory_reflection_default(self, text: str) -> bool:
+        markers = [
+            "最容易卡在哪", "我容易卡在哪", "你觉得我这次", "我这次最容易", "我哪里最容易", "我会卡住",
+            "我最容易", "我这次汇报", "汇报最容易卡",
+            "我可能又把同一个问题搞砸了", "又把同一个问题搞砸", "你要说就直说吧", "我又搞砸了", "又搞砸了",
+        ]
+        return any(marker in (text or "") for marker in markers)

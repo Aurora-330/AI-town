@@ -1,0 +1,548 @@
+{
+  "title": "Multi-Agent Evaluation",
+  "total": 4,
+  "summary": {
+    "overall": {
+      "total": 4,
+      "passed": 4,
+      "pass_rate": 1.0,
+      "avg_intermediate_count": 3,
+      "avg_node_trace_count": 5.5
+    },
+    "by_category": {
+      "auto_parallel": {
+        "total": 1,
+        "passed": 1,
+        "pass_rate": 1.0,
+        "avg_intermediate_count": 3,
+        "avg_node_trace_count": 6
+      },
+      "auto_serial": {
+        "total": 1,
+        "passed": 1,
+        "pass_rate": 1.0,
+        "avg_intermediate_count": 3,
+        "avg_node_trace_count": 5
+      },
+      "parallel_b": {
+        "total": 1,
+        "passed": 1,
+        "pass_rate": 1.0,
+        "avg_intermediate_count": 3,
+        "avg_node_trace_count": 6
+      },
+      "serial_a": {
+        "total": 1,
+        "passed": 1,
+        "pass_rate": 1.0,
+        "avg_intermediate_count": 3,
+        "avg_node_trace_count": 5
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "serial_a_emotional_quit",
+      "category": "serial_a",
+      "passed": true,
+      "detail": {
+        "query": "我最近工作压力好大，感觉什么都做不好，想离职。",
+        "request_mode": "serial_a",
+        "actual_mode": "serial_a",
+        "selected_agents": [
+          "郁米",
+          "风泠",
+          "顾辰"
+        ],
+        "execution_order": [
+          "郁米",
+          "风泠",
+          "顾辰"
+        ],
+        "aggregation_strategy": "serial_handoff",
+        "final_answer": "听起来你正在经历一段艰难时期，先调整一下呼吸，让我们一起看看下一步如何。我会给你一些建议，帮你走出困境。",
+        "final_keyword_hits": [
+          "先",
+          "建议"
+        ],
+        "final_forbidden_hits": [],
+        "returned_intermediate_agents": [
+          "郁米",
+          "风泠",
+          "顾辰"
+        ],
+        "agent_expectation_results": [
+          {
+            "npc_name": "郁米",
+            "expected_keywords": [
+              "压力",
+              "感受"
+            ],
+            "hits": [
+              "压力"
+            ],
+            "passed": true,
+            "message": "听起来你对目前的工作状态感到非常困扰，这种感觉一定很不容易。你现在的压力让你觉得做什么都困难重重，甚至有离职的想法，是这样吗？"
+          },
+          {
+            "npc_name": "风泠",
+            "expected_keywords": [
+              "判断",
+              "问题",
+              "能力"
+            ],
+            "hits": [
+              "判断",
+              "问题",
+              "能力"
+            ],
+            "passed": true,
+            "message": "判断你在汇报中可能忽视了风险的详细分析。问题更可能出在当前项目阶段，而非个人能力。下一步先确认风险因素的具体情况，再考虑后续行动。"
+          },
+          {
+            "npc_name": "顾辰",
+            "expected_keywords": [
+              "建议",
+              "离职",
+              "先"
+            ],
+            "hits": [
+              "建议",
+              "先"
+            ],
+            "passed": true,
+            "message": "听起来你正在经历一段艰难时期，先调整一下呼吸，让我们一起看看下一步如何。我会给你一些建议，帮你走出困境。"
+          }
+        ],
+        "structure_checks": {
+          "mode_ok": true,
+          "selected_agents_ok": true,
+          "execution_order_ok": true,
+          "aggregation_strategy_ok": true,
+          "langgraph_available_ok": true,
+          "success_ok": true,
+          "intermediate_count_ok": true,
+          "node_trace_non_empty_ok": true,
+          "intermediate_agents_ok": true
+        },
+        "node_trace": [
+          {
+            "node": "router",
+            "budget": 120,
+            "detail": "script=serial_a, selected=郁米,风泠,顾辰"
+          },
+          {
+            "node": "serial_a_yumi",
+            "budget": 360,
+            "detail": "郁米 output_len=63 tools=1"
+          },
+          {
+            "node": "serial_a_fengling",
+            "budget": 360,
+            "detail": "风泠 output_len=65 tools=2"
+          },
+          {
+            "node": "serial_a_guchen",
+            "budget": 480,
+            "detail": "顾辰 output_len=52 tools=1"
+          },
+          {
+            "node": "serial_a_guchen",
+            "budget": 480,
+            "detail": "finalized_by=顾辰"
+          }
+        ],
+        "intermediate_outputs": [
+          {
+            "npc_name": "郁米",
+            "stage": "serial_a_yumi",
+            "message": "听起来你对目前的工作状态感到非常困扰，这种感觉一定很不容易。你现在的压力让你觉得做什么都困难重重，甚至有离职的想法，是这样吗？",
+            "query_mode": "default",
+            "tool_call_count": 1,
+            "latency_ms": 2811
+          },
+          {
+            "npc_name": "风泠",
+            "stage": "serial_a_fengling",
+            "message": "判断你在汇报中可能忽视了风险的详细分析。问题更可能出在当前项目阶段，而非个人能力。下一步先确认风险因素的具体情况，再考虑后续行动。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 11828
+          },
+          {
+            "npc_name": "顾辰",
+            "stage": "serial_a_guchen",
+            "message": "听起来你正在经历一段艰难时期，先调整一下呼吸，让我们一起看看下一步如何。我会给你一些建议，帮你走出困境。",
+            "query_mode": "default",
+            "tool_call_count": 1,
+            "latency_ms": 2751
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "parallel_b_stay_or_switch",
+      "category": "parallel_b",
+      "passed": true,
+      "detail": {
+        "query": "如果我继续留岗和直接换岗，这两条路选哪个好？你们分别怎么看？",
+        "request_mode": "parallel_b",
+        "actual_mode": "parallel_b",
+        "selected_agents": [
+          "顾辰",
+          "风泠",
+          "郁米"
+        ],
+        "execution_order": [
+          "顾辰",
+          "风泠",
+          "郁米"
+        ],
+        "aggregation_strategy": "parallel_roundtable_to_yumi",
+        "final_answer": "我帮你收一下。顾辰在看现实代价和筹码，意思是别在没有准备的时候猛跳；风泠在提醒你，现在的疲惫感会放大判断偏差。综合下来，我更倾向你先稳住自己，再用短时间观察和准备去决定是不是换岗。你现在先做的一步，是把最近最压垮你的三件事写下来，区分哪些是环境问题，哪些才是岗位不匹配。",
+        "final_keyword_hits": [
+          "顾辰",
+          "风泠",
+          "倾向",
+          "先"
+        ],
+        "final_forbidden_hits": [],
+        "returned_intermediate_agents": [
+          "顾辰",
+          "风泠",
+          "郁米"
+        ],
+        "agent_expectation_results": [
+          {
+            "npc_name": "顾辰",
+            "expected_keywords": [
+              "留岗",
+              "换岗"
+            ],
+            "hits": [
+              "留岗",
+              "换岗"
+            ],
+            "passed": true,
+            "message": "留岗可获得现有团队熟悉度带来的优势，但需面对成本增加和风险控制挑战。换岗则能迅速获取新资源和视野，但也面临人员变动和成长不确定性。我倾向换岗，新机遇更有价值。"
+          },
+          {
+            "npc_name": "风泠",
+            "expected_keywords": [
+              "确认",
+              "决定"
+            ],
+            "hits": [
+              "确认",
+              "决定"
+            ],
+            "passed": true,
+            "message": "玩家此刻的判断可能受近期压力和目标期望的影响。过往更适合先评估现状，再结合个人情况和团队需求做出选择。需先确认现状是否稳定，风险因素有哪些，再决定下一步。"
+          },
+          {
+            "npc_name": "郁米",
+            "expected_keywords": [
+              "顾辰",
+              "风泠",
+              "先",
+              "倾向"
+            ],
+            "hits": [
+              "顾辰",
+              "风泠",
+              "先",
+              "倾向"
+            ],
+            "passed": true,
+            "message": "我帮你收一下。顾辰在看现实代价和筹码，意思是别在没有准备的时候猛跳；风泠在提醒你，现在的疲惫感会放大判断偏差。综合下来，我更倾向你先稳住自己，再用短时间观察和准备去决定是不是换岗。你现在先做的一步，是把最近最压垮你的三件事写下来，区分哪些是环境问题，哪些才是岗位不匹配。"
+          }
+        ],
+        "structure_checks": {
+          "mode_ok": true,
+          "selected_agents_ok": true,
+          "execution_order_ok": true,
+          "aggregation_strategy_ok": true,
+          "langgraph_available_ok": true,
+          "success_ok": true,
+          "intermediate_count_ok": true,
+          "node_trace_non_empty_ok": true,
+          "intermediate_agents_ok": true
+        },
+        "node_trace": [
+          {
+            "node": "router",
+            "budget": 120,
+            "detail": "script=parallel_b, selected=顾辰,风泠,郁米"
+          },
+          {
+            "node": "parallel_b_fanout",
+            "budget": 80,
+            "detail": "fanout=顾辰,风泠 -> 郁米"
+          },
+          {
+            "node": "parallel_b_fengling",
+            "budget": 360,
+            "detail": "风泠 output_len=77 tools=2"
+          },
+          {
+            "node": "parallel_b_guchen",
+            "budget": 360,
+            "detail": "顾辰 output_len=79 tools=2"
+          },
+          {
+            "node": "parallel_b_yumi",
+            "budget": 520,
+            "detail": "郁米 output_len=55 tools=2"
+          },
+          {
+            "node": "parallel_b_yumi",
+            "budget": 520,
+            "detail": "finalized_by=郁米"
+          }
+        ],
+        "intermediate_outputs": [
+          {
+            "npc_name": "顾辰",
+            "stage": "parallel_b_guchen",
+            "message": "留岗可获得现有团队熟悉度带来的优势，但需面对成本增加和风险控制挑战。换岗则能迅速获取新资源和视野，但也面临人员变动和成长不确定性。我倾向换岗，新机遇更有价值。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 6696
+          },
+          {
+            "npc_name": "风泠",
+            "stage": "parallel_b_fengling",
+            "message": "玩家此刻的判断可能受近期压力和目标期望的影响。过往更适合先评估现状，再结合个人情况和团队需求做出选择。需先确认现状是否稳定，风险因素有哪些，再决定下一步。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 5438
+          },
+          {
+            "npc_name": "郁米",
+            "stage": "parallel_b_yumi",
+            "message": "我帮你收一下。顾辰在看现实代价和筹码，意思是别在没有准备的时候猛跳；风泠在提醒你，现在的疲惫感会放大判断偏差。综合下来，我更倾向你先稳住自己，再用短时间观察和准备去决定是不是换岗。你现在先做的一步，是把最近最压垮你的三件事写下来，区分哪些是环境问题，哪些才是岗位不匹配。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 3047
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "auto_route_to_parallel_b",
+      "category": "auto_parallel",
+      "passed": true,
+      "detail": {
+        "query": "这两条路我有点拿不准，一个是继续待着，一个是尽快换岗，你们分别怎么看？",
+        "request_mode": "auto",
+        "actual_mode": "parallel_b",
+        "selected_agents": [
+          "顾辰",
+          "风泠",
+          "郁米"
+        ],
+        "execution_order": [
+          "顾辰",
+          "风泠",
+          "郁米"
+        ],
+        "aggregation_strategy": "parallel_roundtable_to_yumi",
+        "final_answer": "我帮你收一下。顾辰在看现实代价和筹码，意思是别在没有准备的时候猛跳；风泠在提醒你，现在的疲惫感会放大判断偏差。综合下来，我更倾向你先稳住自己，再用短时间观察和准备去决定是不是换岗。你现在先做的一步，是把最近最压垮你的三件事写下来，区分哪些是环境问题，哪些才是岗位不匹配。",
+        "final_keyword_hits": [
+          "顾辰",
+          "风泠",
+          "先",
+          "决定"
+        ],
+        "final_forbidden_hits": [],
+        "returned_intermediate_agents": [
+          "顾辰",
+          "风泠",
+          "郁米"
+        ],
+        "agent_expectation_results": [
+          {
+            "npc_name": "郁米",
+            "expected_keywords": [
+              "顾辰",
+              "风泠",
+              "先"
+            ],
+            "hits": [
+              "顾辰",
+              "风泠",
+              "先"
+            ],
+            "passed": true,
+            "message": "我帮你收一下。顾辰在看现实代价和筹码，意思是别在没有准备的时候猛跳；风泠在提醒你，现在的疲惫感会放大判断偏差。综合下来，我更倾向你先稳住自己，再用短时间观察和准备去决定是不是换岗。你现在先做的一步，是把最近最压垮你的三件事写下来，区分哪些是环境问题，哪些才是岗位不匹配。"
+          }
+        ],
+        "structure_checks": {
+          "mode_ok": true,
+          "selected_agents_ok": true,
+          "execution_order_ok": true,
+          "aggregation_strategy_ok": true,
+          "langgraph_available_ok": true,
+          "success_ok": true,
+          "intermediate_count_ok": true,
+          "node_trace_non_empty_ok": true,
+          "intermediate_agents_ok": true
+        },
+        "node_trace": [
+          {
+            "node": "router",
+            "budget": 120,
+            "detail": "script=parallel_b, selected=顾辰,风泠,郁米"
+          },
+          {
+            "node": "parallel_b_fanout",
+            "budget": 80,
+            "detail": "fanout=顾辰,风泠 -> 郁米"
+          },
+          {
+            "node": "parallel_b_fengling",
+            "budget": 360,
+            "detail": "风泠 output_len=92 tools=0"
+          },
+          {
+            "node": "parallel_b_guchen",
+            "budget": 360,
+            "detail": "顾辰 output_len=51 tools=0"
+          },
+          {
+            "node": "parallel_b_yumi",
+            "budget": 520,
+            "detail": "郁米 output_len=50 tools=2"
+          },
+          {
+            "node": "parallel_b_yumi",
+            "budget": 520,
+            "detail": "finalized_by=郁米"
+          }
+        ],
+        "intermediate_outputs": [
+          {
+            "npc_name": "顾辰",
+            "stage": "parallel_b_guchen",
+            "message": "留岗考虑成本降低和稳定收益，换岗则有更高的成长潜力但伴随风险增加。我倾向于换岗，认为长远发展更为重要。",
+            "query_mode": "default",
+            "tool_call_count": 0,
+            "latency_ms": 6122
+          },
+          {
+            "npc_name": "风泠",
+            "stage": "parallel_b_fengling",
+            "message": "玩家此刻的判断可能受紧张状态的影响；过往更适合先评估现状再决策的方式；需要先明确目前团队的工作状态和需求，再决定下一步行动。先确认待机情况和换岗对团队的影响，再决定是继续待着还是换岗。",
+            "query_mode": "default",
+            "tool_call_count": 0,
+            "latency_ms": 5302
+          },
+          {
+            "npc_name": "郁米",
+            "stage": "parallel_b_yumi",
+            "message": "我帮你收一下。顾辰在看现实代价和筹码，意思是别在没有准备的时候猛跳；风泠在提醒你，现在的疲惫感会放大判断偏差。综合下来，我更倾向你先稳住自己，再用短时间观察和准备去决定是不是换岗。你现在先做的一步，是把最近最压垮你的三件事写下来，区分哪些是环境问题，哪些才是岗位不匹配。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 2656
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "auto_route_to_serial_a",
+      "category": "auto_serial",
+      "passed": true,
+      "detail": {
+        "query": "我现在真的有点撑不住了，压力大到怀疑自己，甚至开始想直接辞职。",
+        "request_mode": "auto",
+        "actual_mode": "serial_a",
+        "selected_agents": [
+          "郁米",
+          "风泠",
+          "顾辰"
+        ],
+        "execution_order": [
+          "郁米",
+          "风泠",
+          "顾辰"
+        ],
+        "aggregation_strategy": "serial_handoff",
+        "final_answer": "郁米的安抚很有帮助，风泠也给出了冷静的看法。我们先明确一下当前项目的关键挑战，再制定具体的应对策略。",
+        "final_keyword_hits": [
+          "先"
+        ],
+        "final_forbidden_hits": [],
+        "returned_intermediate_agents": [
+          "郁米",
+          "风泠",
+          "顾辰"
+        ],
+        "agent_expectation_results": [],
+        "structure_checks": {
+          "mode_ok": true,
+          "selected_agents_ok": true,
+          "execution_order_ok": true,
+          "aggregation_strategy_ok": true,
+          "langgraph_available_ok": true,
+          "success_ok": true,
+          "intermediate_count_ok": true,
+          "node_trace_non_empty_ok": true,
+          "intermediate_agents_ok": true
+        },
+        "node_trace": [
+          {
+            "node": "router",
+            "budget": 120,
+            "detail": "script=serial_a, selected=郁米,风泠,顾辰"
+          },
+          {
+            "node": "serial_a_yumi",
+            "budget": 360,
+            "detail": "郁米 output_len=40 tools=1"
+          },
+          {
+            "node": "serial_a_fengling",
+            "budget": 360,
+            "detail": "风泠 output_len=70 tools=2"
+          },
+          {
+            "node": "serial_a_guchen",
+            "budget": 480,
+            "detail": "顾辰 output_len=50 tools=2"
+          },
+          {
+            "node": "serial_a_guchen",
+            "budget": 480,
+            "detail": "finalized_by=顾辰"
+          }
+        ],
+        "intermediate_outputs": [
+          {
+            "npc_name": "郁米",
+            "stage": "serial_a_yumi",
+            "message": "听起来你现在的压力真的很大，连辞职的想法都冒出来了。你现在心里的感受是怎样的呢？",
+            "query_mode": "default",
+            "tool_call_count": 1,
+            "latency_ms": 2461
+          },
+          {
+            "npc_name": "风泠",
+            "stage": "serial_a_fengling",
+            "message": "判断你目前的情绪状态可能有些极端，但压力大的原因更可能是阶段性项目挑战，而非个人能力问题。下一步先确认具体项目中的哪些环节让你感到压力山大。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 3004
+          },
+          {
+            "npc_name": "顾辰",
+            "stage": "serial_a_guchen",
+            "message": "郁米的安抚很有帮助，风泠也给出了冷静的看法。我们先明确一下当前项目的关键挑战，再制定具体的应对策略。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 2865
+          }
+        ]
+      }
+    }
+  ]
+}

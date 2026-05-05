@@ -1,28 +1,59 @@
 {
   "players": {
     "player": {
-      "pending_turns": [],
-      "summary_count": 3
+      "pending_turns": [
+        {
+          "player_message": "我想去银河电台待一会儿，你还记得什么样的回应方式会让我更安心吗？顺便告诉我银河电台在什么位置。",
+          "npc_response": "我能记得你之前提到过希望关键词清晰一些。那么我们一起来试试，你先说说你现在最想表达的关键点是什么？",
+          "timestamp": "2026-05-06T02:44:45.409413",
+          "affinity": 76.0,
+          "affinity_change": 3,
+          "sentiment": "positive",
+          "source_memory_ids": [
+            "1ac3141d-7979-4e9a-b2c2-2edb39872c3c",
+            "d39874a2-4241-4063-a425-a6b46c114427"
+          ]
+        }
+      ],
+      "summary_count": 1,
+      "recent_turns": [
+        {
+          "player_message": "只要语气温和一点，我通常就能自己把重点说出来。",
+          "npc_response": "我明白，语气温和确实能让人感到安心一些。那就这样吧，你慢慢说，我会听着呢。",
+          "timestamp": "2026-05-06T02:44:32.351398"
+        },
+        {
+          "player_message": "如果你能帮我复述关键词，我会觉得更被接住。",
+          "npc_response": "我能理解你想让关键词清晰一些的感觉，那么我们一起来试试。你先说说，你现在最想表达的关键点是什么？",
+          "timestamp": "2026-05-06T02:44:35.334074"
+        },
+        {
+          "player_message": "我想去银河电台待一会儿，你还记得什么样的回应方式会让我更安心吗？顺便告诉我银河电台在什么位置。",
+          "npc_response": "我能记得你之前提到过希望关键词清晰一些。那么我们一起来试试，你先说说你现在最想表达的关键点是什么？",
+          "timestamp": "2026-05-06T02:44:45.409413"
+        }
+      ],
+      "last_injected_memory_ids": [],
+      "last_injected_knowledge_keys": []
     }
   },
-  "archived_memory_ids": [
-    "1bb452b7-e4e5-4bb2-985a-39e7ae4323ab",
-    "2184bf5f-c4bb-4b68-9e63-7506f609b467",
-    "22ba3108-c066-409c-bcf5-43e7027f9124",
-    "35cf9aa5-6535-42d1-a509-783dfd6b91b9",
-    "3d599231-320c-4c3a-9a25-bf1fbc3b3490",
-    "5018622a-d74a-48de-abeb-81737adec269",
-    "66edb81e-b5d1-4ebd-a3d5-66bc997bd8b3",
-    "8492e116-446c-4fe7-b727-dc47aa43def8",
-    "8a6a4bd5-88fc-4890-a72c-5b30a502613c",
-    "9879cdcf-4e53-4e77-a2d5-3940fb7ea880",
-    "ac06f47c-15eb-4867-9d0e-4d89d57ca41e",
-    "b6aa548a-532e-407e-8203-0ffb2f33a908",
-    "bec094bf-007c-4eef-9c73-3ba19d007bb5",
-    "c5d563da-c82c-4b4b-9089-b8b9385074bc",
-    "ca1e3bb9-940c-4efb-b499-8925b91a9635",
-    "d4c992af-78d0-4a88-9c8e-6c8e5ebea758",
-    "dab4b86f-bad8-4a76-99fc-ff9eca3d0300",
-    "e3a6a445-717c-453d-b3e9-14165beea5e0"
-  ]
+  "archived_memory_ids": [],
+  "summary_records": {
+    "766e0110-ecf6-4dd8-a537-7b593135899a": {
+      "memory_id": "766e0110-ecf6-4dd8-a537-7b593135899a",
+      "player_id": "player",
+      "summary_index": 1,
+      "summary_level": "base",
+      "compressed_from_ids": [],
+      "compression_round": 0,
+      "low_priority": false,
+      "is_compressed": false,
+      "hit_count": 0,
+      "last_hit_at": "",
+      "summary_text": "摘要记忆: 玩家近期讲话容易分神，害怕催促，希望先完整分享背景信息再整理思路。郁米理解并提供安抚，耐心倾听，帮助玩家整理思路。玩家希望回应语气温和，关键词清晰有助于整理思路。通过逐步引导，玩家逐渐放松，能够更流畅地表达自己的需求。",
+      "content_preview": "摘要记忆: 玩家近期讲话容易分神，害怕催促，希望先完整分享背景信息再整理思路。郁米理解并提供安抚，耐心倾听，帮助玩家整理思路。玩家希望回应语气温和，关键词...",
+      "importance": 0.85,
+      "timestamp": "2026-05-06T02:44:39.590548"
+    }
+  }
 }

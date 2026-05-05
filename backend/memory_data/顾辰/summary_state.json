@@ -3,32 +3,90 @@
     "player": {
       "pending_turns": [
         {
-          "player_message": "如果我只有两名开发、时间又紧，想把目标拆成执行计划，应该优先找谁？",
-          "npc_response": "优先找顾辰，他擅长任务拆解和项目规划，能帮你快速形成可执行计划。",
-          "timestamp": "2026-04-26T21:02:25.953354",
-          "affinity": 50.0,
-          "affinity_change": 0,
-          "sentiment": "neutral",
-          "source_memory_ids": [
-            "b6dd8210-7426-453d-87d9-75582523159a",
-            "8a928129-cbb4-460b-93fa-7a5b94d92eda"
-          ]
-        },
-        {
-          "player_message": "如果我现在目标有点乱、资源也有限，先找谁更合适？",
-          "npc_response": "我推荐你先找顾辰，他擅长任务拆解，能帮助你清晰目标和资源，制定可行计划。",
-          "timestamp": "2026-05-02T22:30:44.442481",
+          "player_message": "我最近在准备一个汇报，最怕一上来就把现状、风险和下一步讲混。",
+          "npc_response": "先理清思路再开始，你先把重点和关键点列出来，这样汇报时就能条理清晰多了。",
+          "timestamp": "2026-05-06T03:31:41.898698",
           "affinity": 53.0,
           "affinity_change": 3,
           "sentiment": "positive",
           "source_memory_ids": [
-            "90bb6b32-e829-483e-9713-76a32b4472c2",
-            "33801eac-a50f-4df1-bd44-7cc0345060b9"
+            "46a486cb-2d11-49af-8d53-c7a23f98a72e",
+            "a7dae8bb-5398-4dca-a90e-ed51cc58d5df"
+          ]
+        },
+        {
+          "player_message": "如果让我先讲目标，再讲限制，再讲风险，我会更有安全感。",
+          "npc_response": "先理清目标和限制，再分析潜在风险，这样层次分明，汇报也会更清晰。",
+          "timestamp": "2026-05-06T03:31:44.851784",
+          "affinity": 56.0,
+          "affinity_change": 3,
+          "sentiment": "positive",
+          "source_memory_ids": [
+            "09096662-5995-4d76-b460-008db7f396bc",
+            "c56ecbc1-2ab1-43c9-87b5-375bf1207d08"
+          ]
+        },
+        {
+          "player_message": "我不喜欢别人让我自由发挥，我更需要一个清晰结构。",
+          "npc_response": "先理清思路再开始，你先把重点和关键点列出来，这样汇报时就能条理清晰多了。",
+          "timestamp": "2026-05-06T03:31:47.657051",
+          "affinity": 59.0,
+          "affinity_change": 3,
+          "sentiment": "positive",
+          "source_memory_ids": [
+            "7cf9ca6a-638c-43b8-ad89-64b98e0a92a5",
+            "ec66ea19-e00c-495a-a6aa-74ad3018d798"
+          ]
+        },
+        {
+          "player_message": "路线图里如果没有优先级和资源约束，我会觉得特别不踏实。",
+          "npc_response": "先理清目标和限制，再分析潜在风险，明确优先级和资源约束，这样路线图才会清晰可行。",
+          "timestamp": "2026-05-06T03:31:50.647049",
+          "affinity": 62.0,
+          "affinity_change": 3,
+          "sentiment": "positive",
+          "source_memory_ids": [
+            "ebedf7f4-eff9-442b-b35b-fec36d8c70d1",
+            "3d1719ba-6992-499e-82e4-ece7bd45a215"
+          ]
+        },
+        {
+          "player_message": "这次还要兼顾知识库演示，所以我担心内容太散。",
+          "npc_response": "先理清每个部分的核心要点，再串联成整体框架。",
+          "timestamp": "2026-05-06T03:31:54.990724",
+          "affinity": 65.0,
+          "affinity_change": 3,
+          "sentiment": "positive",
+          "source_memory_ids": [
+            "61cfb19c-c2c2-4430-bf86-8b2b14d0e7e7",
+            "da3c5e78-2e5d-45d4-b0f7-f073b1beb4a4"
           ]
         }
       ],
-      "summary_count": 0
+      "summary_count": 0,
+      "recent_turns": [
+        {
+          "player_message": "我不喜欢别人让我自由发挥，我更需要一个清晰结构。",
+          "npc_response": "先理清思路再开始，你先把重点和关键点列出来，这样汇报时就能条理清晰多了。",
+          "timestamp": "2026-05-06T03:31:47.657051"
+        },
+        {
+          "player_message": "路线图里如果没有优先级和资源约束，我会觉得特别不踏实。",
+          "npc_response": "先理清目标和限制，再分析潜在风险，明确优先级和资源约束，这样路线图才会清晰可行。",
+          "timestamp": "2026-05-06T03:31:50.647049"
+        },
+        {
+          "player_message": "这次还要兼顾知识库演示，所以我担心内容太散。",
+          "npc_response": "先理清每个部分的核心要点，再串联成整体框架。",
+          "timestamp": "2026-05-06T03:31:54.990724"
+        }
+      ],
+      "last_injected_memory_ids": [],
+      "last_injected_knowledge_keys": [
+        "8cd7a4a67efc4f2857819e580374696c"
+      ]
     }
   },
-  "archived_memory_ids": []
+  "archived_memory_ids": [],
+  "summary_records": {}
 }

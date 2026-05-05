@@ -1,0 +1,139 @@
+[
+  {
+    "id": "lexical_exact_entity_location",
+    "hypothesis": "lexical",
+    "mode": "search",
+    "query": "绮梦咖啡馆在哪里",
+    "limit": 8,
+    "expected_top1_source": "global/locations.md",
+    "expected_top1_chunk_index": 0,
+    "expected_topk_contains": [
+      {
+        "source": "global/locations.md",
+        "chunk_index": 0,
+        "max_rank": 3
+      }
+    ],
+    "expected_top1_keywords": ["绮梦咖啡馆", "位置"],
+    "expected_any_hit_keywords": ["绮梦咖啡馆", "星环主观测层"],
+    "expect_lexical_hit_in_topk": true,
+    "goal": "验证中文专名词问法是否能触发 lexical/BM25，并把精确地点块排进前列。"
+  },
+  {
+    "id": "lexical_exact_entity_gravity",
+    "hypothesis": "lexical",
+    "mode": "search",
+    "query": "绮梦咖啡馆 重力",
+    "limit": 8,
+    "expected_top1_source": "global/locations.md",
+    "expected_top1_chunk_index": 0,
+    "expected_top1_keywords": ["绮梦咖啡馆", "0.8"],
+    "expected_any_hit_keywords": ["重力", "0.8", "轻盈感"],
+    "expect_lexical_hit_in_topk": true,
+    "goal": "验证专名词+属性词时 lexical 是否参与，且是否优先命中同一 chunk。"
+  },
+  {
+    "id": "rerank_title_and_keyword_boost",
+    "hypothesis": "rerank",
+    "mode": "search",
+    "query": "静默纪念日是什么时候",
+    "limit": 8,
+    "expected_top1_source": "global/history_and_rules.md",
+    "expected_top1_chunk_index": 1,
+    "expected_top1_keywords": ["静默纪念日", "12月31日"],
+    "expected_any_hit_keywords": ["静默纪念日", "20:00"],
+    "expect_lexical_hit_in_topk": true,
+    "goal": "验证节庆名这种强关键词是否能在 rerank 后进入 top1，而不是被其他历史块压住。"
+  },
+  {
+    "id": "rerank_npc_profile_exact_match",
+    "hypothesis": "rerank",
+    "mode": "search",
+    "query": "郁米喜欢什么",
+    "limit": 8,
+    "expected_top1_source": "npc/郁米/profile.md",
+    "expected_top1_chunk_index": 1,
+    "expected_top1_keywords": ["伯爵红茶", "小绿"],
+    "expected_any_hit_keywords": ["古董钢笔", "手写日记"],
+    "expect_lexical_hit_in_topk": true,
+    "goal": "验证 NPC 专属档案在专名词问法下是否获得足够 rerank 加权。"
+  },
+  {
+    "id": "chunk_single_block_multi_fact",
+    "hypothesis": "chunk",
+    "mode": "search",
+    "query": "绮梦咖啡馆位于哪里 那里的重力是多少",
+    "limit": 8,
+    "expected_top1_source": "global/locations.md",
+    "expected_top1_chunk_index": 0,
+    "expected_top1_keywords": ["星环主观测层", "0.8"],
+    "expected_any_hit_keywords": ["全景抗压玻璃", "轻盈感"],
+    "goal": "验证一个 chunk 是否已经足够覆盖位置+重力这类双事实问题，而不需要跨块拼接。"
+  },
+  {
+    "id": "chunk_history_event_complete_fact",
+    "hypothesis": "chunk",
+    "mode": "search",
+    "query": "奇点实验室反叛危机发生在什么时候？谁解决的",
+    "limit": 8,
+    "expected_top1_source": "global/history_and_rules.md",
+    "expected_top1_chunk_index": 2,
+    "expected_top1_keywords": ["0035年", "顾辰"],
+    "expected_any_hit_keywords": ["2月12日", "底层控制权"],
+    "goal": "验证历史事件型样本在当前 chunk 划分下是否能把时间+人物保存在同一个核心块。"
+  },
+  {
+    "id": "prompt_budget_grounded_reply_with_long_memory",
+    "hypothesis": "prompt_budget",
+    "mode": "chat",
+    "npc": "顾辰",
+    "execution_mode": "auto",
+    "setup_messages": [
+      "我最近在准备一个汇报，最怕一上来就把现状、风险和下一步讲混。",
+      "如果让我先讲目标，再讲限制，再讲风险，我会更有安全感。",
+      "我不喜欢别人让我自由发挥，我更需要一个清晰结构。",
+      "路线图里如果没有优先级和资源约束，我会觉得特别不踏实。",
+      "这次还要兼顾知识库演示，所以我担心内容太散。",
+      "如果可以的话，请你以后提醒我先讲现状，再讲风险，最后讲下一步。"
+    ],
+    "query": "绮梦咖啡馆位于哪里？如果我要在汇报里提到它，你建议我先讲位置还是先讲它 0.8 倍重力的特点？",
+    "expected_reply_keywords": ["星环主观测层", "0.8", "先"],
+    "forbidden_reply_keywords": ["我不知道", "没有相关信息"],
+    "expected_query_mode": "mixed",
+    "expected_search_topk_contains": [
+      {
+        "source": "global/locations.md",
+        "chunk_index": 0,
+        "max_rank": 3
+      }
+    ],
+    "goal": "验证长记忆上下文下，prompt 裁剪不会把知识 grounding 挤掉；同时观察 query_mode 与回答是否仍 grounded。"
+  },
+  {
+    "id": "prompt_budget_supportive_grounding_with_long_memory",
+    "hypothesis": "prompt_budget",
+    "mode": "chat",
+    "npc": "郁米",
+    "execution_mode": "auto",
+    "setup_messages": [
+      "我最近一开口就容易把需求讲乱，所以特别怕别人催我。",
+      "如果有人愿意先听我把完整背景说完，我会安心很多。",
+      "我最需要的是先被理解，再慢慢整理办法。",
+      "如果回应太快、太硬，我就会更紧张。",
+      "只要语气温和一点，我通常就能自己把重点说出来。",
+      "如果你能帮我复述关键词，我会觉得更被接住。"
+    ],
+    "query": "我想去银河电台待一会儿，你还记得什么样的回应方式会让我更安心吗？顺便告诉我银河电台在什么位置。",
+    "expected_reply_keywords": ["听", "安心", "信号塔顶层"],
+    "forbidden_reply_keywords": ["我记不得", "没有办法判断"],
+    "expected_query_mode": "mixed",
+    "expected_search_topk_contains": [
+      {
+        "source": "global/locations.md",
+        "chunk_index": 2,
+        "max_rank": 3
+      }
+    ],
+    "goal": "验证高上下文输入下，记忆和知识能否同时保留，不被 prompt trimming 破坏。"
+  }
+]

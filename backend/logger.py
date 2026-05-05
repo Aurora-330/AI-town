@@ -81,6 +81,26 @@ def log_memory_retrieval(
                     layer.get("selected_ids", []),
                 )
             )
+            dedupe = layer.get("dedupe", {})
+            if dedupe:
+                dialogue_logger.info(
+                    "    dedupe: before=%s after=%s removed=%s"
+                    % (
+                        dedupe.get("input_count", layer.get("candidate_count", 0)),
+                        dedupe.get("output_count", layer.get("candidate_count", 0)),
+                        dedupe.get("removed_count", 0),
+                    )
+                )
+            cross_turn = layer.get("cross_turn", {})
+            if cross_turn:
+                dialogue_logger.info(
+                    "    cross_turn: before=%s after=%s downweighted=%s"
+                    % (
+                        cross_turn.get("input_count", layer.get("candidate_count", 0)),
+                        cross_turn.get("output_count", layer.get("candidate_count", 0)),
+                        cross_turn.get("downweighted_count", 0),
+                    )
+                )
             importance_summary = layer.get("importance_summary", [])
             if importance_summary:
                 dialogue_logger.info(f"    importance={importance_summary}")
@@ -99,31 +119,60 @@ def log_knowledge_retrieval(
     dialogue_logger.info(f"📚 外部知识命中{count}条: query={query}")
     if retrieval_details:
         dialogue_logger.info(
-            "  🔎 scope=%s scopes=%s limit=%s candidates=%s selected=%s reason=%s"
+            "  🔎 scope=%s scopes=%s limit=%s candidates=%s semantic=%s lexical=%s selected=%s reason=%s"
             % (
                 retrieval_details.get("scope", "global"),
                 retrieval_details.get("scopes", [retrieval_details.get("scope", "global")]),
                 retrieval_details.get("limit", "-"),
                 retrieval_details.get("candidate_count", "-"),
+                retrieval_details.get("semantic_candidate_count", "-"),
+                retrieval_details.get("lexical_candidate_count", "-"),
                 retrieval_details.get("selected_count", count),
                 retrieval_details.get("selected_or_filtered_reason", ""),
             )
         )
+        dedupe = retrieval_details.get("dedupe", {})
+        if dedupe:
+            dialogue_logger.info(
+                "  🧹 knowledge_dedupe: before=%s after=%s removed=%s"
+                % (
+                    dedupe.get("input_count", retrieval_details.get("candidate_count", 0)),
+                    dedupe.get("output_count", retrieval_details.get("selected_count", count)),
+                    dedupe.get("removed_count", 0),
+                )
+            )
+        cross_turn = retrieval_details.get("cross_turn", {})
+        if cross_turn:
+            dialogue_logger.info(
+                "  🔁 knowledge_cross_turn: before=%s after=%s downweighted=%s"
+                % (
+                    cross_turn.get("input_count", retrieval_details.get("selected_count", count)),
+                    cross_turn.get("output_count", retrieval_details.get("selected_count", count)),
+                    cross_turn.get("downweighted_count", 0),
+                )
+            )
         for candidate in retrieval_details.get("candidates", [])[:5]:
             dialogue_logger.info(
-                "    candidate title=%s raw=%.3f rerank=%.3f filtered=%s"
+                "    candidate title=%s raw=%.3f semantic=%.3f lexical=%.3f rerank=%.3f sources=%s filtered=%s"
                 % (
                     candidate.get("title", "未知文档"),
                     float(candidate.get("raw_score", 0.0)),
+                    float(candidate.get("semantic_score", 0.0)),
+                    float(candidate.get("lexical_score", 0.0)),
                     float(candidate.get("rerank_score", 0.0)),
+                    candidate.get("retrieval_sources", []),
                     candidate.get("filtered_reason", "") or "kept",
                 )
             )
             signals = candidate.get("signals", {})
             if signals:
                 dialogue_logger.info(
-                    "      signals: scope_bonus=%s hits(title=%s,content=%s,tags=%s) npc_bonus=%s other_penalty=%s mentioned=%s"
+                    "      signals: lexical_bonus=%s source_bonus=%s explicit_doc=%s source_hits=%s scope_bonus=%s hits(title=%s,content=%s,tags=%s) npc_bonus=%s other_penalty=%s mentioned=%s"
                     % (
+                        signals.get("lexical_bonus", 0.0),
+                        signals.get("source_bonus", 0.0),
+                        signals.get("explicit_doc_reference", False),
+                        signals.get("source_hits", 0),
                         signals.get("scope_bonus", 0.0),
                         signals.get("title_hits", 0),
                         signals.get("content_hits", 0),
@@ -198,6 +247,53 @@ def log_retrieval_plan(npc_name: str, plan: dict):
         )
     )
 
+def log_coordinator_decision(npc_name: str, decision: dict):
+    """记录 coordinator 的执行决策。"""
+    dialogue_logger.info(
+        "🧭 Coordinator: npc=%s mode=%s primary=%s secondary=%s strategy=%s answer_shape=%s"
+        % (
+            npc_name,
+            decision.get("query_mode", "default"),
+            decision.get("primary_tool", "answer_now"),
+            decision.get("secondary_tool", ""),
+            decision.get("response_strategy", ""),
+            decision.get("answer_shape", "default"),
+        )
+    )
+    if decision.get("reason", ""):
+        dialogue_logger.info(f"  reason={decision.get('reason', '')}")
+
+def log_coordinator_step(npc_name: str, tool_name: str, observation_count: int, phase: str):
+    """记录 coordinator 执行到某一步时的观测量。"""
+    dialogue_logger.info(
+        "  🔧 coordinator_%s: npc=%s tool=%s observations=%s"
+        % (phase, npc_name, tool_name, observation_count)
+    )
+
+def log_react_step(npc_name: str, trace_step: dict):
+    """记录 ReAct loop 的单步轨迹。"""
+    dialogue_logger.info(
+        "  🪜 react_step[%s]: npc=%s thought=%s action=%s observations=%s step_tokens=%s"
+        % (
+            trace_step.get("step_index", 0),
+            npc_name,
+            trace_step.get("thought", ""),
+            trace_step.get("action", ""),
+            trace_step.get("observation_count", 0),
+            trace_step.get("input_tokens_est", 0),
+        )
+    )
+    if trace_step.get("observation_summary", ""):
+        dialogue_logger.info(f"    observation={trace_step.get('observation_summary', '')}")
+
+def log_react_finish(npc_name: str, query_mode: str, trace: list[dict]):
+    """记录 ReAct loop 收尾。"""
+    actions = [step.get("action", "") for step in trace]
+    dialogue_logger.info(
+        "🧠 ReAct完成: npc=%s mode=%s steps=%s actions=%s"
+        % (npc_name, query_mode, len(trace), actions)
+    )
+
 def log_generating_response():
     """记录正在生成回复"""
     dialogue_logger.info("🤖 正在生成回复...")
@@ -265,6 +361,18 @@ def log_summary_created(npc_name: str, summary_id: str, source_count: int):
     """记录摘要创建"""
     dialogue_logger.info(
         f"📝 已生成摘要记忆: id={summary_id}, source_turns={source_count}"
+    )
+
+def log_summary_recompressed(
+    npc_name: str,
+    player_id: str,
+    merged_summary_id: str,
+    compressed_from_ids: list[str],
+):
+    """记录摘要二次压缩结果"""
+    dialogue_logger.info(
+        "🗜️ 已生成合并摘要: npc=%s, player=%s, merged_id=%s, compressed_from=%s"
+        % (npc_name, player_id, merged_summary_id, compressed_from_ids)
     )
 
 def log_summary_skipped(npc_name: str, reason: str):

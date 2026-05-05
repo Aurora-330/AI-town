@@ -493,15 +493,15 @@ sentiment=positive/neutral/negative
             对话风格修饰词
         """
         if affinity >= 80:
-            return "非常热情友好,像老朋友一样亲切,愿意分享私人话题"
+            return "high_affinity"
         elif affinity >= 60:
-            return "友好热情,愿意多聊,会主动关心对方"
+            return "warm_affinity"
         elif affinity >= 40:
-            return "礼貌友善,正常交流,保持专业"
+            return "neutral_affinity"
         elif affinity >= 20:
-            return "礼貌但略显生疏,回答简洁"
+            return "guarded_affinity"
         else:
-            return "冷淡疏离,不太愿意多说,回答简短"
+            return "low_affinity"
     
     def get_all_affinities(self, player_id: str = "player") -> Dict[str, Dict]:
         """获取所有NPC的好感度信息

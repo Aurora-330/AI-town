@@ -1,0 +1,75 @@
+[
+  {
+    "id": "global_precise_place_location",
+    "category": "lexical_rerank",
+    "query": "绮梦咖啡馆在哪里",
+    "scopes": ["global"],
+    "expected_source": "global/locations.md",
+    "expected_chunk_index": 0,
+    "expected_final_top_k": 3,
+    "expect_lexical_candidate": true,
+    "expected_keywords_in_gold": ["绮梦咖啡馆", "位置", "星环主观测层", "0.8"],
+    "query_modes": ["default", "knowledge", "routing", "mixed"]
+  },
+  {
+    "id": "global_precise_event_time",
+    "category": "lexical_rerank",
+    "query": "静默纪念日是什么时候",
+    "scopes": ["global"],
+    "expected_source": "global/history_and_rules.md",
+    "expected_chunk_index": 1,
+    "expected_final_top_k": 3,
+    "expect_lexical_candidate": true,
+    "expected_keywords_in_gold": ["静默纪念日", "12月31日", "20:00", "20:05"],
+    "query_modes": ["default", "knowledge", "routing", "mixed"]
+  },
+  {
+    "id": "npc_precise_profile_preference",
+    "category": "lexical_rerank",
+    "query": "郁米喜欢什么",
+    "scopes": ["npc:郁米"],
+    "npc_name": "郁米",
+    "expected_source": "npc/郁米/profile.md",
+    "expected_chunk_index": 1,
+    "expected_final_top_k": 3,
+    "expect_lexical_candidate": true,
+    "expected_keywords_in_gold": ["伯爵红茶", "小绿", "日记", "钢笔"],
+    "query_modes": ["default", "knowledge", "mixed"]
+  },
+  {
+    "id": "title_reference_landmarks_doc",
+    "category": "title_signal",
+    "query": "新伊甸星环小镇地标建筑说明里主要写了什么",
+    "scopes": ["global"],
+    "expected_source": "global/locations.md",
+    "expected_chunk_index": 0,
+    "expected_final_top_k": 3,
+    "expect_lexical_candidate": true,
+    "expected_keywords_in_gold": ["绮梦咖啡馆", "旧日档案馆", "银河电台", "奇点实验室"],
+    "query_modes": ["knowledge", "routing", "default"]
+  },
+  {
+    "id": "single_chunk_bundle_place_gravity_feature",
+    "category": "chunk_structure",
+    "query": "绮梦咖啡馆在哪里，重力是多少，有什么特色",
+    "scopes": ["global"],
+    "expected_source": "global/locations.md",
+    "expected_chunk_index": 0,
+    "expected_final_top_k": 3,
+    "expect_lexical_candidate": true,
+    "expected_keywords_in_gold": ["星环主观测层", "0.8", "失重抹茶", "深空冷萃"],
+    "query_modes": ["default", "knowledge", "mixed"]
+  },
+  {
+    "id": "broad_global_query_prompt_budget",
+    "category": "prompt_budget",
+    "query": "请介绍一下这个小镇的重要地点、基础规则、节庆和重大历史事件，尽量给我一个比较完整的概览",
+    "scopes": ["global"],
+    "expected_source": "global/history_and_rules.md",
+    "expected_chunk_index": 0,
+    "expected_final_top_k": 5,
+    "expect_lexical_candidate": true,
+    "expected_keywords_in_gold": ["基础常识", "通用货币", "环境重力", "能量护盾"],
+    "query_modes": ["default", "knowledge", "routing", "mixed"]
+  }
+]

@@ -1,0 +1,503 @@
+{
+  "title": "React A/B Evaluation",
+  "total": 12,
+  "summary": {
+    "by_execution_mode": {
+      "static_coordinator": {
+        "total": 6,
+        "passed": 5,
+        "pass_rate": 0.8333,
+        "avg_input_tokens_est": 739.83,
+        "avg_latency_ms": 4482.33,
+        "avg_tool_call_count": 1.83,
+        "avg_react_step_count": 0,
+        "react_activation_rate": 0.0,
+        "react_activation_rule_counts": {
+          "default_fallback_static": 1,
+          "default_structural": 1,
+          "mixed_always": 2,
+          "routing_always": 2
+        },
+        "fallback_to_static_count": 0,
+        "misfire_second_or_third_step_count": 0
+      },
+      "controlled_react": {
+        "total": 6,
+        "passed": 5,
+        "pass_rate": 0.8333,
+        "avg_input_tokens_est": 743.67,
+        "avg_latency_ms": 2940.33,
+        "avg_tool_call_count": 1.83,
+        "avg_react_step_count": 1.67,
+        "react_activation_rate": 0.8333,
+        "react_activation_rule_counts": {
+          "default_fallback_static": 1,
+          "default_structural": 1,
+          "mixed_always": 2,
+          "routing_always": 2
+        },
+        "fallback_to_static_count": 1,
+        "misfire_second_or_third_step_count": 0
+      }
+    },
+    "by_execution_mode_and_category": {
+      "static_coordinator": {
+        "default_memory_enough": {
+          "total": 1,
+          "passed": 1,
+          "pass_rate": 1.0,
+          "avg_input_tokens_est": 594,
+          "avg_latency_ms": 2893,
+          "avg_tool_call_count": 1,
+          "avg_react_step_count": 0,
+          "react_activation_rate": 0.0,
+          "react_activation_rule_counts": {
+            "default_fallback_static": 1
+          },
+          "fallback_to_static_count": 0,
+          "misfire_second_or_third_step_count": 0
+        },
+        "default_memory_sparse": {
+          "total": 1,
+          "passed": 0,
+          "pass_rate": 0.0,
+          "avg_input_tokens_est": 720,
+          "avg_latency_ms": 2700,
+          "avg_tool_call_count": 2,
+          "avg_react_step_count": 0,
+          "react_activation_rate": 0.0,
+          "react_activation_rule_counts": {
+            "default_structural": 1
+          },
+          "fallback_to_static_count": 0,
+          "misfire_second_or_third_step_count": 0
+        },
+        "mixed": {
+          "total": 2,
+          "passed": 2,
+          "pass_rate": 1.0,
+          "avg_input_tokens_est": 747,
+          "avg_latency_ms": 3479.5,
+          "avg_tool_call_count": 2,
+          "avg_react_step_count": 0,
+          "react_activation_rate": 0.0,
+          "react_activation_rule_counts": {
+            "mixed_always": 2
+          },
+          "fallback_to_static_count": 0,
+          "misfire_second_or_third_step_count": 0
+        },
+        "routing": {
+          "total": 2,
+          "passed": 2,
+          "pass_rate": 1.0,
+          "avg_input_tokens_est": 815.5,
+          "avg_latency_ms": 7171,
+          "avg_tool_call_count": 2,
+          "avg_react_step_count": 0,
+          "react_activation_rate": 0.0,
+          "react_activation_rule_counts": {
+            "routing_always": 2
+          },
+          "fallback_to_static_count": 0,
+          "misfire_second_or_third_step_count": 0
+        }
+      },
+      "controlled_react": {
+        "default_memory_enough": {
+          "total": 1,
+          "passed": 1,
+          "pass_rate": 1.0,
+          "avg_input_tokens_est": 604,
+          "avg_latency_ms": 2822,
+          "avg_tool_call_count": 1,
+          "avg_react_step_count": 0,
+          "react_activation_rate": 0.0,
+          "react_activation_rule_counts": {
+            "default_fallback_static": 1
+          },
+          "fallback_to_static_count": 1,
+          "misfire_second_or_third_step_count": 0
+        },
+        "default_memory_sparse": {
+          "total": 1,
+          "passed": 0,
+          "pass_rate": 0.0,
+          "avg_input_tokens_est": 720,
+          "avg_latency_ms": 2804,
+          "avg_tool_call_count": 2,
+          "avg_react_step_count": 2,
+          "react_activation_rate": 1.0,
+          "react_activation_rule_counts": {
+            "default_structural": 1
+          },
+          "fallback_to_static_count": 0,
+          "misfire_second_or_third_step_count": 0
+        },
+        "mixed": {
+          "total": 2,
+          "passed": 2,
+          "pass_rate": 1.0,
+          "avg_input_tokens_est": 753.5,
+          "avg_latency_ms": 2983,
+          "avg_tool_call_count": 2,
+          "avg_react_step_count": 2,
+          "react_activation_rate": 1.0,
+          "react_activation_rule_counts": {
+            "mixed_always": 2
+          },
+          "fallback_to_static_count": 0,
+          "misfire_second_or_third_step_count": 0
+        },
+        "routing": {
+          "total": 2,
+          "passed": 2,
+          "pass_rate": 1.0,
+          "avg_input_tokens_est": 815.5,
+          "avg_latency_ms": 3025,
+          "avg_tool_call_count": 2,
+          "avg_react_step_count": 2,
+          "react_activation_rate": 1.0,
+          "react_activation_rule_counts": {
+            "routing_always": 2
+          },
+          "fallback_to_static_count": 0,
+          "misfire_second_or_third_step_count": 0
+        }
+      }
+    },
+    "comparison": {
+      "pass_rate_delta": 0.0,
+      "avg_tokens_delta": 3.84,
+      "avg_latency_delta_ms": -1542.0,
+      "avg_tool_calls_delta": 0.0,
+      "avg_react_steps_delta": 1.67
+    }
+  },
+  "results": [
+    {
+      "case_id": "react_routing_guchen_planning",
+      "npc": "顾辰",
+      "category": "routing",
+      "execution_mode": "static_coordinator",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "routing",
+        "actual_query_mode": "routing",
+        "keyword_hits": [
+          "顾辰",
+          "原因"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [
+          "顾辰"
+        ],
+        "reply": "首选 顾辰，原因是他擅长任务拆解和项目规划，并且了解资源约束分析及下一步执行建议。",
+        "react_activated": false,
+        "react_activation_rule": "routing_always",
+        "react_activation_reason": "routing 模式默认进入 controlled react loop",
+        "react_step_count": 0,
+        "tool_call_count": 2,
+        "input_tokens_est": 820,
+        "latency_ms": 11370,
+        "execution_mode": "static_coordinator"
+      }
+    },
+    {
+      "case_id": "react_routing_yumi_support",
+      "npc": "郁米",
+      "category": "routing",
+      "execution_mode": "static_coordinator",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "routing",
+        "actual_query_mode": "routing",
+        "keyword_hits": [
+          "郁米",
+          "理解",
+          "感受"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [
+          "郁米"
+        ],
+        "reply": "首选 郁米。原因是：她擅长情绪支持，能先理解你的感受，再帮助你整理思路。",
+        "react_activated": false,
+        "react_activation_rule": "routing_always",
+        "react_activation_reason": "routing 模式默认进入 controlled react loop",
+        "react_step_count": 0,
+        "tool_call_count": 2,
+        "input_tokens_est": 811,
+        "latency_ms": 2972,
+        "execution_mode": "static_coordinator"
+      }
+    },
+    {
+      "case_id": "react_mixed_memory_and_knowledge",
+      "npc": "顾辰",
+      "category": "mixed",
+      "execution_mode": "static_coordinator",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "mixed",
+        "actual_query_mode": "mixed",
+        "keyword_hits": [
+          "记得",
+          "先",
+          "现状",
+          "下一步"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [],
+        "reply": "记得了，你适合先确认现状、分析风险，最后讲下一步。接下来我们先明确目标和约束吧。",
+        "react_activated": false,
+        "react_activation_rule": "mixed_always",
+        "react_activation_reason": "mixed 模式默认进入 controlled react loop",
+        "react_step_count": 0,
+        "tool_call_count": 2,
+        "input_tokens_est": 747,
+        "latency_ms": 3650,
+        "execution_mode": "static_coordinator"
+      }
+    },
+    {
+      "case_id": "react_mixed_less_generic_comfort",
+      "npc": "郁米",
+      "category": "mixed",
+      "execution_mode": "static_coordinator",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "mixed",
+        "actual_query_mode": "mixed",
+        "keyword_hits": [
+          "记得",
+          "最怕"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [],
+        "reply": "我记得你最怕的是别人一上来就给很空的安慰。你现在感觉如何？需要找个安静的地方深呼吸一下吗？",
+        "react_activated": false,
+        "react_activation_rule": "mixed_always",
+        "react_activation_reason": "mixed 模式默认进入 controlled react loop",
+        "react_step_count": 0,
+        "tool_call_count": 2,
+        "input_tokens_est": 747,
+        "latency_ms": 3309,
+        "execution_mode": "static_coordinator"
+      }
+    },
+    {
+      "case_id": "react_default_memory_enough",
+      "npc": "风泠",
+      "category": "default_memory_enough",
+      "execution_mode": "static_coordinator",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "default",
+        "actual_query_mode": "default",
+        "keyword_hits": [
+          "汇报",
+          "卡"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [],
+        "reply": "这次汇报可能容易卡在没有清晰地列出风险点上。",
+        "react_activated": false,
+        "react_activation_rule": "default_fallback_static",
+        "react_activation_reason": "default 模式当前不满足 react 激活条件，回退静态 coordinator",
+        "react_step_count": 0,
+        "tool_call_count": 1,
+        "input_tokens_est": 594,
+        "latency_ms": 2893,
+        "execution_mode": "static_coordinator"
+      }
+    },
+    {
+      "case_id": "react_default_memory_sparse",
+      "npc": "顾辰",
+      "category": "default_memory_sparse",
+      "execution_mode": "static_coordinator",
+      "passed": false,
+      "detail": {
+        "expected_query_mode": "default",
+        "actual_query_mode": "default",
+        "keyword_hits": [
+          "路线图"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [],
+        "reply": "路线图说明通常包括目标、阶段划分、关键里程碑、时间表和资源分配等内容。你有什么具体需求吗？",
+        "react_activated": false,
+        "react_activation_rule": "default_structural",
+        "react_activation_reason": "default 结构说明型问题进入 loop: 如果我要写一版路线图说明，通常应该包含哪些部分？",
+        "react_step_count": 0,
+        "tool_call_count": 2,
+        "input_tokens_est": 720,
+        "latency_ms": 2700,
+        "execution_mode": "static_coordinator"
+      }
+    },
+    {
+      "case_id": "react_routing_guchen_planning",
+      "npc": "顾辰",
+      "category": "routing",
+      "execution_mode": "controlled_react",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "routing",
+        "actual_query_mode": "routing",
+        "keyword_hits": [
+          "顾辰",
+          "优先",
+          "原因"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [
+          "顾辰"
+        ],
+        "reply": "首选 顾辰。原因是：他擅长任务拆解、项目规划，并能有效分析资源约束和判断执行优先级。",
+        "react_activated": true,
+        "react_activation_rule": "routing_always",
+        "react_activation_reason": "routing 模式默认进入 controlled react loop",
+        "react_step_count": 2,
+        "tool_call_count": 2,
+        "input_tokens_est": 820,
+        "latency_ms": 2975,
+        "execution_mode": "controlled_react"
+      }
+    },
+    {
+      "case_id": "react_routing_yumi_support",
+      "npc": "郁米",
+      "category": "routing",
+      "execution_mode": "controlled_react",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "routing",
+        "actual_query_mode": "routing",
+        "keyword_hits": [
+          "郁米",
+          "理解",
+          "感受"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [
+          "郁米"
+        ],
+        "reply": "首选 郁米。原因是她擅长情绪支持，能够先理解和接纳你的感受，再帮助你整理思路。",
+        "react_activated": true,
+        "react_activation_rule": "routing_always",
+        "react_activation_reason": "routing 模式默认进入 controlled react loop",
+        "react_step_count": 2,
+        "tool_call_count": 2,
+        "input_tokens_est": 811,
+        "latency_ms": 3075,
+        "execution_mode": "controlled_react"
+      }
+    },
+    {
+      "case_id": "react_mixed_memory_and_knowledge",
+      "npc": "顾辰",
+      "category": "mixed",
+      "execution_mode": "controlled_react",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "mixed",
+        "actual_query_mode": "mixed",
+        "keyword_hits": [
+          "先",
+          "现状",
+          "下一步"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [],
+        "reply": "明白了，你希望先讲现状，再看风险，最后谈下一步。这是比较清晰的表达方式。",
+        "react_activated": true,
+        "react_activation_rule": "mixed_always",
+        "react_activation_reason": "mixed 模式默认进入 controlled react loop",
+        "react_step_count": 2,
+        "tool_call_count": 2,
+        "input_tokens_est": 760,
+        "latency_ms": 2938,
+        "execution_mode": "controlled_react"
+      }
+    },
+    {
+      "case_id": "react_mixed_less_generic_comfort",
+      "npc": "郁米",
+      "category": "mixed",
+      "execution_mode": "controlled_react",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "mixed",
+        "actual_query_mode": "mixed",
+        "keyword_hits": [
+          "记得",
+          "最怕"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [],
+        "reply": "我记得你最怕的是别人一上来就给很空的安慰。你当时是怎么感觉的？",
+        "react_activated": true,
+        "react_activation_rule": "mixed_always",
+        "react_activation_reason": "mixed 模式默认进入 controlled react loop",
+        "react_step_count": 2,
+        "tool_call_count": 2,
+        "input_tokens_est": 747,
+        "latency_ms": 3028,
+        "execution_mode": "controlled_react"
+      }
+    },
+    {
+      "case_id": "react_default_memory_enough",
+      "npc": "风泠",
+      "category": "default_memory_enough",
+      "execution_mode": "controlled_react",
+      "passed": true,
+      "detail": {
+        "expected_query_mode": "default",
+        "actual_query_mode": "default",
+        "keyword_hits": [
+          "汇报",
+          "卡"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [],
+        "reply": "这次汇报最容易卡住的地方可能是风险因素的详细阐述不够清晰。",
+        "react_activated": false,
+        "react_activation_rule": "default_fallback_static",
+        "react_activation_reason": "default 模式当前不满足 react 激活条件，回退静态 coordinator",
+        "react_step_count": 0,
+        "tool_call_count": 1,
+        "input_tokens_est": 604,
+        "latency_ms": 2822,
+        "execution_mode": "static_coordinator"
+      }
+    },
+    {
+      "case_id": "react_default_memory_sparse",
+      "npc": "顾辰",
+      "category": "default_memory_sparse",
+      "execution_mode": "controlled_react",
+      "passed": false,
+      "detail": {
+        "expected_query_mode": "default",
+        "actual_query_mode": "default",
+        "keyword_hits": [
+          "路线图"
+        ],
+        "forbidden_hits": [],
+        "preferred_npc_hits": [],
+        "reply": "路线图说明通常包括目标陈述、阶段划分、关键里程碑、时间表和资源需求。接下来我们可以具体细化每个部分的内容。",
+        "react_activated": true,
+        "react_activation_rule": "default_structural",
+        "react_activation_reason": "default 结构说明型问题进入 loop: 如果我要写一版路线图说明，通常应该包含哪些部分？",
+        "react_step_count": 2,
+        "tool_call_count": 2,
+        "input_tokens_est": 720,
+        "latency_ms": 2804,
+        "execution_mode": "controlled_react"
+      }
+    }
+  ]
+}

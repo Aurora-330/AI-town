@@ -39,13 +39,43 @@ def request_json(method: str, path: str, api_base: str = DEFAULT_API_BASE, **kwa
     return response.json()
 
 
-def chat(npc_name: str, message: str, api_base: str = DEFAULT_API_BASE) -> Dict[str, Any]:
+def chat(
+    npc_name: str,
+    message: str,
+    api_base: str = DEFAULT_API_BASE,
+    execution_mode: str = "auto",
+) -> Dict[str, Any]:
     """发送对话请求"""
     return request_json(
         "POST",
         "/chat",
         api_base=api_base,
-        json={"npc_name": npc_name, "message": message}
+        json={"npc_name": npc_name, "message": message, "execution_mode": execution_mode}
+    )
+
+
+def multi_chat(
+    message: str,
+    api_base: str = DEFAULT_API_BASE,
+    mode: str = "auto",
+    player_id: str = "player",
+    selected_agents: List[str] | None = None,
+    return_intermediate: bool = True,
+) -> Dict[str, Any]:
+    """发送多角色协作对话请求"""
+    payload: Dict[str, Any] = {
+        "message": message,
+        "mode": mode,
+        "player_id": player_id,
+        "return_intermediate": return_intermediate,
+    }
+    if selected_agents is not None:
+        payload["selected_agents"] = selected_agents
+    return request_json(
+        "POST",
+        "/multi_chat",
+        api_base=api_base,
+        json=payload,
     )
 
 

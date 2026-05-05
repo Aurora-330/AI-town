@@ -8,7 +8,9 @@ import uvicorn
 from config import settings
 from models import (
     ChatRequest, ChatResponse, 
-    NPCStatusResponse, NPCListResponse, NPCInfo
+    NPCStatusResponse, NPCListResponse, NPCInfo,
+    DelegatePreviewRequest, DelegatePreviewResponse,
+    MultiChatRequest, MultiChatResponse, MultiChatAgentOutput,
 )
 from agents import get_npc_manager
 from state_manager import get_state_manager
@@ -87,9 +89,12 @@ async def root():
         "endpoints": {
             "docs": "/docs",
             "chat": "/chat",
+            "multi_chat": "/multi_chat",
+            "delegate_preview": "/orchestrate/delegate-preview",
             "npcs": "/npcs",
             "npcs_status": "/npcs/status",
             "npc_memories": "/npcs/{npc_name}/memories",
+            "npc_summary_debug": "/npcs/{npc_name}/summary-debug",
             "npc_affinity": "/npcs/{npc_name}/affinity",
             "all_affinities": "/affinities",
             "knowledge_search": "/knowledge/search"
@@ -119,19 +124,118 @@ async def chat_with_npc(request: ChatRequest):
     
     try:
         # 调用NPC Agent处理对话
-        response_text = npc_mgr.chat(request.npc_name, request.message)
+        response = npc_mgr.chat_with_debug(
+            request.npc_name,
+            request.message,
+            execution_mode=request.execution_mode,
+        )
         
         return ChatResponse(
             npc_name=request.npc_name,
             npc_title=npc_info["title"],
-            message=response_text,
-            success=True
+            message=str(response.get("message", "")),
+            success=True,
+            execution_mode=str(response.get("execution_mode", request.execution_mode)),
+            query_mode=str(response.get("query_mode", "default")),
+            react_activated=bool(response.get("react_activated", False)),
+            react_activation_rule=str(response.get("react_activation_rule", "")),
+            react_activation_reason=str(response.get("react_activation_reason", "")),
+            react_step_count=int(response.get("react_step_count", 0)),
+            tool_call_count=int(response.get("tool_call_count", 0)),
+            input_tokens_est=int(response.get("input_tokens_est", 0)),
+            latency_ms=int(response.get("latency_ms", 0)),
         )
         
     except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=f"对话处理失败: {str(e)}"
+        )
+
+
+@app.post("/orchestrate/delegate-preview", response_model=DelegatePreviewResponse)
+async def delegate_preview(request: DelegatePreviewRequest):
+    """LangGraph delegate 最小骨架调试入口
+
+    只返回图状态与节点轨迹，不走正式 /chat 主链，也不保存记忆。
+    """
+    npc_mgr, _ = get_managers()
+    npc_info = npc_mgr.get_npc_info(request.active_speaker)
+    if not npc_info:
+        raise HTTPException(
+            status_code=404,
+            detail=f"NPC '{request.active_speaker}' 不存在"
+        )
+
+    try:
+        state = npc_mgr.langgraph_delegate.invoke(
+            user_message=request.message,
+            active_speaker=request.active_speaker,
+            player_id=request.player_id,
+        )
+        return DelegatePreviewResponse(
+            active_speaker=request.active_speaker,
+            message=request.message,
+            orchestration_mode=str(state.get("orchestration_mode", "direct")),
+            intent_type=str(state.get("intent_type", "")),
+            query_mode=str(state.get("query_mode", "default")),
+            needs_delegate=bool(state.get("needs_delegate", False)),
+            delegate_to=str(state.get("delegate_to", "")),
+            delegate_task=str(state.get("delegate_task", "")),
+            final_style_owner=str(state.get("final_style_owner", "")),
+            observation_cards=list(state.get("observation_cards", [])),
+            node_trace=list(state.get("node_trace", [])),
+            final_answer=str(state.get("final_answer", "")),
+            langgraph_available=bool(npc_mgr.langgraph_delegate.available),
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"delegate preview 失败: {str(e)}"
+        )
+
+
+@app.post("/multi_chat", response_model=MultiChatResponse)
+async def multi_chat(request: MultiChatRequest):
+    """多角色协作对话接口
+
+    保留现有 /chat 主链不变，新增 LangGraph orchestration beta。
+    """
+    npc_mgr, _ = get_managers()
+
+    try:
+        state = npc_mgr.langgraph_multi.invoke(
+            user_message=request.message,
+            player_id=request.player_id,
+            mode=request.mode,
+            selected_agents=request.selected_agents,
+            return_intermediate=request.return_intermediate,
+        )
+        execution_order = list(state.get("execution_order", []))
+        order_map = {name: index for index, name in enumerate(execution_order)}
+        intermediate_outputs = []
+        if request.return_intermediate:
+            raw_outputs = list(state.get("agent_outputs", []))
+            raw_outputs.sort(key=lambda item: (order_map.get(str(item.get("npc_name", "")), 999), str(item.get("stage", ""))))
+            intermediate_outputs = [
+                MultiChatAgentOutput(**item)
+                for item in raw_outputs
+            ]
+        return MultiChatResponse(
+            mode=str(state.get("script_id", request.mode)),
+            selected_agents=list(state.get("selected_agents", [])),
+            execution_order=execution_order,
+            aggregation_strategy=str(state.get("aggregation_strategy", "")),
+            final_answer=str(state.get("final_answer", "")),
+            intermediate_outputs=intermediate_outputs,
+            node_trace=list(state.get("node_trace", [])),
+            success=True,
+            langgraph_available=bool(state.get("langgraph_runtime", npc_mgr.langgraph_multi.available)),
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"multi_chat 失败: {str(e)}"
         )
 
 @app.get("/npcs", response_model=NPCListResponse)
@@ -231,6 +335,27 @@ async def get_npc_memories(npc_name: str, limit: int = 10):
         raise HTTPException(
             status_code=500,
             detail=f"获取记忆失败: {str(e)}"
+        )
+
+@app.get("/npcs/{npc_name}/summary-debug")
+async def get_npc_summary_debug(npc_name: str, player_id: str | None = None):
+    """获取 sequence6 摘要压缩治理状态。"""
+    npc_mgr, _ = get_managers()
+
+    npc_info = npc_mgr.get_npc_info(npc_name)
+    if not npc_info:
+        raise HTTPException(
+            status_code=404,
+            detail=f"NPC '{npc_name}' 不存在"
+        )
+
+    try:
+        debug_info = npc_mgr.get_summary_debug_info(npc_name, player_id=player_id)
+        return debug_info
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"获取摘要调试信息失败: {str(e)}"
         )
 
 @app.delete("/npcs/{npc_name}/memories")

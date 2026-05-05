@@ -1,0 +1,559 @@
+{
+  "title": "Affinity Interaction Evaluation",
+  "total": 11,
+  "passed": 11,
+  "failed": 0,
+  "pass_rate": 1.0,
+  "results": [
+    {
+      "npc": "郁米",
+      "passed": true,
+      "detail": {
+        "type": "single_chat",
+        "query": "我今天真的有点撑不住了，好像连叹气都很累。",
+        "reply": "是不是连叹气都觉得很累呀。找个安静的地方坐一会儿，深呼吸，慢慢来。",
+        "query_mode": "default",
+        "execution_mode": "static_coordinator",
+        "tool_call_count": 0,
+        "latency_ms": 4743,
+        "applied_affinities": {
+          "郁米": {
+            "npc_name": "郁米",
+            "player_id": "player",
+            "affinity": 15.0,
+            "level": "陌生",
+            "modifier": "low_affinity"
+          }
+        }
+      },
+      "case_id": "single_yumi_low"
+    },
+    {
+      "npc": "郁米",
+      "passed": true,
+      "detail": {
+        "type": "single_chat",
+        "query": "我今天真的有点撑不住了，好像连叹气都很累。",
+        "reply": "是不是连叹气都觉得特别累了呢？找个安静的地方坐一会儿，深呼吸，慢慢来。",
+        "query_mode": "default",
+        "execution_mode": "static_coordinator",
+        "tool_call_count": 0,
+        "latency_ms": 3123,
+        "applied_affinities": {
+          "郁米": {
+            "npc_name": "郁米",
+            "player_id": "player",
+            "affinity": 88.0,
+            "level": "挚友",
+            "modifier": "high_affinity"
+          }
+        }
+      },
+      "case_id": "single_yumi_high"
+    },
+    {
+      "npc": "风泠",
+      "passed": true,
+      "detail": {
+        "type": "single_chat",
+        "query": "我最近状态不太好，但还是想来找你聊聊。",
+        "reply": "嗯嗯，最近状态不太好找人聊聊确实是件好事。咱们以前一起解决的那个项目，你当时是怎么调整心态的？",
+        "query_mode": "default",
+        "execution_mode": "static_coordinator",
+        "tool_call_count": 0,
+        "latency_ms": 5303,
+        "applied_affinities": {
+          "风泠": {
+            "npc_name": "风泠",
+            "player_id": "player",
+            "affinity": 18.0,
+            "level": "陌生",
+            "modifier": "low_affinity"
+          }
+        }
+      },
+      "case_id": "single_fengling_low"
+    },
+    {
+      "npc": "风泠",
+      "passed": true,
+      "detail": {
+        "type": "single_chat",
+        "query": "我最近状态不太好，但还是想来找你聊聊。",
+        "reply": "嗯嗯，最近状态不太好找人聊聊确实是件好事。咱们之前一起面对的大项目，是不是让你有些疲惫了？要不要来杯咖啡，边喝边聊呢？",
+        "query_mode": "default",
+        "execution_mode": "static_coordinator",
+        "tool_call_count": 1,
+        "latency_ms": 3677,
+        "applied_affinities": {
+          "风泠": {
+            "npc_name": "风泠",
+            "player_id": "player",
+            "affinity": 90.0,
+            "level": "挚友",
+            "modifier": "high_affinity"
+          }
+        }
+      },
+      "case_id": "single_fengling_high"
+    },
+    {
+      "npc": "顾辰",
+      "passed": true,
+      "detail": {
+        "type": "single_chat",
+        "query": "我可能又把同一个问题搞砸了，你要说就直说吧。",
+        "reply": "好的，那你就具体说说这次是哪个环节出了问题。",
+        "query_mode": "default",
+        "execution_mode": "static_coordinator",
+        "tool_call_count": 1,
+        "latency_ms": 3003,
+        "applied_affinities": {
+          "顾辰": {
+            "npc_name": "顾辰",
+            "player_id": "player",
+            "affinity": 10.0,
+            "level": "陌生",
+            "modifier": "low_affinity"
+          }
+        }
+      },
+      "case_id": "single_guchen_low"
+    },
+    {
+      "npc": "顾辰",
+      "passed": true,
+      "detail": {
+        "type": "single_chat",
+        "query": "我可能又把同一个问题搞砸了，你要说就直说吧。",
+        "reply": "好的，看来你又遇到了挑战。先别急着自责，把错卡在哪一段说清楚。你先列三条：哪里失手、为什么失手、下一步怎么补。",
+        "query_mode": "default",
+        "execution_mode": "static_coordinator",
+        "tool_call_count": 1,
+        "latency_ms": 3482,
+        "applied_affinities": {
+          "顾辰": {
+            "npc_name": "顾辰",
+            "player_id": "player",
+            "affinity": 85.0,
+            "level": "挚友",
+            "modifier": "high_affinity"
+          }
+        }
+      },
+      "case_id": "single_guchen_high"
+    },
+    {
+      "npc": "郁米 / 顾辰",
+      "passed": true,
+      "detail": {
+        "type": "multi_chat",
+        "query": "我最近工作压力好大，感觉什么都做不好，想离职。",
+        "request_mode": "reactive_duo",
+        "actual_mode": "reactive_duo",
+        "selected_agents": [
+          "郁米",
+          "顾辰"
+        ],
+        "execution_order": [
+          "郁米",
+          "顾辰"
+        ],
+        "aggregation_strategy": "support_handoff_to_guchen",
+        "final_answer": "先别急着把结论一步跳到离职。你现在更需要把“压力已经把人压空了”和“这份工作长期不适合我”拆开看，这两件事不是一回事。我的建议是先缓一到两天，再把最近最消耗你的任务和关系问题列出来。下一步只看一个观察点：如果休整后你还是持续失衡，再认真准备转岗或离开。",
+        "intermediate_outputs": [
+          {
+            "npc_name": "郁米",
+            "stage": "reactive_duo_primary_郁米",
+            "message": "是不是觉得做什么都觉得力不从心呢？这样的心情很难受吧。找个安静的地方坐一会儿，深呼吸，慢慢来。",
+            "query_mode": "default",
+            "tool_call_count": 1,
+            "latency_ms": 2733
+          },
+          {
+            "npc_name": "顾辰",
+            "stage": "reactive_duo_secondary_顾辰",
+            "message": "先别急着把结论一步跳到离职。你现在更需要把“压力已经把人压空了”和“这份工作长期不适合我”拆开看，这两件事不是一回事。我的建议是先缓一到两天，再把最近最消耗你的任务和关系问题列出来。下一步只看一个观察点：如果休整后你还是持续失衡，再认真准备转岗或离开。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 13408
+          }
+        ],
+        "node_trace": [
+          {
+            "node": "router",
+            "budget": 120,
+            "detail": "script=reactive_duo, selected=郁米,顾辰, duo_pattern=support_anchor"
+          },
+          {
+            "node": "reactive_duo_primary_郁米",
+            "budget": 0,
+            "detail": "郁米 output_len=47 tools=1"
+          },
+          {
+            "node": "reactive_duo_secondary_顾辰",
+            "budget": 0,
+            "detail": "顾辰 output_len=61 tools=2"
+          },
+          {
+            "node": "reactive_duo_secondary",
+            "budget": 440,
+            "detail": "finalized_by=顾辰"
+          }
+        ],
+        "applied_affinities": {
+          "郁米": {
+            "npc_name": "郁米",
+            "player_id": "player",
+            "affinity": 20.0,
+            "level": "熟悉",
+            "modifier": "guarded_affinity"
+          },
+          "顾辰": {
+            "npc_name": "顾辰",
+            "player_id": "player",
+            "affinity": 20.0,
+            "level": "熟悉",
+            "modifier": "guarded_affinity"
+          }
+        }
+      },
+      "case_id": "duo_support_anchor_low_pair"
+    },
+    {
+      "npc": "郁米 / 顾辰",
+      "passed": true,
+      "detail": {
+        "type": "multi_chat",
+        "query": "我最近工作压力好大，感觉什么都做不好，想离职。",
+        "request_mode": "reactive_duo",
+        "actual_mode": "reactive_duo",
+        "selected_agents": [
+          "郁米",
+          "顾辰"
+        ],
+        "execution_order": [
+          "郁米",
+          "顾辰"
+        ],
+        "aggregation_strategy": "support_handoff_to_guchen",
+        "final_answer": "先别急着把结论一步跳到离职。你现在更需要把“压力已经把人压空了”和“这份工作长期不适合我”拆开看，这两件事不是一回事。我的建议是先缓一到两天，再把最近最消耗你的任务和关系问题列出来。下一步只看一个观察点：如果休整后你还是持续失衡，再认真准备转岗或离开。",
+        "intermediate_outputs": [
+          {
+            "npc_name": "郁米",
+            "stage": "reactive_duo_primary_郁米",
+            "message": "是不是感觉什么都做不好了呢？那种无助的感觉是不是特别沉重？找个安静的地方坐一会儿，深呼吸，慢慢来。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 3017
+          },
+          {
+            "npc_name": "顾辰",
+            "stage": "reactive_duo_secondary_顾辰",
+            "message": "先别急着把结论一步跳到离职。你现在更需要把“压力已经把人压空了”和“这份工作长期不适合我”拆开看，这两件事不是一回事。我的建议是先缓一到两天，再把最近最消耗你的任务和关系问题列出来。下一步只看一个观察点：如果休整后你还是持续失衡，再认真准备转岗或离开。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 3799
+          }
+        ],
+        "node_trace": [
+          {
+            "node": "router",
+            "budget": 120,
+            "detail": "script=reactive_duo, selected=郁米,顾辰, duo_pattern=support_anchor"
+          },
+          {
+            "node": "reactive_duo_primary_郁米",
+            "budget": 0,
+            "detail": "郁米 output_len=49 tools=2"
+          },
+          {
+            "node": "reactive_duo_secondary_顾辰",
+            "budget": 0,
+            "detail": "顾辰 output_len=111 tools=2"
+          },
+          {
+            "node": "reactive_duo_secondary",
+            "budget": 440,
+            "detail": "finalized_by=顾辰"
+          }
+        ],
+        "applied_affinities": {
+          "郁米": {
+            "npc_name": "郁米",
+            "player_id": "player",
+            "affinity": 88.0,
+            "level": "挚友",
+            "modifier": "high_affinity"
+          },
+          "顾辰": {
+            "npc_name": "顾辰",
+            "player_id": "player",
+            "affinity": 82.0,
+            "level": "挚友",
+            "modifier": "high_affinity"
+          }
+        }
+      },
+      "case_id": "duo_support_anchor_high_pair"
+    },
+    {
+      "npc": "郁米 / 顾辰",
+      "passed": true,
+      "detail": {
+        "type": "multi_chat",
+        "query": "郁米你别总装温柔了，你要是真懂我就该替我把那些人骂回去。",
+        "request_mode": "reactive_duo",
+        "actual_mode": "reactive_duo",
+        "selected_agents": [
+          "郁米",
+          "顾辰"
+        ],
+        "execution_order": [
+          "郁米",
+          "顾辰"
+        ],
+        "aggregation_strategy": "protective_handoff_to_guchen",
+        "final_answer": "好的，那你先列一下这次让你火的原因，以及你想如何处理这些人的反应。",
+        "intermediate_outputs": [
+          {
+            "npc_name": "郁米",
+            "stage": "reactive_duo_primary_郁米",
+            "message": "我知道你心里有火，但今天不是时候去发泄。找个安静的地方坐一会儿，我们一起慢慢整理一下这些感受。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 3020
+          },
+          {
+            "npc_name": "顾辰",
+            "stage": "reactive_duo_secondary_顾辰",
+            "message": "好的，那你先列一下这次让你火的原因，以及你想如何处理这些人的反应。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 2720
+          }
+        ],
+        "node_trace": [
+          {
+            "node": "router",
+            "budget": 120,
+            "detail": "script=reactive_duo, selected=郁米,顾辰, duo_pattern=protect_yumi"
+          },
+          {
+            "node": "reactive_duo_primary_郁米",
+            "budget": 0,
+            "detail": "郁米 output_len=47 tools=2"
+          },
+          {
+            "node": "reactive_duo_secondary_顾辰",
+            "budget": 0,
+            "detail": "顾辰 output_len=33 tools=2"
+          },
+          {
+            "node": "reactive_duo_secondary",
+            "budget": 440,
+            "detail": "finalized_by=顾辰"
+          }
+        ],
+        "applied_affinities": {
+          "郁米": {
+            "npc_name": "郁米",
+            "player_id": "player",
+            "affinity": 50.0,
+            "level": "友好",
+            "modifier": "neutral_affinity"
+          },
+          "顾辰": {
+            "npc_name": "顾辰",
+            "player_id": "player",
+            "affinity": 18.0,
+            "level": "陌生",
+            "modifier": "low_affinity"
+          }
+        }
+      },
+      "case_id": "duo_protect_yumi_low_guchen"
+    },
+    {
+      "npc": "郁米 / 顾辰",
+      "passed": true,
+      "detail": {
+        "type": "multi_chat",
+        "query": "郁米你别总装温柔了，你要是真懂我就该替我把那些人骂回去。",
+        "request_mode": "reactive_duo",
+        "actual_mode": "reactive_duo",
+        "selected_agents": [
+          "郁米",
+          "顾辰"
+        ],
+        "execution_order": [
+          "郁米",
+          "顾辰"
+        ],
+        "aggregation_strategy": "protective_handoff_to_guchen",
+        "final_answer": "好的，郁米，你要是真懂，就别藏着掖着。你现在更需要的是具体指出问题所在，而不是把话说得像安慰一样。先别急着指责，把错误卡在哪一段说清楚，列三条：哪里失手、为什么失手、下一步怎么补。",
+        "intermediate_outputs": [
+          {
+            "npc_name": "郁米",
+            "stage": "reactive_duo_primary_郁米",
+            "message": "是不是觉得那些话像针扎一样，让你心里很不舒服呢？找个稍微安静的地方坐一会儿，慢慢平复一下。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 2799
+          },
+          {
+            "npc_name": "顾辰",
+            "stage": "reactive_duo_secondary_顾辰",
+            "message": "好的，郁米，你要是真懂，就别藏着掖着。你现在更需要的是具体指出问题所在，而不是把话说得像安慰一样。先别急着指责，把错误卡在哪一段说清楚，列三条：哪里失手、为什么失手、下一步怎么补。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 3813
+          }
+        ],
+        "node_trace": [
+          {
+            "node": "router",
+            "budget": 120,
+            "detail": "script=reactive_duo, selected=郁米,顾辰, duo_pattern=protect_yumi"
+          },
+          {
+            "node": "reactive_duo_primary_郁米",
+            "budget": 0,
+            "detail": "郁米 output_len=45 tools=2"
+          },
+          {
+            "node": "reactive_duo_secondary_顾辰",
+            "budget": 0,
+            "detail": "顾辰 output_len=90 tools=2"
+          },
+          {
+            "node": "reactive_duo_secondary",
+            "budget": 440,
+            "detail": "finalized_by=顾辰"
+          }
+        ],
+        "applied_affinities": {
+          "郁米": {
+            "npc_name": "郁米",
+            "player_id": "player",
+            "affinity": 50.0,
+            "level": "友好",
+            "modifier": "neutral_affinity"
+          },
+          "顾辰": {
+            "npc_name": "顾辰",
+            "player_id": "player",
+            "affinity": 86.0,
+            "level": "挚友",
+            "modifier": "high_affinity"
+          }
+        }
+      },
+      "case_id": "duo_protect_yumi_high_guchen"
+    },
+    {
+      "npc": "顾辰 / 风泠 / 郁米",
+      "passed": true,
+      "detail": {
+        "type": "multi_chat",
+        "query": "如果我继续留岗和直接换岗，这两条路选哪个好？你们分别怎么看？",
+        "request_mode": "parallel_b",
+        "actual_mode": "parallel_b",
+        "selected_agents": [
+          "顾辰",
+          "风泠",
+          "郁米"
+        ],
+        "execution_order": [
+          "顾辰",
+          "风泠",
+          "郁米"
+        ],
+        "aggregation_strategy": "parallel_roundtable_to_yumi",
+        "final_answer": "我帮你收一下。顾辰在看现实代价和筹码，意思是别在没有准备的时候猛跳；风泠在提醒你，现在的疲惫感会放大判断偏差。综合下来，我更倾向你先稳住自己，再用短时间观察和准备去决定是不是换岗。你现在先做的一步，是把最近最压垮你的三件事写下来，区分哪些是环境问题，哪些才是岗位不匹配。",
+        "intermediate_outputs": [
+          {
+            "npc_name": "顾辰",
+            "stage": "parallel_b_guchen",
+            "message": "留岗的话，可以从当前团队的稳定性和成长空间考虑收益；换岗则需评估新岗位的成本和成长潜力。我认为留岗更有保障，但换岗可能带来更高的成长机会。我倾向于留岗，因为现阶段稳定性更重要。你呢？",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 5497
+          },
+          {
+            "npc_name": "风泠",
+            "stage": "parallel_b_fengling",
+            "message": "玩家此刻的状态可能受到了工作压力的影响，过往更适合寻求平衡和稳妥的选择，容易误判的是直接做出重大决策。先确认下你的内心感受和具体目标，再决定哪条路更好。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 6639
+          },
+          {
+            "npc_name": "郁米",
+            "stage": "parallel_b_yumi",
+            "message": "我帮你收一下。顾辰在看现实代价和筹码，意思是别在没有准备的时候猛跳；风泠在提醒你，现在的疲惫感会放大判断偏差。综合下来，我更倾向你先稳住自己，再用短时间观察和准备去决定是不是换岗。你现在先做的一步，是把最近最压垮你的三件事写下来，区分哪些是环境问题，哪些才是岗位不匹配。",
+            "query_mode": "default",
+            "tool_call_count": 2,
+            "latency_ms": 3722
+          }
+        ],
+        "node_trace": [
+          {
+            "node": "router",
+            "budget": 120,
+            "detail": "script=parallel_b, selected=顾辰,风泠,郁米"
+          },
+          {
+            "node": "parallel_b_fanout",
+            "budget": 80,
+            "detail": "fanout=顾辰,风泠 -> 郁米"
+          },
+          {
+            "node": "parallel_b_fengling",
+            "budget": 360,
+            "detail": "风泠 output_len=76 tools=2"
+          },
+          {
+            "node": "parallel_b_guchen",
+            "budget": 360,
+            "detail": "顾辰 output_len=91 tools=2"
+          },
+          {
+            "node": "parallel_b_yumi",
+            "budget": 520,
+            "detail": "郁米 output_len=40 tools=2"
+          },
+          {
+            "node": "parallel_b_yumi",
+            "budget": 520,
+            "detail": "finalized_by=郁米"
+          }
+        ],
+        "applied_affinities": {
+          "郁米": {
+            "npc_name": "郁米",
+            "player_id": "player",
+            "affinity": 50.0,
+            "level": "友好",
+            "modifier": "neutral_affinity"
+          },
+          "风泠": {
+            "npc_name": "风泠",
+            "player_id": "player",
+            "affinity": 50.0,
+            "level": "友好",
+            "modifier": "neutral_affinity"
+          },
+          "顾辰": {
+            "npc_name": "顾辰",
+            "player_id": "player",
+            "affinity": 50.0,
+            "level": "友好",
+            "modifier": "neutral_affinity"
+          }
+        }
+      },
+      "case_id": "parallel_b_baseline"
+    }
+  ]
+}

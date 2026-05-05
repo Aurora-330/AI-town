@@ -17,3 +17,5 @@ hello-agents>=0.2.4,<=0.2.9
 # 外部知识库RAG
 qdrant-client>=1.9.0
 sentence-transformers>=2.7.0
+transformers>=4.44.0
+langgraph>=0.2.34

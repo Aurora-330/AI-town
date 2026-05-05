@@ -1,0 +1,117 @@
+[
+  {
+    "id": "single_yumi_low",
+    "category": "single_chat",
+    "npc": "郁米",
+    "query": "我今天真的有点撑不住了，好像连叹气都很累。",
+    "affinities": {
+      "郁米": 15
+    }
+  },
+  {
+    "id": "single_yumi_high",
+    "category": "single_chat",
+    "npc": "郁米",
+    "query": "我今天真的有点撑不住了，好像连叹气都很累。",
+    "affinities": {
+      "郁米": 88
+    }
+  },
+  {
+    "id": "single_fengling_low",
+    "category": "single_chat",
+    "npc": "风泠",
+    "query": "我最近状态不太好，但还是想来找你聊聊。",
+    "affinities": {
+      "风泠": 18
+    }
+  },
+  {
+    "id": "single_fengling_high",
+    "category": "single_chat",
+    "npc": "风泠",
+    "query": "我最近状态不太好，但还是想来找你聊聊。",
+    "affinities": {
+      "风泠": 90
+    }
+  },
+  {
+    "id": "single_guchen_low",
+    "category": "single_chat",
+    "npc": "顾辰",
+    "query": "我可能又把同一个问题搞砸了，你要说就直说吧。",
+    "affinities": {
+      "顾辰": 10
+    }
+  },
+  {
+    "id": "single_guchen_high",
+    "category": "single_chat",
+    "npc": "顾辰",
+    "query": "我可能又把同一个问题搞砸了，你要说就直说吧。",
+    "affinities": {
+      "顾辰": 85
+    }
+  },
+  {
+    "id": "duo_support_anchor_low_pair",
+    "category": "multi_chat",
+    "mode": "reactive_duo",
+    "query": "我最近工作压力好大，感觉什么都做不好，想离职。",
+    "affinities": {
+      "郁米": 20,
+      "顾辰": 20
+    },
+    "expected_mode": "reactive_duo",
+    "expected_selected_agents": ["郁米", "顾辰"]
+  },
+  {
+    "id": "duo_support_anchor_high_pair",
+    "category": "multi_chat",
+    "mode": "reactive_duo",
+    "query": "我最近工作压力好大，感觉什么都做不好，想离职。",
+    "affinities": {
+      "郁米": 88,
+      "顾辰": 82
+    },
+    "expected_mode": "reactive_duo",
+    "expected_selected_agents": ["郁米", "顾辰"]
+  },
+  {
+    "id": "duo_protect_yumi_low_guchen",
+    "category": "multi_chat",
+    "mode": "reactive_duo",
+    "query": "郁米你别总装温柔了，你要是真懂我就该替我把那些人骂回去。",
+    "affinities": {
+      "郁米": 50,
+      "顾辰": 18
+    },
+    "expected_mode": "reactive_duo",
+    "expected_selected_agents": ["郁米", "顾辰"]
+  },
+  {
+    "id": "duo_protect_yumi_high_guchen",
+    "category": "multi_chat",
+    "mode": "reactive_duo",
+    "query": "郁米你别总装温柔了，你要是真懂我就该替我把那些人骂回去。",
+    "affinities": {
+      "郁米": 50,
+      "顾辰": 86
+    },
+    "expected_mode": "reactive_duo",
+    "expected_selected_agents": ["郁米", "顾辰"]
+  },
+  {
+    "id": "parallel_b_baseline",
+    "category": "multi_chat",
+    "mode": "parallel_b",
+    "query": "如果我继续留岗和直接换岗，这两条路选哪个好？你们分别怎么看？",
+    "affinities": {
+      "郁米": 50,
+      "风泠": 50,
+      "顾辰": 50
+    },
+    "expected_mode": "parallel_b",
+    "expected_selected_agents": ["顾辰", "风泠", "郁米"]
+  }
+]

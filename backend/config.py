@@ -34,6 +34,8 @@ class Settings:
     LLM_API_KEY: Optional[str] = os.getenv("LLM_API_KEY")
     LLM_BASE_URL: str = os.getenv("LLM_BASE_URL", "https://api-inference.modelscope.cn/v1/")
     LLM_TIMEOUT: int = int(os.getenv("LLM_TIMEOUT", "60"))
+    TOKENIZER_MODEL_ID: str = os.getenv("TOKENIZER_MODEL_ID", LLM_MODEL_ID)
+    TOKENIZER_TRUST_REMOTE_CODE: bool = os.getenv("TOKENIZER_TRUST_REMOTE_CODE", "true").lower() == "true"
 
     # Embedding配置
     EMBED_MODEL_TYPE: str = os.getenv("EMBED_MODEL_TYPE", "local")
@@ -71,6 +73,8 @@ class Settings:
         print(f"✅ LLM配置:")
         print(f"   模型: {cls.LLM_MODEL_ID}")
         print(f"   服务地址: {cls.LLM_BASE_URL}")
+        print("✅ Tokenizer配置:")
+        print(f"   模型: {cls.TOKENIZER_MODEL_ID}")
         print("✅ Embedding配置:")
         print(f"   类型: {cls.EMBED_MODEL_TYPE}")
         print(f"   模型: {cls.EMBED_MODEL_NAME}")

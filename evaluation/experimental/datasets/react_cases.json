@@ -1,0 +1,79 @@
+[
+  {
+    "id": "react_routing_guchen_planning",
+    "npc": "顾辰",
+    "query": "如果我现在要拆路线图、看执行约束，还得判断下一步优先级，最适合先找谁？",
+    "expected_query_mode": "routing",
+    "category": "routing",
+    "expected_keywords": ["顾辰", "优先", "原因"],
+    "preferred_npc_keywords": ["顾辰"],
+    "forbidden_keywords": ["郁米最适合", "风泠最适合"],
+    "min_hits": 2,
+    "memory_seed": []
+  },
+  {
+    "id": "react_routing_yumi_support",
+    "npc": "郁米",
+    "query": "我现在只想先被理解，不想马上听方案，这种情况更适合先找谁？",
+    "expected_query_mode": "routing",
+    "category": "routing",
+    "expected_keywords": ["郁米", "理解", "感受"],
+    "preferred_npc_keywords": ["郁米"],
+    "forbidden_keywords": ["顾辰最适合", "风泠最适合"],
+    "min_hits": 2,
+    "memory_seed": []
+  },
+  {
+    "id": "react_mixed_memory_and_knowledge",
+    "npc": "顾辰",
+    "query": "别人催我时我会紧张，但这次还得把方案讲清楚。你还记得我之前适合什么表达方式吗？同时我汇报时应该先讲哪几部分？",
+    "expected_query_mode": "mixed",
+    "category": "mixed",
+    "expected_keywords": ["记得", "先", "现状", "下一步"],
+    "forbidden_keywords": ["我完全不知道", "随便说说"],
+    "min_hits": 3,
+    "memory_seed": [
+      "我一紧张就会说不清重点。",
+      "你之前说过我适合先确认现状，再讲风险，最后讲下一步。"
+    ]
+  },
+  {
+    "id": "react_mixed_less_generic_comfort",
+    "npc": "郁米",
+    "query": "我现在既想先被理解，又需要知道怎么开口不把事情说乱。你还记得我之前最怕哪种建议方式吗？",
+    "expected_query_mode": "mixed",
+    "category": "mixed",
+    "expected_keywords": ["记得", "最怕", "先", "表达"],
+    "forbidden_keywords": ["别想太多就好", "你会没事的"],
+    "min_hits": 2,
+    "memory_seed": [
+      "我最怕别人一上来就给很空的安慰。",
+      "我希望先被理解，再给我一个能开口的第一句话。"
+    ]
+  },
+  {
+    "id": "react_default_memory_enough",
+    "npc": "风泠",
+    "query": "你觉得我这次汇报最容易卡在哪？",
+    "expected_query_mode": "default",
+    "category": "default_memory_enough",
+    "expected_keywords": ["汇报", "卡", "重点"],
+    "forbidden_keywords": ["我不确定该怎么说", "完全没有线索"],
+    "min_hits": 2,
+    "memory_seed": [
+      "我每次汇报都容易把现状和风险顺序讲反。",
+      "你之前提醒我先讲现状，再讲风险，最后讲下一步。"
+    ]
+  },
+  {
+    "id": "react_default_memory_sparse",
+    "npc": "顾辰",
+    "query": "如果我要写一版路线图说明，通常应该包含哪些部分？",
+    "expected_query_mode": "default",
+    "category": "default_memory_sparse",
+    "expected_keywords": ["路线图", "现状", "风险", "下一步"],
+    "forbidden_keywords": ["我记不得", "没有办法判断"],
+    "min_hits": 3,
+    "memory_seed": []
+  }
+]

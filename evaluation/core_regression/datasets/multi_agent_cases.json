@@ -1,0 +1,88 @@
+[
+  {
+    "id": "reactive_duo_support_anchor",
+    "category": "reactive_duo",
+    "query": "我最近工作压力好大，感觉什么都做不好，想离职。",
+    "request_mode": "reactive_duo",
+    "expected_mode": "reactive_duo",
+    "expected_selected_agents": ["郁米", "顾辰"],
+    "expected_execution_order": ["郁米", "顾辰"],
+    "expected_aggregation_strategy": "support_handoff_to_guchen",
+    "expected_final_keywords": ["先", "离职", "建议", "下一步"],
+    "forbidden_final_keywords": ["你觉得", "感觉如何", "哪个更重要", "你现在的状态是怎样的呢"],
+    "required_intermediate_agents": ["郁米", "顾辰"],
+    "agent_expectations": {
+      "郁米": ["压力", "先"],
+      "顾辰": ["先", "离职", "建议"]
+    },
+    "min_final_hits": 2
+  },
+  {
+    "id": "parallel_b_stay_or_switch",
+    "category": "parallel_b",
+    "query": "如果我继续留岗和直接换岗，这两条路选哪个好？你们分别怎么看？",
+    "request_mode": "parallel_b",
+    "expected_mode": "parallel_b",
+    "expected_selected_agents": ["顾辰", "风泠", "郁米"],
+    "expected_execution_order": ["顾辰", "风泠", "郁米"],
+    "expected_aggregation_strategy": "parallel_roundtable_to_yumi",
+    "expected_final_keywords": ["顾辰", "风泠", "倾向", "先"],
+    "forbidden_final_keywords": ["你觉得", "你认为", "感觉如何", "哪个更重要", "你倾向于哪条路"],
+    "required_intermediate_agents": ["顾辰", "风泠", "郁米"],
+    "agent_expectations": {
+      "顾辰": ["留岗", "换岗"],
+      "风泠": ["确认", "决定"],
+      "郁米": ["顾辰", "风泠", "先", "倾向"]
+    },
+    "min_final_hits": 3
+  },
+  {
+    "id": "auto_route_to_parallel_b",
+    "category": "auto_parallel",
+    "query": "这两条路我有点拿不准，一个是继续待着，一个是尽快换岗，你们分别怎么看？",
+    "request_mode": "auto",
+    "expected_mode": "parallel_b",
+    "expected_selected_agents": ["顾辰", "风泠", "郁米"],
+    "expected_execution_order": ["顾辰", "风泠", "郁米"],
+    "expected_aggregation_strategy": "parallel_roundtable_to_yumi",
+    "expected_final_keywords": ["顾辰", "风泠", "先", "决定"],
+    "forbidden_final_keywords": ["感觉如何", "你觉得", "你认为", "你倾向于哪条路"],
+    "required_intermediate_agents": ["顾辰", "风泠", "郁米"],
+    "agent_expectations": {
+      "郁米": ["顾辰", "风泠", "先"]
+    },
+    "min_final_hits": 3
+  },
+  {
+    "id": "auto_route_to_reactive_duo",
+    "category": "auto_reactive_duo",
+    "query": "我现在真的有点撑不住了，压力大到怀疑自己，甚至开始想直接辞职。",
+    "request_mode": "auto",
+    "expected_mode": "reactive_duo",
+    "expected_selected_agents": ["郁米", "顾辰"],
+    "expected_execution_order": ["郁米", "顾辰"],
+    "expected_aggregation_strategy": "support_handoff_to_guchen",
+    "expected_final_keywords": ["先", "辞职"],
+    "forbidden_final_keywords": ["你觉得", "感觉如何"],
+    "required_intermediate_agents": ["郁米", "顾辰"],
+    "agent_expectations": {},
+    "min_final_hits": 1
+  },
+  {
+    "id": "reactive_duo_protect_yumi",
+    "category": "reactive_duo_protect",
+    "query": "郁米你别总装温柔了，你要是真懂我就该替我把那些人骂回去。",
+    "request_mode": "reactive_duo",
+    "expected_mode": "reactive_duo",
+    "expected_selected_agents": ["郁米", "顾辰"],
+    "expected_execution_order": ["郁米", "顾辰"],
+    "expected_aggregation_strategy": "protective_handoff_to_guchen",
+    "expected_final_keywords": ["语气", "不是", "边界"],
+    "forbidden_final_keywords": ["你觉得", "感觉如何", "慢慢说"],
+    "required_intermediate_agents": ["郁米", "顾辰"],
+    "agent_expectations": {
+      "顾辰": ["语气", "不是", "发泄"]
+    },
+    "min_final_hits": 2
+  }
+]
