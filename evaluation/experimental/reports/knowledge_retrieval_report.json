@@ -4,23 +4,23 @@
   "summary": {
     "overall": {
       "total": 8,
-      "passed": 0,
-      "pass_rate": 0.0,
-      "avg_latency_ms": 5150.5,
-      "avg_input_tokens_est": 1611.5
+      "passed": 5,
+      "pass_rate": 0.625,
+      "avg_latency_ms": 3319,
+      "avg_input_tokens_est": 1622.5
     },
     "by_hypothesis": {
       "chunk": {
         "total": 2,
-        "passed": 0,
-        "pass_rate": 0.0,
+        "passed": 2,
+        "pass_rate": 1.0,
         "avg_latency_ms": 0.0,
         "avg_input_tokens_est": 0.0
       },
       "lexical": {
         "total": 2,
-        "passed": 0,
-        "pass_rate": 0.0,
+        "passed": 2,
+        "pass_rate": 1.0,
         "avg_latency_ms": 0.0,
         "avg_input_tokens_est": 0.0
       },
@@ -28,13 +28,13 @@
         "total": 2,
         "passed": 0,
         "pass_rate": 0.0,
-        "avg_latency_ms": 5150.5,
-        "avg_input_tokens_est": 1611.5
+        "avg_latency_ms": 3319,
+        "avg_input_tokens_est": 1622.5
       },
       "rerank": {
         "total": 2,
-        "passed": 0,
-        "pass_rate": 0.0,
+        "passed": 1,
+        "pass_rate": 0.5,
         "avg_latency_ms": 0.0,
         "avg_input_tokens_est": 0.0
       }
@@ -44,13 +44,13 @@
         "total": 2,
         "passed": 0,
         "pass_rate": 0.0,
-        "avg_latency_ms": 5150.5,
-        "avg_input_tokens_est": 1611.5
+        "avg_latency_ms": 3319,
+        "avg_input_tokens_est": 1622.5
       },
       "search": {
         "total": 6,
-        "passed": 0,
-        "pass_rate": 0.0,
+        "passed": 5,
+        "pass_rate": 0.8333,
         "avg_latency_ms": 0.0,
         "avg_input_tokens_est": 0.0
       }
@@ -62,19 +62,20 @@
       "hypothesis": "lexical",
       "mode": "search",
       "npc": "",
-      "passed": false,
+      "passed": true,
       "detail": {
         "goal": "验证中文专名词问法是否能触发 lexical/BM25，并把精确地点块排进前列。",
         "query": "绮梦咖啡馆在哪里",
         "total_hits": 8,
         "top1_source": "global/locations.md",
-        "top1_chunk_index": 3,
+        "top1_chunk_index": 0,
         "top1_keywords": {
           "hits": [
+            "绮梦咖啡馆",
             "位置"
           ],
-          "hit_count": 1,
-          "all_hit": false
+          "hit_count": 2,
+          "all_hit": true
         },
         "any_hit_keywords": {
           "hits": [
@@ -88,13 +89,19 @@
           {
             "source": "global/locations.md",
             "chunk_index": 0,
-            "rank": 5,
+            "rank": 1,
             "max_rank": 3,
-            "passed": false
+            "passed": true
           }
         ],
         "retrieval_signals": {
-          "lexical_ranks": [],
+          "lexical_ranks": [
+            1,
+            2,
+            3,
+            4,
+            6
+          ],
           "semantic_ranks": [
             1,
             2,
@@ -105,46 +112,55 @@
             7,
             8
           ],
-          "hybrid_ranks": [],
-          "lexical_hit_in_topk": false,
-          "hybrid_hit_in_topk": false
+          "hybrid_ranks": [
+            1,
+            2,
+            3,
+            4,
+            6
+          ],
+          "lexical_hit_in_topk": true,
+          "hybrid_hit_in_topk": true
         },
         "top3_preview": [
           {
             "rank": 1,
             "source": "global/locations.md",
-            "chunk_index": 3,
+            "chunk_index": 0,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
-            "semantic_score": 0.5677,
-            "lexical_score": 0.0,
-            "rerank_score": 0.5677,
-            "content_preview": "## 奇点实验室\n**位置**：星环核心动力轴心区，也是小镇的物理中心。\n**首席工程师**：顾辰\n**简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。\n**特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程"
+            "semantic_score": 0.3737,
+            "lexical_score": 1.0,
+            "rerank_score": 0.9637,
+            "content_preview": "# 新伊甸星环小镇地标建筑说明\n\n## 绮梦咖啡馆\n**位置**：星环主观测层，紧贴着巨大的全景抗压玻璃。\n**简介**：新伊甸星环小镇最受欢迎的公共休息区。由于位于星环边缘，这里的重力场被人工设定为标准重力的 0.8倍。居民们走在这里会有微微的轻盈感。连咖啡杯里的拉花都不容易散开。\n**特色**：\n- **失重抹茶**：通过特定微重力发泡引擎打出的抹茶束。"
           },
           {
             "rank": 2,
             "source": "global/history_and_rules.md",
-            "chunk_index": 3,
+            "chunk_index": 0,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
-            "semantic_score": 0.4536,
-            "lexical_score": 0.0,
-            "rerank_score": 0.4536,
-            "content_preview": "2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。"
+            "semantic_score": 0.3582,
+            "lexical_score": 0.7691,
+            "rerank_score": 0.8563,
+            "content_preview": "# 小镇常识与重大历史事件\n\n## 基础常识\n- **标准历法**：小镇采用“星环历”。以“大断连”发生的那一年定为星环历 0001年。当前时间是星环历 0042年。\n- **通用货币：星币**：小镇唯一的电子货币。货币价值与能量配额直接挂钩。1星币等于1标准度电能。在绮梦咖啡馆买一杯“深空冷萃”需要 5 星币。乘坐磁悬浮驳船一次需要 2 星币。\n- **环"
           },
           {
             "rank": 3,
             "source": "global/locations.md",
-            "chunk_index": 1,
+            "chunk_index": 3,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
-            "semantic_score": 0.4179,
-            "lexical_score": 0.0,
-            "rerank_score": 0.4179,
-            "content_preview": "## 旧日档案馆\n**位置**：星环内环数据回廊。\n**管理员**：风泠\n**简介**：这是小镇记忆的物理与数字心脏。这里储藏着从“地球时代”流传下来的珍贵纸质书卷和遗物。这里也有海量的“星际时代”全息影像。同时，档案馆的底层核心阵列正在实时并且精确地记录着小镇当下正在发生的每一段记忆。\n**特色**：空气里略带一点陈旧纸张的冷杉木香。由于设备老化，全息投影"
+            "semantic_score": 0.5677,
+            "lexical_score": 0.2677,
+            "rerank_score": 0.7051,
+            "content_preview": "## 奇点实验室\n**位置**：星环核心动力轴心区，也是小镇的物理中心。\n**首席工程师**：顾辰\n**简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。\n**特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程"
           }
         ]
       }
@@ -154,17 +170,20 @@
       "hypothesis": "lexical",
       "mode": "search",
       "npc": "",
-      "passed": false,
+      "passed": true,
       "detail": {
         "goal": "验证专名词+属性词时 lexical 是否参与，且是否优先命中同一 chunk。",
         "query": "绮梦咖啡馆 重力",
         "total_hits": 8,
-        "top1_source": "global/history_and_rules.md",
-        "top1_chunk_index": 3,
+        "top1_source": "global/locations.md",
+        "top1_chunk_index": 0,
         "top1_keywords": {
-          "hits": [],
-          "hit_count": 0,
-          "all_hit": false
+          "hits": [
+            "绮梦咖啡馆",
+            "0.8"
+          ],
+          "hit_count": 2,
+          "all_hit": true
         },
         "any_hit_keywords": {
           "hits": [
@@ -177,7 +196,11 @@
         },
         "topk_presence": [],
         "retrieval_signals": {
-          "lexical_ranks": [],
+          "lexical_ranks": [
+            1,
+            2,
+            4
+          ],
           "semantic_ranks": [
             1,
             2,
@@ -188,13 +211,43 @@
             7,
             8
           ],
-          "hybrid_ranks": [],
-          "lexical_hit_in_topk": false,
-          "hybrid_hit_in_topk": false
+          "hybrid_ranks": [
+            1,
+            2,
+            4
+          ],
+          "lexical_hit_in_topk": true,
+          "hybrid_hit_in_topk": true
         },
         "top3_preview": [
           {
             "rank": 1,
+            "source": "global/locations.md",
+            "chunk_index": 0,
+            "retrieval_sources": [
+              "lexical",
+              "semantic"
+            ],
+            "semantic_score": 0.3116,
+            "lexical_score": 1.0,
+            "rerank_score": 0.8766,
+            "content_preview": "# 新伊甸星环小镇地标建筑说明\n\n## 绮梦咖啡馆\n**位置**：星环主观测层，紧贴着巨大的全景抗压玻璃。\n**简介**：新伊甸星环小镇最受欢迎的公共休息区。由于位于星环边缘，这里的重力场被人工设定为标准重力的 0.8倍。居民们走在这里会有微微的轻盈感。连咖啡杯里的拉花都不容易散开。\n**特色**：\n- **失重抹茶**：通过特定微重力发泡引擎打出的抹茶束。"
+          },
+          {
+            "rank": 2,
+            "source": "global/history_and_rules.md",
+            "chunk_index": 0,
+            "retrieval_sources": [
+              "lexical",
+              "semantic"
+            ],
+            "semantic_score": 0.3099,
+            "lexical_score": 0.8968,
+            "rerank_score": 0.8615,
+            "content_preview": "# 小镇常识与重大历史事件\n\n## 基础常识\n- **标准历法**：小镇采用“星环历”。以“大断连”发生的那一年定为星环历 0001年。当前时间是星环历 0042年。\n- **通用货币：星币**：小镇唯一的电子货币。货币价值与能量配额直接挂钩。1星币等于1标准度电能。在绮梦咖啡馆买一杯“深空冷萃”需要 5 星币。乘坐磁悬浮驳船一次需要 2 星币。\n- **环"
+          },
+          {
+            "rank": 3,
             "source": "global/history_and_rules.md",
             "chunk_index": 3,
             "retrieval_sources": [
@@ -204,30 +257,6 @@
             "lexical_score": 0.0,
             "rerank_score": 0.5001,
             "content_preview": "2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。"
-          },
-          {
-            "rank": 2,
-            "source": "global/history_and_rules.md",
-            "chunk_index": 0,
-            "retrieval_sources": [
-              "semantic"
-            ],
-            "semantic_score": 0.3099,
-            "lexical_score": 0.0,
-            "rerank_score": 0.3899,
-            "content_preview": "# 小镇常识与重大历史事件\n\n## 基础常识\n- **标准历法**：小镇采用“星环历”。以“大断连”发生的那一年定为星环历 0001年。当前时间是星环历 0042年。\n- **通用货币：星币**：小镇唯一的电子货币。货币价值与能量配额直接挂钩。1星币等于1标准度电能。在绮梦咖啡馆买一杯“深空冷萃”需要 5 星币。乘坐磁悬浮驳船一次需要 2 星币。\n- **环"
-          },
-          {
-            "rank": 3,
-            "source": "global/locations.md",
-            "chunk_index": 3,
-            "retrieval_sources": [
-              "semantic"
-            ],
-            "semantic_score": 0.3748,
-            "lexical_score": 0.0,
-            "rerank_score": 0.3748,
-            "content_preview": "## 奇点实验室\n**位置**：星环核心动力轴心区，也是小镇的物理中心。\n**首席工程师**：顾辰\n**简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。\n**特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程"
           }
         ]
       }
@@ -237,17 +266,20 @@
       "hypothesis": "rerank",
       "mode": "search",
       "npc": "",
-      "passed": false,
+      "passed": true,
       "detail": {
         "goal": "验证节庆名这种强关键词是否能在 rerank 后进入 top1，而不是被其他历史块压住。",
         "query": "静默纪念日是什么时候",
         "total_hits": 7,
         "top1_source": "global/history_and_rules.md",
-        "top1_chunk_index": 3,
+        "top1_chunk_index": 1,
         "top1_keywords": {
-          "hits": [],
-          "hit_count": 0,
-          "all_hit": false
+          "hits": [
+            "静默纪念日",
+            "12月31日"
+          ],
+          "hit_count": 2,
+          "all_hit": true
         },
         "any_hit_keywords": {
           "hits": [
@@ -259,7 +291,10 @@
         },
         "topk_presence": [],
         "retrieval_signals": {
-          "lexical_ranks": [],
+          "lexical_ranks": [
+            1,
+            4
+          ],
           "semantic_ranks": [
             1,
             2,
@@ -269,13 +304,29 @@
             6,
             7
           ],
-          "hybrid_ranks": [],
-          "lexical_hit_in_topk": false,
-          "hybrid_hit_in_topk": false
+          "hybrid_ranks": [
+            1,
+            4
+          ],
+          "lexical_hit_in_topk": true,
+          "hybrid_hit_in_topk": true
         },
         "top3_preview": [
           {
             "rank": 1,
+            "source": "global/history_and_rules.md",
+            "chunk_index": 1,
+            "retrieval_sources": [
+              "lexical",
+              "semantic"
+            ],
+            "semantic_score": 0.3133,
+            "lexical_score": 1.0,
+            "rerank_score": 0.9033,
+            "content_preview": "## 特色节庆\n- **微陨石雨观测季**：每年星环历 7月15日 开始，持续三天。这段时间小镇会穿过天鹅座碎片带。大量微陨石撞击能量护盾，摩擦产生五颜六色的能量涟漪。这是小镇最浪漫的年度节日。\n- **静默纪念日**：每年星环历 12月31日。为了纪念与地球断开通讯的那一天。当天晚上 20:00 至 20:05，全镇会关闭非必要照明。银河电台在此期间也会停"
+          },
+          {
+            "rank": 2,
             "source": "global/history_and_rules.md",
             "chunk_index": 3,
             "retrieval_sources": [
@@ -285,18 +336,6 @@
             "lexical_score": 0.0,
             "rerank_score": 0.5704,
             "content_preview": "2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。"
-          },
-          {
-            "rank": 2,
-            "source": "global/history_and_rules.md",
-            "chunk_index": 1,
-            "retrieval_sources": [
-              "semantic"
-            ],
-            "semantic_score": 0.3133,
-            "lexical_score": 0.0,
-            "rerank_score": 0.3133,
-            "content_preview": "## 特色节庆\n- **微陨石雨观测季**：每年星环历 7月15日 开始，持续三天。这段时间小镇会穿过天鹅座碎片带。大量微陨石撞击能量护盾，摩擦产生五颜六色的能量涟漪。这是小镇最浪漫的年度节日。\n- **静默纪念日**：每年星环历 12月31日。为了纪念与地球断开通讯的那一天。当天晚上 20:00 至 20:05，全镇会关闭非必要照明。银河电台在此期间也会停"
           },
           {
             "rank": 3,
@@ -337,16 +376,22 @@
         },
         "topk_presence": [],
         "retrieval_signals": {
-          "lexical_ranks": [],
+          "lexical_ranks": [
+            1,
+            2
+          ],
           "semantic_ranks": [
             1,
             2,
             3,
             4
           ],
-          "hybrid_ranks": [],
-          "lexical_hit_in_topk": false,
-          "hybrid_hit_in_topk": false
+          "hybrid_ranks": [
+            1,
+            2
+          ],
+          "lexical_hit_in_topk": true,
+          "hybrid_hit_in_topk": true
         },
         "top3_preview": [
           {
@@ -354,11 +399,12 @@
             "source": "global/locations.md",
             "chunk_index": 2,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
             "semantic_score": 0.1835,
-            "lexical_score": 0.0,
-            "rerank_score": 0.4235,
+            "lexical_score": 1.0,
+            "rerank_score": 0.9885,
             "content_preview": "## 银河电台\n**位置**：星环最高处的信号塔顶层。\n**主理人**：郁米\n**简介**：这不仅是一个单纯播放音乐的地方，更是维系整个小镇心理健康的“情绪灯塔”。这里还设有一间隐秘而柔软的心灵疏导室。\n**特色**：每到夜晚，电台会捕捉来自深空的神秘波段。郁米会将这些波段转化为治愈的白噪音。这里没有刺眼的冷光灯，到处是温暖的香薰和柔软的抱枕。当任何人感到疲"
           },
           {
@@ -366,11 +412,12 @@
             "source": "global/history_and_rules.md",
             "chunk_index": 1,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
             "semantic_score": 0.1711,
-            "lexical_score": 0.0,
-            "rerank_score": 0.4111,
+            "lexical_score": 0.5332,
+            "rerank_score": 0.7801,
             "content_preview": "## 特色节庆\n- **微陨石雨观测季**：每年星环历 7月15日 开始，持续三天。这段时间小镇会穿过天鹅座碎片带。大量微陨石撞击能量护盾，摩擦产生五颜六色的能量涟漪。这是小镇最浪漫的年度节日。\n- **静默纪念日**：每年星环历 12月31日。为了纪念与地球断开通讯的那一天。当天晚上 20:00 至 20:05，全镇会关闭非必要照明。银河电台在此期间也会停"
           },
           {
@@ -393,17 +440,20 @@
       "hypothesis": "chunk",
       "mode": "search",
       "npc": "",
-      "passed": false,
+      "passed": true,
       "detail": {
         "goal": "验证一个 chunk 是否已经足够覆盖位置+重力这类双事实问题，而不需要跨块拼接。",
         "query": "绮梦咖啡馆位于哪里 那里的重力是多少",
         "total_hits": 8,
         "top1_source": "global/locations.md",
-        "top1_chunk_index": 3,
+        "top1_chunk_index": 0,
         "top1_keywords": {
-          "hits": [],
-          "hit_count": 0,
-          "all_hit": false
+          "hits": [
+            "星环主观测层",
+            "0.8"
+          ],
+          "hit_count": 2,
+          "all_hit": true
         },
         "any_hit_keywords": {
           "hits": [
@@ -415,7 +465,13 @@
         },
         "topk_presence": [],
         "retrieval_signals": {
-          "lexical_ranks": [],
+          "lexical_ranks": [
+            1,
+            2,
+            3,
+            5,
+            6
+          ],
           "semantic_ranks": [
             1,
             2,
@@ -426,46 +482,55 @@
             7,
             8
           ],
-          "hybrid_ranks": [],
-          "lexical_hit_in_topk": false,
-          "hybrid_hit_in_topk": false
+          "hybrid_ranks": [
+            1,
+            2,
+            3,
+            5,
+            6
+          ],
+          "lexical_hit_in_topk": true,
+          "hybrid_hit_in_topk": true
         },
         "top3_preview": [
           {
             "rank": 1,
             "source": "global/locations.md",
-            "chunk_index": 3,
+            "chunk_index": 0,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
-            "semantic_score": 0.5808,
-            "lexical_score": 0.0,
-            "rerank_score": 0.5808,
-            "content_preview": "## 奇点实验室\n**位置**：星环核心动力轴心区，也是小镇的物理中心。\n**首席工程师**：顾辰\n**简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。\n**特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程"
+            "semantic_score": 0.4341,
+            "lexical_score": 1.0,
+            "rerank_score": 1.0241,
+            "content_preview": "# 新伊甸星环小镇地标建筑说明\n\n## 绮梦咖啡馆\n**位置**：星环主观测层，紧贴着巨大的全景抗压玻璃。\n**简介**：新伊甸星环小镇最受欢迎的公共休息区。由于位于星环边缘，这里的重力场被人工设定为标准重力的 0.8倍。居民们走在这里会有微微的轻盈感。连咖啡杯里的拉花都不容易散开。\n**特色**：\n- **失重抹茶**：通过特定微重力发泡引擎打出的抹茶束。"
           },
           {
             "rank": 2,
             "source": "global/history_and_rules.md",
-            "chunk_index": 3,
+            "chunk_index": 0,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
-            "semantic_score": 0.5182,
-            "lexical_score": 0.0,
-            "rerank_score": 0.5182,
-            "content_preview": "2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。"
+            "semantic_score": 0.3992,
+            "lexical_score": 0.5988,
+            "rerank_score": 0.8258,
+            "content_preview": "# 小镇常识与重大历史事件\n\n## 基础常识\n- **标准历法**：小镇采用“星环历”。以“大断连”发生的那一年定为星环历 0001年。当前时间是星环历 0042年。\n- **通用货币：星币**：小镇唯一的电子货币。货币价值与能量配额直接挂钩。1星币等于1标准度电能。在绮梦咖啡馆买一杯“深空冷萃”需要 5 星币。乘坐磁悬浮驳船一次需要 2 星币。\n- **环"
           },
           {
             "rank": 3,
             "source": "global/locations.md",
-            "chunk_index": 1,
+            "chunk_index": 3,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
-            "semantic_score": 0.4559,
-            "lexical_score": 0.0,
-            "rerank_score": 0.4559,
-            "content_preview": "## 旧日档案馆\n**位置**：星环内环数据回廊。\n**管理员**：风泠\n**简介**：这是小镇记忆的物理与数字心脏。这里储藏着从“地球时代”流传下来的珍贵纸质书卷和遗物。这里也有海量的“星际时代”全息影像。同时，档案馆的底层核心阵列正在实时并且精确地记录着小镇当下正在发生的每一段记忆。\n**特色**：空气里略带一点陈旧纸张的冷杉木香。由于设备老化，全息投影"
+            "semantic_score": 0.5808,
+            "lexical_score": 0.1302,
+            "rerank_score": 0.6605,
+            "content_preview": "## 奇点实验室\n**位置**：星环核心动力轴心区，也是小镇的物理中心。\n**首席工程师**：顾辰\n**简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。\n**特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程"
           }
         ]
       }
@@ -475,19 +540,20 @@
       "hypothesis": "chunk",
       "mode": "search",
       "npc": "",
-      "passed": false,
+      "passed": true,
       "detail": {
         "goal": "验证历史事件型样本在当前 chunk 划分下是否能把时间+人物保存在同一个核心块。",
-        "query": "奇点实验室反叛危机发生在什么时候 谁解决的",
+        "query": "奇点实验室反叛危机发生在什么时候？谁解决的",
         "total_hits": 8,
         "top1_source": "global/history_and_rules.md",
-        "top1_chunk_index": 3,
+        "top1_chunk_index": 2,
         "top1_keywords": {
           "hits": [
+            "0035年",
             "顾辰"
           ],
-          "hit_count": 1,
-          "all_hit": false
+          "hit_count": 2,
+          "all_hit": true
         },
         "any_hit_keywords": {
           "hits": [
@@ -499,7 +565,15 @@
         },
         "topk_presence": [],
         "retrieval_signals": {
-          "lexical_ranks": [],
+          "lexical_ranks": [
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
           "semantic_ranks": [
             1,
             2,
@@ -510,46 +584,56 @@
             7,
             8
           ],
-          "hybrid_ranks": [],
-          "lexical_hit_in_topk": false,
-          "hybrid_hit_in_topk": false
+          "hybrid_ranks": [
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "lexical_hit_in_topk": true,
+          "hybrid_hit_in_topk": true
         },
         "top3_preview": [
           {
             "rank": 1,
             "source": "global/history_and_rules.md",
-            "chunk_index": 3,
+            "chunk_index": 2,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
-            "semantic_score": 0.5498,
-            "lexical_score": 0.0,
-            "rerank_score": 0.5498,
-            "content_preview": "2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。"
+            "semantic_score": 0.328,
+            "lexical_score": 1.0,
+            "rerank_score": 0.893,
+            "content_preview": "## 重大历史事件\n- **“大断连”**：发生在公元 2155年。这一年也被定为星环历 0001年。小镇与母星地球的通讯突发永久性中断。小镇从“科考工作点”被迫转变为“独立星际城市”。相关机密史料现由风泠存放在旧日档案馆。\n- **“第一引擎点火日”**：发生在星环历 0001年 4月4日。断连导致空间站轨道衰减，小镇面临坠毁危机。第一代实验室工程师强行改"
           },
           {
             "rank": 2,
+            "source": "global/history_and_rules.md",
+            "chunk_index": 3,
+            "retrieval_sources": [
+              "lexical",
+              "semantic"
+            ],
+            "semantic_score": 0.6025,
+            "lexical_score": 0.1393,
+            "rerank_score": 0.661,
+            "content_preview": "2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。"
+          },
+          {
+            "rank": 3,
             "source": "global/locations.md",
             "chunk_index": 2,
             "retrieval_sources": [
               "semantic"
             ],
-            "semantic_score": 0.4504,
+            "semantic_score": 0.4325,
             "lexical_score": 0.0,
-            "rerank_score": 0.4504,
+            "rerank_score": 0.4325,
             "content_preview": "## 银河电台\n**位置**：星环最高处的信号塔顶层。\n**主理人**：郁米\n**简介**：这不仅是一个单纯播放音乐的地方，更是维系整个小镇心理健康的“情绪灯塔”。这里还设有一间隐秘而柔软的心灵疏导室。\n**特色**：每到夜晚，电台会捕捉来自深空的神秘波段。郁米会将这些波段转化为治愈的白噪音。这里没有刺眼的冷光灯，到处是温暖的香薰和柔软的抱枕。当任何人感到疲"
-          },
-          {
-            "rank": 3,
-            "source": "global/locations.md",
-            "chunk_index": 1,
-            "retrieval_sources": [
-              "semantic"
-            ],
-            "semantic_score": 0.4035,
-            "lexical_score": 0.0,
-            "rerank_score": 0.4035,
-            "content_preview": "## 旧日档案馆\n**位置**：星环内环数据回廊。\n**管理员**：风泠\n**简介**：这是小镇记忆的物理与数字心脏。这里储藏着从“地球时代”流传下来的珍贵纸质书卷和遗物。这里也有海量的“星际时代”全息影像。同时，档案馆的底层核心阵列正在实时并且精确地记录着小镇当下正在发生的每一段记忆。\n**特色**：空气里略带一点陈旧纸张的冷杉木香。由于设备老化，全息投影"
           }
         ]
       }
@@ -563,7 +647,7 @@
       "detail": {
         "goal": "验证长记忆上下文下，prompt 裁剪不会把知识 grounding 挤掉；同时观察 query_mode 与回答是否仍 grounded。",
         "query": "绮梦咖啡馆位于哪里？如果我要在汇报里提到它，你建议我先讲位置还是先讲它 0.8 倍重力的特点？",
-        "reply": "先判断一下，你是不是在询问具体信息，还是在讨论汇报顺序。再拆解，你似乎同时提到了两个问题。 现在告诉我你的需求是哪个？汇报顺序还是具体位置？",
+        "reply": "先判断，再拆解，再给动作。位置是汇报中的基础信息，先讲位置再讲特点更合理。汇报顺序建议：位置 -> 特点 -> 重力效应。",
         "reply_keyword_hits": [
           "先"
         ],
@@ -572,53 +656,56 @@
         "expected_query_mode": "mixed",
         "tool_call_count": 2,
         "react_activated": false,
-        "input_tokens_est": 1676,
-        "latency_ms": 4505,
+        "input_tokens_est": 1695,
+        "latency_ms": 3352,
         "search_topk_presence": [
           {
             "source": "global/locations.md",
             "chunk_index": 0,
-            "rank": 5,
+            "rank": 1,
             "max_rank": 3,
-            "passed": false
+            "passed": true
           }
         ],
         "search_top3_preview": [
           {
             "rank": 1,
-            "source": "global/history_and_rules.md",
-            "chunk_index": 3,
+            "source": "global/locations.md",
+            "chunk_index": 0,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
-            "semantic_score": 0.5105,
-            "lexical_score": 0.0,
-            "rerank_score": 0.5105,
-            "content_preview": "2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。"
+            "semantic_score": 0.3997,
+            "lexical_score": 1.0,
+            "rerank_score": 0.9897,
+            "content_preview": "# 新伊甸星环小镇地标建筑说明\n\n## 绮梦咖啡馆\n**位置**：星环主观测层，紧贴着巨大的全景抗压玻璃。\n**简介**：新伊甸星环小镇最受欢迎的公共休息区。由于位于星环边缘，这里的重力场被人工设定为标准重力的 0.8倍。居民们走在这里会有微微的轻盈感。连咖啡杯里的拉花都不容易散开。\n**特色**：\n- **失重抹茶**：通过特定微重力发泡引擎打出的抹茶束。"
           },
           {
             "rank": 2,
-            "source": "global/locations.md",
-            "chunk_index": 3,
-            "retrieval_sources": [
-              "semantic"
-            ],
-            "semantic_score": 0.4796,
-            "lexical_score": 0.0,
-            "rerank_score": 0.4796,
-            "content_preview": "## 奇点实验室\n**位置**：星环核心动力轴心区，也是小镇的物理中心。\n**首席工程师**：顾辰\n**简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。\n**特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程"
-          },
-          {
-            "rank": 3,
             "source": "global/history_and_rules.md",
             "chunk_index": 0,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
             "semantic_score": 0.4189,
-            "lexical_score": 0.0,
-            "rerank_score": 0.4489,
+            "lexical_score": 0.6306,
+            "rerank_score": 0.8587,
             "content_preview": "# 小镇常识与重大历史事件\n\n## 基础常识\n- **标准历法**：小镇采用“星环历”。以“大断连”发生的那一年定为星环历 0001年。当前时间是星环历 0042年。\n- **通用货币：星币**：小镇唯一的电子货币。货币价值与能量配额直接挂钩。1星币等于1标准度电能。在绮梦咖啡馆买一杯“深空冷萃”需要 5 星币。乘坐磁悬浮驳船一次需要 2 星币。\n- **环"
+          },
+          {
+            "rank": 3,
+            "source": "global/locations.md",
+            "chunk_index": 3,
+            "retrieval_sources": [
+              "lexical",
+              "semantic"
+            ],
+            "semantic_score": 0.4796,
+            "lexical_score": 0.1372,
+            "rerank_score": 0.5622,
+            "content_preview": "## 奇点实验室\n**位置**：星环核心动力轴心区，也是小镇的物理中心。\n**首席工程师**：顾辰\n**简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。\n**特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程"
           }
         ]
       }
@@ -632,20 +719,22 @@
       "detail": {
         "goal": "验证高上下文输入下，记忆和知识能否同时保留，不被 prompt trimming 破坏。",
         "query": "我想去银河电台待一会儿，你还记得什么样的回应方式会让我更安心吗？顺便告诉我银河电台在什么位置。",
-        "reply": "我能记得你之前提到过希望关键词清晰一些。那么我们一起来试试，你先说说你现在最想表达的关键点是什么？",
-        "reply_keyword_hits": [],
+        "reply": "哦，你想到银河电台去放松一下。听起来像是想找个地方静一静。既然这样，银河电台的位置你有没有了解过呢？",
+        "reply_keyword_hits": [
+          "听"
+        ],
         "reply_forbidden_hits": [],
         "query_mode": "recall",
         "expected_query_mode": "mixed",
         "tool_call_count": 1,
         "react_activated": false,
-        "input_tokens_est": 1547,
-        "latency_ms": 5796,
+        "input_tokens_est": 1550,
+        "latency_ms": 3286,
         "search_topk_presence": [
           {
             "source": "global/locations.md",
             "chunk_index": 2,
-            "rank": 2,
+            "rank": 1,
             "max_rank": 3,
             "passed": true
           }
@@ -653,39 +742,42 @@
         "search_top3_preview": [
           {
             "rank": 1,
-            "source": "global/history_and_rules.md",
-            "chunk_index": 3,
-            "retrieval_sources": [
-              "semantic"
-            ],
-            "semantic_score": 0.5649,
-            "lexical_score": 0.0,
-            "rerank_score": 0.5649,
-            "content_preview": "2月12日。由于旧版管理 AI 逻辑错误，实验室防御系统自动锁死了核心能源区。顾辰当时作为年轻的高级工程师，孤身切断了主控网并接管了底层控制权。这场危机奠定了顾辰目前的首席地位。"
-          },
-          {
-            "rank": 2,
             "source": "global/locations.md",
             "chunk_index": 2,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
             "semantic_score": 0.4618,
-            "lexical_score": 0.0,
-            "rerank_score": 0.4618,
+            "lexical_score": 0.8232,
+            "rerank_score": 0.9526,
             "content_preview": "## 银河电台\n**位置**：星环最高处的信号塔顶层。\n**主理人**：郁米\n**简介**：这不仅是一个单纯播放音乐的地方，更是维系整个小镇心理健康的“情绪灯塔”。这里还设有一间隐秘而柔软的心灵疏导室。\n**特色**：每到夜晚，电台会捕捉来自深空的神秘波段。郁米会将这些波段转化为治愈的白噪音。这里没有刺眼的冷光灯，到处是温暖的香薰和柔软的抱枕。当任何人感到疲"
+          },
+          {
+            "rank": 2,
+            "source": "global/history_and_rules.md",
+            "chunk_index": 1,
+            "retrieval_sources": [
+              "lexical",
+              "semantic"
+            ],
+            "semantic_score": 0.2481,
+            "lexical_score": 1.0,
+            "rerank_score": 0.7881,
+            "content_preview": "## 特色节庆\n- **微陨石雨观测季**：每年星环历 7月15日 开始，持续三天。这段时间小镇会穿过天鹅座碎片带。大量微陨石撞击能量护盾，摩擦产生五颜六色的能量涟漪。这是小镇最浪漫的年度节日。\n- **静默纪念日**：每年星环历 12月31日。为了纪念与地球断开通讯的那一天。当天晚上 20:00 至 20:05，全镇会关闭非必要照明。银河电台在此期间也会停"
           },
           {
             "rank": 3,
             "source": "global/locations.md",
-            "chunk_index": 3,
+            "chunk_index": 0,
             "retrieval_sources": [
+              "lexical",
               "semantic"
             ],
-            "semantic_score": 0.3893,
-            "lexical_score": 0.0,
-            "rerank_score": 0.3893,
-            "content_preview": "## 奇点实验室\n**位置**：星环核心动力轴心区，也是小镇的物理中心。\n**首席工程师**：顾辰\n**简介**：这里负责维护小镇核心引擎、能量护盾以及研发新科技。这里是危险的硬核禁区。门禁极度森严，闲人绝对免进。\n**特色**：这里永远闪烁着终端屏幕的冷蓝色光芒。空气里常年充斥着臭氧、机油和浓缩咖啡混合的味道。地上散落着不知名的机械零件、等待拆解的任务流程"
+            "semantic_score": 0.2696,
+            "lexical_score": 0.4577,
+            "rerank_score": 0.6068,
+            "content_preview": "# 新伊甸星环小镇地标建筑说明\n\n## 绮梦咖啡馆\n**位置**：星环主观测层，紧贴着巨大的全景抗压玻璃。\n**简介**：新伊甸星环小镇最受欢迎的公共休息区。由于位于星环边缘，这里的重力场被人工设定为标准重力的 0.8倍。居民们走在这里会有微微的轻盈感。连咖啡杯里的拉花都不容易散开。\n**特色**：\n- **失重抹茶**：通过特定微重力发泡引擎打出的抹茶束。"
           }
         ]
       }

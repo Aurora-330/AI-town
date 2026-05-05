@@ -3,90 +3,59 @@
     "player": {
       "pending_turns": [
         {
-          "player_message": "我最近在准备一个汇报，最怕一上来就把现状、风险和下一步讲混。",
-          "npc_response": "先理清思路再开始，你先把重点和关键点列出来，这样汇报时就能条理清晰多了。",
-          "timestamp": "2026-05-06T03:31:41.898698",
-          "affinity": 53.0,
+          "player_message": "绮梦咖啡馆位于哪里？如果我要在汇报里提到它，你建议我先讲位置还是先讲它 0.8 倍重力的特点？",
+          "npc_response": "先判断，再拆解，再给动作。位置是汇报中的基础信息，先讲位置再讲特点更合理。汇报顺序建议：位置 -> 特点 -> 重力效应。",
+          "timestamp": "2026-05-06T03:32:05.340535",
+          "affinity": 71.0,
           "affinity_change": 3,
           "sentiment": "positive",
           "source_memory_ids": [
-            "46a486cb-2d11-49af-8d53-c7a23f98a72e",
-            "a7dae8bb-5398-4dca-a90e-ed51cc58d5df"
-          ]
-        },
-        {
-          "player_message": "如果让我先讲目标，再讲限制，再讲风险，我会更有安全感。",
-          "npc_response": "先理清目标和限制，再分析潜在风险，这样层次分明，汇报也会更清晰。",
-          "timestamp": "2026-05-06T03:31:44.851784",
-          "affinity": 56.0,
-          "affinity_change": 3,
-          "sentiment": "positive",
-          "source_memory_ids": [
-            "09096662-5995-4d76-b460-008db7f396bc",
-            "c56ecbc1-2ab1-43c9-87b5-375bf1207d08"
-          ]
-        },
-        {
-          "player_message": "我不喜欢别人让我自由发挥，我更需要一个清晰结构。",
-          "npc_response": "先理清思路再开始，你先把重点和关键点列出来，这样汇报时就能条理清晰多了。",
-          "timestamp": "2026-05-06T03:31:47.657051",
-          "affinity": 59.0,
-          "affinity_change": 3,
-          "sentiment": "positive",
-          "source_memory_ids": [
-            "7cf9ca6a-638c-43b8-ad89-64b98e0a92a5",
-            "ec66ea19-e00c-495a-a6aa-74ad3018d798"
-          ]
-        },
-        {
-          "player_message": "路线图里如果没有优先级和资源约束，我会觉得特别不踏实。",
-          "npc_response": "先理清目标和限制，再分析潜在风险，明确优先级和资源约束，这样路线图才会清晰可行。",
-          "timestamp": "2026-05-06T03:31:50.647049",
-          "affinity": 62.0,
-          "affinity_change": 3,
-          "sentiment": "positive",
-          "source_memory_ids": [
-            "ebedf7f4-eff9-442b-b35b-fec36d8c70d1",
-            "3d1719ba-6992-499e-82e4-ece7bd45a215"
-          ]
-        },
-        {
-          "player_message": "这次还要兼顾知识库演示，所以我担心内容太散。",
-          "npc_response": "先理清每个部分的核心要点，再串联成整体框架。",
-          "timestamp": "2026-05-06T03:31:54.990724",
-          "affinity": 65.0,
-          "affinity_change": 3,
-          "sentiment": "positive",
-          "source_memory_ids": [
-            "61cfb19c-c2c2-4430-bf86-8b2b14d0e7e7",
-            "da3c5e78-2e5d-45d4-b0f7-f073b1beb4a4"
+            "0eb30fbf-fe8a-4d56-aea2-c3e4d57a8497",
+            "080c90b1-27a5-4a25-86c9-febbbd56e4b4"
           ]
         }
       ],
-      "summary_count": 0,
+      "summary_count": 1,
       "recent_turns": [
-        {
-          "player_message": "我不喜欢别人让我自由发挥，我更需要一个清晰结构。",
-          "npc_response": "先理清思路再开始，你先把重点和关键点列出来，这样汇报时就能条理清晰多了。",
-          "timestamp": "2026-05-06T03:31:47.657051"
-        },
-        {
-          "player_message": "路线图里如果没有优先级和资源约束，我会觉得特别不踏实。",
-          "npc_response": "先理清目标和限制，再分析潜在风险，明确优先级和资源约束，这样路线图才会清晰可行。",
-          "timestamp": "2026-05-06T03:31:50.647049"
-        },
         {
           "player_message": "这次还要兼顾知识库演示，所以我担心内容太散。",
           "npc_response": "先理清每个部分的核心要点，再串联成整体框架。",
           "timestamp": "2026-05-06T03:31:54.990724"
+        },
+        {
+          "player_message": "如果可以的话，请你以后提醒我先讲现状，再讲风险，最后讲下一步。",
+          "npc_response": "先理清现状、风险和下一步，这顺序对你来说最清晰，也最容易把握重点。接下来你可以试试这样安排汇报：现状 -> 风险 -> 下一步。",
+          "timestamp": "2026-05-06T03:31:58.268755"
+        },
+        {
+          "player_message": "绮梦咖啡馆位于哪里？如果我要在汇报里提到它，你建议我先讲位置还是先讲它 0.8 倍重力的特点？",
+          "npc_response": "先判断，再拆解，再给动作。位置是汇报中的基础信息，先讲位置再讲特点更合理。汇报顺序建议：位置 -> 特点 -> 重力效应。",
+          "timestamp": "2026-05-06T03:32:05.340535"
         }
       ],
       "last_injected_memory_ids": [],
       "last_injected_knowledge_keys": [
-        "8cd7a4a67efc4f2857819e580374696c"
+        "9b1d9f383d570f2fd289d02f66e046fd"
       ]
     }
   },
   "archived_memory_ids": [],
-  "summary_records": {}
+  "summary_records": {
+    "209c7d13-300d-454c-81c1-8722cda02a99": {
+      "memory_id": "209c7d13-300d-454c-81c1-8722cda02a99",
+      "player_id": "player",
+      "summary_index": 1,
+      "summary_level": "base",
+      "compressed_from_ids": [],
+      "compression_round": 0,
+      "low_priority": false,
+      "is_compressed": false,
+      "hit_count": 0,
+      "last_hit_at": "",
+      "summary_text": "摘要记忆: 玩家在准备汇报时习惯先整理思路和重点，不喜欢自由发挥，希望有清晰的结构。顾辰建议先理清目标和限制，再分析潜在风险，并明确优先级和资源约束，以确保汇报清晰有序。玩家对知识库演示感到担忧，认为内容容易散乱。顾辰提出先梳理每个部分的核心要点，再整合成整体框架。玩家希望在汇报中按照“现状 -> 风险 -> 下一步”的顺序进行。顾辰采纳了玩家的建议，并提醒玩家在下次汇报时尝试采用新的顺序。",
+      "content_preview": "摘要记忆: 玩家在准备汇报时习惯先整理思路和重点，不喜欢自由发挥，希望有清晰的结构。顾辰建议先理清目标和限制，再分析潜在风险，并明确优先级和资源约束，以确...",
+      "importance": 0.85,
+      "timestamp": "2026-05-06T03:32:01.967992"
+    }
+  }
 }
