@@ -165,7 +165,7 @@ need_rerank=true/false
     }
 
     def __init__(self, base_dir: Path | None = None):
-        self.base_dir = base_dir or Path(__file__).parent / "prompts"
+        self.base_dir = base_dir or Path(__file__).parent
 
     def build_system_prompt(self, name: str, role: Dict[str, Any]) -> str:
         role_context = {"name": name, **role}

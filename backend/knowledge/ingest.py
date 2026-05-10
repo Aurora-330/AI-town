@@ -2,7 +2,7 @@
 
 import argparse
 
-from knowledge_retriever import KnowledgeRetriever
+from .retriever import KnowledgeRetriever
 
 
 def main():

@@ -3,7 +3,8 @@
 import asyncio
 from datetime import datetime
 from typing import Dict, Optional
-from batch_generator import get_batch_generator
+
+from .batch_generator import get_batch_generator
 
 class NPCStateManager:
     """NPC状态管理器
@@ -131,4 +132,3 @@ def get_state_manager(update_interval: int = 30) -> NPCStateManager:
     if _state_manager is None:
         _state_manager = NPCStateManager(update_interval)
     return _state_manager
-

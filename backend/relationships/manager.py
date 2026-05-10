@@ -2,9 +2,12 @@
 
 import sys
 import os
+from pathlib import Path
+
+BACKEND_DIR = Path(__file__).resolve().parent.parent
 
 # 添加HelloAgents到Python路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'HelloAgents'))
+sys.path.insert(0, str(BACKEND_DIR.parent / "HelloAgents"))
 
 from hello_agents import SimpleAgent, HelloAgentsLLM
 from typing import Dict, Optional, Tuple, Literal
@@ -51,6 +54,24 @@ class RelationshipManager:
         )
         
         print("💖 好感度管理系统已初始化")
+
+    def _reset_analyzer_history(self):
+        """好感度分析按轮无状态执行，避免分析器历史逐轮膨胀。"""
+        if not self.analyzer_agent:
+            return
+
+        if hasattr(self.analyzer_agent, "clear_history"):
+            try:
+                self.analyzer_agent.clear_history()
+                return
+            except Exception:
+                pass
+
+        for attr in ["_history", "message_history", "history"]:
+            if hasattr(self.analyzer_agent, attr):
+                value = getattr(self.analyzer_agent, attr)
+                if isinstance(value, list):
+                    value.clear()
     
     def _create_analyzer_prompt(self) -> str:
         """创建情感分析Agent的系统提示词"""
@@ -267,6 +288,7 @@ sentiment=positive/neutral/negative
         prompt: str
     ) -> Dict:
         """执行分析、校验和一次自动重试"""
+        self._reset_analyzer_history()
         response = self.analyzer_agent.run(prompt)
 
         try:
@@ -275,6 +297,7 @@ sentiment=positive/neutral/negative
             print(f"⚠️ 首次好感度结构化输出失败: {first_error}. 原始响应: {response[:120]}")
 
             retry_prompt = self._build_retry_prompt(prompt, response, str(first_error))
+            self._reset_analyzer_history()
             retry_response = self.analyzer_agent.run(retry_prompt)
 
             try:

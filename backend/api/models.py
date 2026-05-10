@@ -39,6 +39,9 @@ class ChatResponse(BaseModel):
     tool_call_count: int = Field(default=0, description="本轮工具调用次数")
     input_tokens_est: int = Field(default=0, description="最终 prompt 输入 token 估算")
     latency_ms: int = Field(default=0, description="本轮处理耗时（毫秒）")
+    error_type: str = Field(default="", description="错误类型标记；用于评测上下文超窗等异常")
+    prompt_budget_debug: Dict[str, object] = Field(default_factory=dict, description="上下文治理观测数据")
+    retrieval_metrics: Dict[str, object] = Field(default_factory=dict, description="记忆/知识检索观测数据")
     
     class Config:
         json_schema_extra = {
@@ -56,6 +59,9 @@ class ChatResponse(BaseModel):
                 "tool_call_count": 0,
                 "input_tokens_est": 0,
                 "latency_ms": 0,
+                "error_type": "",
+                "prompt_budget_debug": {},
+                "retrieval_metrics": {},
             }
         }
 

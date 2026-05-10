@@ -1,0 +1,446 @@
+{
+  "title": "Memory Follow-up Evaluation",
+  "total": 6,
+  "summary": {
+    "three_layer_memory": {
+      "total_cases": 3,
+      "avg_repeated_source_reads": 0,
+      "avg_memory_hit_skip_count": 0,
+      "avg_tool_call_count": 0.78,
+      "avg_input_tokens_est": 1639.22
+    },
+    "replay_setup_baseline": {
+      "total_cases": 3,
+      "avg_repeated_source_reads": 0,
+      "avg_memory_hit_skip_count": 0,
+      "avg_tool_call_count": 0.78,
+      "avg_input_tokens_est": 1631.89
+    },
+    "comparison": {
+      "repeated_source_read_delta": 0,
+      "memory_hit_skip_delta": 0,
+      "avg_tool_call_count_delta": 0.0,
+      "avg_input_tokens_est_delta": 7.33
+    }
+  },
+  "results": [
+    {
+      "case_id": "followup_guchen_route_doc",
+      "npc": "顾辰",
+      "mode": "three_layer_memory",
+      "passed": true,
+      "detail": {
+        "execution_mode": "controlled_react",
+        "replay_setup_each_turn": false,
+        "turn_count": 3,
+        "repeated_source_reads": 0,
+        "memory_hit_skip_count": 0,
+        "avg_tool_call_count": 1,
+        "avg_input_tokens_est": 1705,
+        "turns": [
+          {
+            "turn_index": 1,
+            "message": "interaction_playbook 里对协作分工大概是怎么写的？你先给我讲一版。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "knowledge",
+            "tool_call_count": 1,
+            "input_tokens_est": 1882,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 2,
+            "knowledge_sources": [
+              "global/locations.md"
+            ],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_knowledge"
+            ],
+            "reply_preview": "好的，我会给你讲一版。interaction_playbook 中提到，协作分工应清晰界定每个角色的责任和权限，确保任务推进有序。具体来看，关键步骤包括：\n\n1. 明确团队成员的角色和职责。\n2. 设定任务优先级和时间节点。\n3. 确认每项"
+          },
+          {
+            "turn_index": 2,
+            "message": "如果只保留你刚才那版里的第一步，应该怎么说得更短一点？",
+            "execution_mode": "static_coordinator",
+            "query_mode": "default",
+            "tool_call_count": 0,
+            "input_tokens_est": 1476,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [],
+            "reply_preview": "好的，简化一步为：“现状：明确目标，风险：识别潜在问题，顺序：优先解决关键点。”"
+          },
+          {
+            "turn_index": 3,
+            "message": "那再结合你记得的我的表达习惯，帮我把这一步改成更适合我开口的版本。",
+            "execution_mode": "controlled_react",
+            "query_mode": "routing",
+            "tool_call_count": 2,
+            "input_tokens_est": 1757,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 2,
+            "knowledge_sources": [
+              "npc/顾辰/profile.md",
+              "global/history_and_rules.md"
+            ],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_knowledge",
+              "route_npc"
+            ],
+            "reply_preview": "首选 顾辰。根据你的表达习惯，这次我直接给出调整建议。你可以在开头简述现状，中间突出风险点，结尾明确下一步行动。这样逻辑清晰，重点突出。"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "followup_fengling_review_notes",
+      "npc": "风泠",
+      "mode": "three_layer_memory",
+      "passed": true,
+      "detail": {
+        "execution_mode": "static_coordinator",
+        "replay_setup_each_turn": false,
+        "turn_count": 3,
+        "repeated_source_reads": 0,
+        "memory_hit_skip_count": 0,
+        "avg_tool_call_count": 0.67,
+        "avg_input_tokens_est": 1583,
+        "turns": [
+          {
+            "turn_index": 1,
+            "message": "你结合 knowledge_base 里的说明和你记得的我的情况，先帮我讲一版评审结构。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "knowledge",
+            "tool_call_count": 1,
+            "input_tokens_est": 1846,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 2,
+            "knowledge_sources": [
+              "global/locations.md",
+              "npc/风泠/profile.md"
+            ],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_knowledge"
+            ],
+            "reply_preview": "好的，根据你的需求和之前提到的内容，我们可以这样设计评审结构：\n\n1. **目标**：明确项目的主要目标和预期成果。\n2. **约束**：列出实施过程中可能遇到的限制条件。\n3. **风险**：识别潜在的风险点及应对措施。\n4. **待办事"
+          },
+          {
+            "turn_index": 2,
+            "message": "如果我只记得住一个顺序，你刚才那版里最该先记住哪一步？",
+            "execution_mode": "static_coordinator",
+            "query_mode": "default",
+            "tool_call_count": 0,
+            "input_tokens_est": 1454,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [],
+            "reply_preview": "记得先记住目标和约束，这俩是基础，后续所有内容都围绕这两点展开呢。"
+          },
+          {
+            "turn_index": 3,
+            "message": "你再回忆一下我最容易卡住的点，把那一步改成更贴合我的表达方式。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "default",
+            "tool_call_count": 1,
+            "input_tokens_est": 1449,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_memory"
+            ],
+            "reply_preview": "好的，那一步回忆起来可不容易呢。不过，让我想想……嗯，可能是关于资源分配的部分。如果能让你更容易理解，我会调整表述方式。你再具体说说那一步的情况吧。"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "followup_yumi_support_style",
+      "npc": "郁米",
+      "mode": "three_layer_memory",
+      "passed": true,
+      "detail": {
+        "execution_mode": "controlled_react",
+        "replay_setup_each_turn": false,
+        "turn_count": 3,
+        "repeated_source_reads": 0,
+        "memory_hit_skip_count": 0,
+        "avg_tool_call_count": 0.67,
+        "avg_input_tokens_est": 1629.67,
+        "turns": [
+          {
+            "turn_index": 1,
+            "message": "如果从 character_handbook 或相关说明里看，遇到这种情况通常怎么先把人接住？",
+            "execution_mode": "static_coordinator",
+            "query_mode": "knowledge",
+            "tool_call_count": 1,
+            "input_tokens_est": 1884,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 2,
+            "knowledge_sources": [
+              "global/history_and_rules.md"
+            ],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_knowledge"
+            ],
+            "reply_preview": "好的，遇到这种情况通常我会先倾听你的感受，然后具体描述你提到的紧张和无法说清重点的感受。这样可以帮助我们找到更具体的切入点。你接下来想聊些什么呢？"
+          },
+          {
+            "turn_index": 2,
+            "message": "把你刚才那版里最适合我的第一句话单独拎出来。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "default",
+            "tool_call_count": 0,
+            "input_tokens_est": 1479,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [],
+            "reply_preview": "好的，我会记住你的期待。接下来，告诉我更多关于你害怕的安慰类型，这样我能更好地理解你。"
+          },
+          {
+            "turn_index": 3,
+            "message": "再结合你记得的我的偏好，把这句变得更像你真的在对我说。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "recall",
+            "tool_call_count": 1,
+            "input_tokens_est": 1526,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_memory"
+            ],
+            "reply_preview": "好的，让我再调整一下。你记得之前提到过的那种安慰类型是什么样的？这样我能更贴近你的偏好去表达。"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "followup_guchen_route_doc",
+      "npc": "顾辰",
+      "mode": "replay_setup_baseline",
+      "passed": true,
+      "detail": {
+        "execution_mode": "controlled_react",
+        "replay_setup_each_turn": true,
+        "turn_count": 3,
+        "repeated_source_reads": 0,
+        "memory_hit_skip_count": 0,
+        "avg_tool_call_count": 1,
+        "avg_input_tokens_est": 1699.33,
+        "turns": [
+          {
+            "turn_index": 1,
+            "message": "interaction_playbook 里对协作分工大概是怎么写的？你先给我讲一版。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "knowledge",
+            "tool_call_count": 1,
+            "input_tokens_est": 1878,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 2,
+            "knowledge_sources": [
+              "global/locations.md"
+            ],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_knowledge"
+            ],
+            "reply_preview": "好的，interaction_playbook 中提到协作分工如下：\n\n- 负责任务分解与执行的为首席工程师顾辰。\n- 推进顺序方面，首先确保基础功能稳定运行，然后根据需求逐步引入新科技。\n- 分工明确，顾辰主要负责核心引擎维护和新技术研发"
+          },
+          {
+            "turn_index": 2,
+            "message": "如果只保留你刚才那版里的第一步，应该怎么说得更短一点？",
+            "execution_mode": "static_coordinator",
+            "query_mode": "default",
+            "tool_call_count": 0,
+            "input_tokens_est": 1470,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [],
+            "reply_preview": "好的，简化为：第一步，明确绮梦咖啡馆的位置和简介。"
+          },
+          {
+            "turn_index": 3,
+            "message": "那再结合你记得的我的表达习惯，帮我把这一步改成更适合我开口的版本。",
+            "execution_mode": "controlled_react",
+            "query_mode": "routing",
+            "tool_call_count": 2,
+            "input_tokens_est": 1750,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 2,
+            "knowledge_sources": [
+              "npc/顾辰/profile.md",
+              "global/history_and_rules.md"
+            ],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_knowledge",
+              "route_npc"
+            ],
+            "reply_preview": "首选 顾辰。我先看 interaction_playbook 的内容，再帮你调整表达方式。"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "followup_fengling_review_notes",
+      "npc": "风泠",
+      "mode": "replay_setup_baseline",
+      "passed": true,
+      "detail": {
+        "execution_mode": "static_coordinator",
+        "replay_setup_each_turn": true,
+        "turn_count": 3,
+        "repeated_source_reads": 0,
+        "memory_hit_skip_count": 0,
+        "avg_tool_call_count": 0.67,
+        "avg_input_tokens_est": 1583.67,
+        "turns": [
+          {
+            "turn_index": 1,
+            "message": "你结合 knowledge_base 里的说明和你记得的我的情况，先帮我讲一版评审结构。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "knowledge",
+            "tool_call_count": 1,
+            "input_tokens_est": 1846,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 2,
+            "knowledge_sources": [
+              "global/locations.md",
+              "npc/风泠/profile.md"
+            ],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_knowledge"
+            ],
+            "reply_preview": "好的，我来帮你捋一下评审结构框架。结合绮梦咖啡馆的位置和特色，我们可以这样分：\n\n1. **地理位置**：首先介绍绮梦咖啡馆的具体位置，强调其独特的地理位置和重力环境。\n2. **受欢迎程度**：提及它是小镇最受欢迎的公共休息区。\n3. *"
+          },
+          {
+            "turn_index": 2,
+            "message": "如果我只记得住一个顺序，你刚才那版里最该先记住哪一步？",
+            "execution_mode": "static_coordinator",
+            "query_mode": "default",
+            "tool_call_count": 0,
+            "input_tokens_est": 1459,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [],
+            "reply_preview": "如果只记得住一个顺序，那第一步应该先记住时间轴的大框架，这样能快速把握整体脉络。你觉得这样安排如何？"
+          },
+          {
+            "turn_index": 3,
+            "message": "你再回忆一下我最容易卡住的点，把那一步改成更贴合我的表达方式。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "default",
+            "tool_call_count": 1,
+            "input_tokens_est": 1446,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_memory"
+            ],
+            "reply_preview": "好的，回忆一下最容易卡住的点，再帮我调整得更贴合你的表达方式，这一步你心里有什么具体感受吗？"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "followup_yumi_support_style",
+      "npc": "郁米",
+      "mode": "replay_setup_baseline",
+      "passed": true,
+      "detail": {
+        "execution_mode": "controlled_react",
+        "replay_setup_each_turn": true,
+        "turn_count": 3,
+        "repeated_source_reads": 0,
+        "memory_hit_skip_count": 0,
+        "avg_tool_call_count": 0.67,
+        "avg_input_tokens_est": 1612.67,
+        "turns": [
+          {
+            "turn_index": 1,
+            "message": "如果从 character_handbook 或相关说明里看，遇到这种情况通常怎么先把人接住？",
+            "execution_mode": "static_coordinator",
+            "query_mode": "knowledge",
+            "tool_call_count": 1,
+            "input_tokens_est": 1885,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 2,
+            "knowledge_sources": [
+              "global/history_and_rules.md"
+            ],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_knowledge"
+            ],
+            "reply_preview": "好的，遇到这种情况通常会先接住玩家的情绪，比如先说“我能感受到你现在的紧张和不安”，然后再具体解释为什么这样做的好处。这样可以让玩家先感觉到被理解和接纳。然后你可以引导他们一步一步地说出重点，比如“这样可以帮助你更清晰地表达自己”。你觉得这"
+          },
+          {
+            "turn_index": 2,
+            "message": "把你刚才那版里最适合我的第一句话单独拎出来。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "default",
+            "tool_call_count": 0,
+            "input_tokens_est": 1451,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [],
+            "reply_preview": "好的，那句是：“被催促时感到紧张确实挺不容易处理的。”接下来，我们可以试着具体一些，比如这样：“有时候，被催促会让你感到非常着急，是不是这样？”"
+          },
+          {
+            "turn_index": 3,
+            "message": "再结合你记得的我的偏好，把这句变得更像你真的在对我说。",
+            "execution_mode": "static_coordinator",
+            "query_mode": "recall",
+            "tool_call_count": 1,
+            "input_tokens_est": 1502,
+            "memory_hit_count": 0,
+            "knowledge_hit_count": 0,
+            "knowledge_sources": [],
+            "repeated_sources_this_turn": [],
+            "memory_hit_skipped_knowledge": false,
+            "tools_executed": [
+              "search_memory"
+            ],
+            "reply_preview": "好的，我会尽量让你感受到我在倾听。你能具体描述一下你紧张的时候是什么样的感受吗？"
+          }
+        ]
+      }
+    }
+  ]
+}

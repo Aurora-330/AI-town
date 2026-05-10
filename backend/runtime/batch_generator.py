@@ -4,14 +4,17 @@ import sys
 import os
 import json
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, Optional
 
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+
 # 添加HelloAgents到Python路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'HelloAgents'))
+sys.path.insert(0, str(BACKEND_DIR.parent / "HelloAgents"))
 
 from hello_agents import HelloAgentsLLM
 from config import settings as _settings  # 触发 backend/.env 加载
-from agents import NPC_ROLES
+from agents.manager import NPC_ROLES
 
 class NPCBatchGenerator:
     """批量生成NPC对话的生成器

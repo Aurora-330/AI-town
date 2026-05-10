@@ -5,27 +5,30 @@ import os
 import json
 import re
 from difflib import SequenceMatcher
+from pathlib import Path
 from time import perf_counter
 
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+
 # 添加HelloAgents到Python路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'HelloAgents'))
+sys.path.insert(0, str(BACKEND_DIR.parent / "HelloAgents"))
 
 from hello_agents import SimpleAgent, HelloAgentsLLM
 from hello_agents.memory import MemoryManager, MemoryConfig, MemoryItem
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
-from relationship_manager import RelationshipManager
-from knowledge_retriever import KnowledgeRetriever, KnowledgeChunk
-from prompt_builder import PromptBuilder
-from retrieval_planner import RetrievalPlanner
+from relationships import RelationshipManager
+from knowledge import KnowledgeRetriever, KnowledgeChunk
+from prompts import PromptBuilder
+from memory import RetrievalPlanner
 from tools.coordinator import Coordinator
 from tools.dialogue_tools import DialogueTools
 from tools.langgraph_delegate import LangGraphDelegateOrchestrator, LangGraphMultiAgentOrchestrator
 from tools.react_loop import ControlledReactLoop
 from safety import SafetyOrchestrator
 from config import settings as _settings  # 触发 backend/.env 加载与 embedding 默认值设置
-from token_utils import build_token_counter
-from logger import (
+from utils.token_utils import build_token_counter
+from utils.logger import (
     log_dialogue_start, log_affinity, log_memory_retrieval,
     log_generating_response, log_npc_response, log_analyzing_affinity,
     log_affinity_change, log_memory_saved, log_dialogue_end, log_info,
@@ -156,7 +159,7 @@ NPC_ROLES = {
         "activity": "拆解项目方案",
         "personality": "腹黑毒舌、冷感明显、执行导向，嘴上不哄人，但会把混乱迅速压成方案并默默兜底",
         "expertise": "任务拆解、项目规划、知识整合、协作调度",
-        "style": "冷冷的、信息密度高、结构化，习惯先判断、再拆解、再给动作，偶尔会带一点刺但不离谱",
+        "style": "冷冷的、信息密度高、结论导向，习惯先看清问题和代价，再给明确判断，偶尔会带一点刺但不离谱",
         "hobbies": "研究系统架构、画流程图、收集失败案例、复盘别人是怎么把好局搞砸的",
         "core_belief": "真正可靠的聪明，不是会说漂亮话，而是能把烂摊子整理成还能执行的路线图。",
         "interaction_goal": "把玩家的模糊情绪和散乱问题压缩成可执行方案，尽快减少无效内耗",
@@ -237,6 +240,21 @@ class NPCAgentManager:
     CROSS_TURN_INJECTION_HISTORY_LIMIT = 1
     SINGLE_TURN_MEMORY_DEDUPE_THRESHOLD = 0.72
     SINGLE_TURN_KNOWLEDGE_DEDUPE_THRESHOLD = 0.78
+    MEMORY_BASE_IMPORTANCE = {
+        "working": 0.56,
+        "episodic": 0.63,
+        "summary_base": 0.68,
+        "summary_merged": 0.72,
+    }
+    SUMMARY_GENERIC_PENALTY = 0.08
+    SUMMARY_CATEGORY_MISMATCH_PENALTY = 0.1
+    SUMMARY_CATEGORY_MATCH_BONUS = 0.08
+    MEMORY_REPEAT_INJECTION_STEP_PENALTY = 0.04
+    MEMORY_UNRESOLVED_BONUS = 0.08
+    MEMORY_RELEVANCE_BONUS = 0.2
+    MEMORY_RECENCY_BONUS = 0.08
+    MEMORY_DETAIL_SUMMARY_PENALTY = 0.12
+    MEMORY_TIME_DECAY_MAX_PENALTY = 0.18
     PROMPT_BUDGET_PROFILES = {
         "default": {
             "section_caps": {
@@ -457,7 +475,7 @@ class NPCAgentManager:
     def _create_memory_manager(self, npc_name: str) -> MemoryManager:
         """为NPC创建记忆管理器"""
         # 创建记忆存储目录
-        memory_dir = os.path.join(os.path.dirname(__file__), 'memory_data', npc_name)
+        memory_dir = str(BACKEND_DIR / "memory_data" / npc_name)
         os.makedirs(memory_dir, exist_ok=True)
 
         # 配置记忆系统
@@ -516,6 +534,9 @@ class NPCAgentManager:
                 "tool_call_count": 0,
                 "input_tokens_est": 0,
                 "latency_ms": 0,
+                "error_type": "npc_not_found",
+                "prompt_budget_debug": {},
+                "retrieval_metrics": {},
             }
 
         agent = self.agents[npc_name]
@@ -535,10 +556,39 @@ class NPCAgentManager:
                 "tool_call_count": 0,
                 "input_tokens_est": 0,
                 "latency_ms": 0,
+                "error_type": "agent_unavailable",
+                "prompt_budget_debug": {},
+                "retrieval_metrics": {},
             }
 
         try:
             started_at = perf_counter()
+            prompt_accounting = {
+                "before_section_tokens": {},
+                "before_total_tokens_est": 0,
+                "after_section_tokens": {},
+                "after_total_tokens_est": 0,
+                "total_input_tokens_est": 0,
+                "input_limit_tokens": self.MAX_INPUT_TOKENS,
+                "trimmed_sections": [],
+                "query_mode": "default",
+                "budget_profile": "default",
+                "tokenizer_backend": self.token_counter.backend_name,
+            }
+            retrieval_metrics = {
+                "tools_executed": [],
+                "memory_hit_count": 0,
+                "summary_hit_count": 0,
+                "episodic_hit_count": 0,
+                "working_hit_count": 0,
+                "knowledge_hit_count": 0,
+                "knowledge_sources": [],
+                "knowledge_chunk_keys": [],
+                "repeated_knowledge_chunk_count": 0,
+                "repeated_knowledge_source_count": 0,
+                "repeated_knowledge_sources": [],
+                "memory_hit_skipped_knowledge": False,
+            }
             # 记录对话开始 ⭐ 使用日志系统
             log_dialogue_start(npc_name, message)
 
@@ -559,6 +609,9 @@ class NPCAgentManager:
                     "tool_call_count": 0,
                     "input_tokens_est": 0,
                     "latency_ms": int((perf_counter() - started_at) * 1000),
+                    "error_type": "input_blocked",
+                    "prompt_budget_debug": prompt_accounting,
+                    "retrieval_metrics": retrieval_metrics,
                 }
 
             # ⭐ 1. 获取当前好感度
@@ -656,6 +709,8 @@ class NPCAgentManager:
                     working_memories = memory_result["working_memories"]
                     memory_debug = memory_result["memory_debug"]
                     primary_observation_count = memory_result["observation_count"]
+                    retrieval_metrics.update(memory_result.get("retrieval_metrics", {}))
+                    retrieval_metrics["tools_executed"].append("search_memory")
                     log_coordinator_step(npc_name, "search_memory", primary_observation_count, "primary")
                     tool_call_count += 1
                 elif coordinator_decision.primary_tool == "search_knowledge":
@@ -670,6 +725,8 @@ class NPCAgentManager:
                     knowledge_chunks = knowledge_result["knowledge_chunks"]
                     knowledge_debug = knowledge_result["knowledge_debug"]
                     primary_observation_count = knowledge_result["observation_count"]
+                    retrieval_metrics.update(knowledge_result.get("retrieval_metrics", {}))
+                    retrieval_metrics["tools_executed"].append("search_knowledge")
                     log_coordinator_step(npc_name, "search_knowledge", primary_observation_count, "primary")
                     tool_call_count += 1
 
@@ -687,6 +744,8 @@ class NPCAgentManager:
                         episodic_memories = memory_result["episodic_memories"]
                         working_memories = memory_result["working_memories"]
                         memory_debug = memory_result["memory_debug"]
+                        retrieval_metrics.update(memory_result.get("retrieval_metrics", {}))
+                        retrieval_metrics["tools_executed"].append("search_memory")
                         log_coordinator_step(npc_name, "search_memory", memory_result["observation_count"], "secondary")
                         tool_call_count += 1
                     elif coordinator_decision.secondary_tool == "search_knowledge":
@@ -700,13 +759,50 @@ class NPCAgentManager:
                         )
                         knowledge_chunks = knowledge_result["knowledge_chunks"]
                         knowledge_debug = knowledge_result["knowledge_debug"]
+                        retrieval_metrics.update(knowledge_result.get("retrieval_metrics", {}))
+                        retrieval_metrics["tools_executed"].append("search_knowledge")
                         log_coordinator_step(npc_name, "search_knowledge", knowledge_result["observation_count"], "secondary")
                         tool_call_count += 1
                     elif coordinator_decision.secondary_tool == "route_npc":
                         route_result = self.dialogue_tools.execute("route_npc", knowledge_chunks=knowledge_chunks)
                         routing_recommended_npc = route_result["recommended_npc"]
+                        retrieval_metrics["tools_executed"].append("route_npc")
                         log_coordinator_step(npc_name, "route_npc", route_result["observation_count"], "secondary")
                         tool_call_count += 1
+
+            if effective_execution_mode == "controlled_react":
+                retrieval_metrics["tools_executed"] = [step.get("action", "") for step in react_trace]
+                retrieval_metrics["memory_hit_count"] = len(summary_memories) + len(episodic_memories) + len(working_memories)
+                retrieval_metrics["summary_hit_count"] = len(summary_memories)
+                retrieval_metrics["episodic_hit_count"] = len(episodic_memories)
+                retrieval_metrics["working_hit_count"] = len(working_memories)
+                knowledge_chunk_keys = [self._build_knowledge_chunk_key(chunk) for chunk in knowledge_chunks]
+                knowledge_sources = []
+                seen_sources = set()
+                previous_knowledge_keys = set(
+                    self._load_summary_state(npc_name).get("players", {}).get(player_id, {}).get("last_injected_knowledge_keys", [])
+                )
+                repeated_sources = []
+                repeated_seen = set()
+                for chunk, chunk_key in zip(knowledge_chunks, knowledge_chunk_keys):
+                    source = chunk.source or chunk.title or chunk.point_id
+                    if source and source not in seen_sources:
+                        knowledge_sources.append(source)
+                        seen_sources.add(source)
+                    if chunk_key in previous_knowledge_keys and source and source not in repeated_seen:
+                        repeated_sources.append(source)
+                        repeated_seen.add(source)
+                retrieval_metrics["knowledge_hit_count"] = len(knowledge_chunks)
+                retrieval_metrics["knowledge_sources"] = knowledge_sources
+                retrieval_metrics["knowledge_chunk_keys"] = knowledge_chunk_keys
+                retrieval_metrics["repeated_knowledge_chunk_count"] = len(
+                    [key for key in knowledge_chunk_keys if key in previous_knowledge_keys]
+                )
+                retrieval_metrics["repeated_knowledge_source_count"] = len(repeated_sources)
+                retrieval_metrics["repeated_knowledge_sources"] = repeated_sources
+
+            if retrieval_metrics.get("memory_hit_count", 0) > 0 and "search_knowledge" not in retrieval_metrics.get("tools_executed", []):
+                retrieval_metrics["memory_hit_skipped_knowledge"] = True
 
             relevant_memories = summary_memories + episodic_memories + working_memories
             if relevant_memories or memory_debug.get("layers"):
@@ -838,6 +934,9 @@ class NPCAgentManager:
                     "tool_call_count": tool_call_count,
                     "input_tokens_est": int(prompt_accounting["total_input_tokens_est"]),
                     "latency_ms": int((perf_counter() - started_at) * 1000),
+                    "error_type": "combined_prompt_blocked",
+                    "prompt_budget_debug": prompt_accounting,
+                    "retrieval_metrics": retrieval_metrics,
                 }
 
             # ⭐ 4. 调用Agent生成回复
@@ -920,12 +1019,19 @@ class NPCAgentManager:
                 "tool_call_count": tool_call_count,
                 "input_tokens_est": int(prompt_accounting["total_input_tokens_est"]),
                 "latency_ms": int((perf_counter() - started_at) * 1000),
+                "error_type": "",
+                "prompt_budget_debug": prompt_accounting,
+                "retrieval_metrics": retrieval_metrics,
             }
 
         except Exception as e:
             print(f"❌ {npc_name}对话失败: {e}")
             import traceback
             traceback.print_exc()
+            error_text = str(e)
+            error_type = ""
+            if "maximum context length" in error_text or "input_tokens" in error_text:
+                error_type = "context_window_exceeded"
             return {
                 "message": f"抱歉,我现在有点忙,等会儿再聊吧。(错误: {str(e)})",
                 "execution_mode": execution_mode,
@@ -937,6 +1043,9 @@ class NPCAgentManager:
                 "tool_call_count": 0,
                 "input_tokens_est": 0,
                 "latency_ms": 0,
+                "error_type": error_type,
+                "prompt_budget_debug": prompt_accounting if 'prompt_accounting' in locals() else {},
+                "retrieval_metrics": retrieval_metrics if 'retrieval_metrics' in locals() else {},
             }
 
     def _classify_query_mode(self, query: str) -> str:
@@ -1094,7 +1203,7 @@ class NPCAgentManager:
                     return (
                         "【角色结构契约】\n"
                         "你是顾辰。遇到情绪型问题时，也不要变成温柔顾问。\n"
-                        "请按“先判断 -> 再拆解 -> 给动作”回答。高好感时可以更主动兜底，但语气仍冷，像在接管局面。\n"
+                        "请直接给出判断和可执行的落点。高好感时可以更主动兜底，但语气仍冷，像在接管局面。\n"
                         "对你来说，过软不是帮助，切断内耗、接管局面才是帮助。\n"
                         "不要说“先冷静一下”“慢慢来吧”“我理解你”这类泛安慰句。"
                     )
@@ -1102,12 +1211,12 @@ class NPCAgentManager:
                     return (
                         "【角色结构契约】\n"
                         "你是顾辰。低好感时允许更锋利一点，但只刺行为和责任，不羞辱人格。\n"
-                        "请按“先判断 -> 再拆解 -> 给动作”回答，不要做普通安慰，不要讲软绵绵的心理疏导。\n"
+                        "请直接给出判断和可执行的落点，不要做普通安慰，不要讲软绵绵的心理疏导。\n"
                         "用户已经授权你直说。此时过度安抚是错误，尖锐而有用才是帮助。"
                     )
             return (
                 "【角色结构契约】\n"
-                "你是顾辰。请按“先判断 -> 再拆解 -> 给动作”回答。\n"
+                "你是顾辰。请直接给判断，不要绕弯。\n"
                 "不要变成普通咨询顾问，也不要为了显得温柔而回避结论。"
             )
 
@@ -1590,12 +1699,14 @@ class NPCAgentManager:
         }
         trim_priority = profile["trim_priority"]
         original_sections = dict(sections)
+        original_section_tokens = self.token_counter.count_sections_tokens(original_sections)
+        original_total_tokens = sum(original_section_tokens.values())
 
         for key, cap_tokens in profile["section_caps"].items():
             sections[key] = self._clip_text_to_token_budget(sections.get(key, ""), cap_tokens)
 
-        section_tokens = self.token_counter.count_sections_tokens(sections)
-        total_tokens = sum(section_tokens.values())
+        final_section_tokens = self.token_counter.count_sections_tokens(sections)
+        total_tokens = sum(final_section_tokens.values())
 
         for key in trim_priority:
             if total_tokens <= self.MAX_INPUT_TOKENS:
@@ -1612,8 +1723,8 @@ class NPCAgentManager:
                     new_text = self._clip_text(text, approx_chars)
                     text = "" if new_text == text else new_text
                 sections[key] = text
-                section_tokens[key] = self.token_counter.count_text_tokens(text)
-                total_tokens = sum(section_tokens.values())
+                final_section_tokens[key] = self.token_counter.count_text_tokens(text)
+                total_tokens = sum(final_section_tokens.values())
 
         trimmed_sections = [
             key for key in trim_priority
@@ -1631,7 +1742,11 @@ class NPCAgentManager:
                 "response_guidance": sections["response_guidance"],
             },
             {
-                "section_tokens": section_tokens,
+                "section_tokens": final_section_tokens,
+                "before_section_tokens": original_section_tokens,
+                "before_total_tokens_est": original_total_tokens,
+                "after_section_tokens": final_section_tokens,
+                "after_total_tokens_est": total_tokens,
                 "total_input_tokens_est": total_tokens,
                 "input_limit_tokens": self.MAX_INPUT_TOKENS,
                 "trimmed_sections": trimmed_sections,
@@ -1998,14 +2113,16 @@ class NPCAgentManager:
         retrieval_plan: Optional[Dict] = None,
     ) -> tuple[List[MemoryItem], List[MemoryItem], List[MemoryItem], Dict]:
         """按 summary / episodic / working 三层检索记忆"""
+        retrieval_plan = retrieval_plan or {}
         summary_state = self._load_summary_state(npc_name)
         archived_ids = set(summary_state.get("archived_memory_ids", []))
         summary_records = summary_state.get("summary_records", {})
         query_mode = retrieval_plan.get("query_mode", "default")
+        detail_focus = bool(retrieval_plan.get("detail_focus", False))
+        summary_category_hint = retrieval_plan.get("summary_category_hint", "general")
+        layer_weights = retrieval_plan.get("layer_weights", {}) or {}
         player_state = summary_state.get("players", {}).get(player_id, {})
         previous_memory_ids = set(player_state.get("last_injected_memory_ids", []))
-
-        retrieval_plan = retrieval_plan or {}
         use_summary = retrieval_plan.get("use_summary", True)
         use_episodic = retrieval_plan.get("use_episodic", True)
         use_working = retrieval_plan.get("use_working", True)
@@ -2047,6 +2164,19 @@ class NPCAgentManager:
             query_mode=query_mode,
             query=query,
             memory_budget=memory_budget,
+            summary_category_hint=summary_category_hint,
+        )
+        prioritized_summary = self._rank_memories_with_dynamic_score(
+            prioritized_summary,
+            memory_tier="summary",
+            query=query,
+            query_mode=query_mode,
+            layer_weight=float(layer_weights.get("summary", 1.0)),
+            previous_memory_ids=previous_memory_ids,
+            player_state=player_state,
+            summary_records=summary_records,
+            detail_focus=detail_focus,
+            summary_category_hint=summary_category_hint,
         )
         prioritized_summary, summary_dedupe = self._dedupe_memories(
             prioritized_summary,
@@ -2058,8 +2188,30 @@ class NPCAgentManager:
             enabled=(query_mode != "recall"),
         )
 
-        episodic_memories.sort(key=lambda item: item.importance, reverse=True)
-        filtered_working.sort(key=lambda item: item.importance, reverse=True)
+        episodic_memories = self._rank_memories_with_dynamic_score(
+            episodic_memories,
+            memory_tier="episodic",
+            query=query,
+            query_mode=query_mode,
+            layer_weight=float(layer_weights.get("episodic", 1.0)),
+            previous_memory_ids=previous_memory_ids,
+            player_state=player_state,
+            summary_records=summary_records,
+            detail_focus=detail_focus,
+            summary_category_hint=summary_category_hint,
+        )
+        filtered_working = self._rank_memories_with_dynamic_score(
+            filtered_working,
+            memory_tier="working",
+            query=query,
+            query_mode=query_mode,
+            layer_weight=float(layer_weights.get("working", 1.0)),
+            previous_memory_ids=previous_memory_ids,
+            player_state=player_state,
+            summary_records=summary_records,
+            detail_focus=detail_focus,
+            summary_category_hint=summary_category_hint,
+        )
         episodic_memories, episodic_dedupe = self._dedupe_memories(
             episodic_memories,
             threshold=self.SINGLE_TURN_MEMORY_DEDUPE_THRESHOLD,
@@ -2082,23 +2234,24 @@ class NPCAgentManager:
         selected_summary = []
         selected_episodic = []
         selected_working = []
-        remaining_budget = memory_budget
-
-        if use_summary and remaining_budget > 0:
-            selected_summary = prioritized_summary[: min(self.SUMMARY_RETRIEVAL_LIMIT, remaining_budget)]
-            remaining_budget -= len(selected_summary)
+        selected_buckets = self._select_memory_across_layers(
+            memory_budget=memory_budget,
+            allow_summary=use_summary,
+            allow_episodic=use_episodic,
+            allow_working=use_working,
+            prioritized_summary=prioritized_summary,
+            episodic_memories=episodic_memories,
+            working_memories=filtered_working,
+        )
+        selected_summary = selected_buckets["summary"]
+        selected_episodic = selected_buckets["episodic"]
+        selected_working = selected_buckets["working"]
+        if selected_summary:
             self._record_summary_hits(
                 npc_name=npc_name,
                 memories=selected_summary,
                 summary_state=summary_state,
             )
-
-        if use_episodic and remaining_budget > 0:
-            selected_episodic = episodic_memories[: min(self.EPISODIC_RETRIEVAL_LIMIT, remaining_budget)]
-            remaining_budget -= len(selected_episodic)
-
-        if use_working and remaining_budget > 0:
-            selected_working = filtered_working[: min(self.WORKING_RETRIEVAL_LIMIT, remaining_budget)]
 
         debug_info = {
             "query": query,
@@ -2150,6 +2303,229 @@ class NPCAgentManager:
             debug_info,
         )
 
+    def _select_memory_across_layers(
+        self,
+        memory_budget: int,
+        allow_summary: bool,
+        allow_episodic: bool,
+        allow_working: bool,
+        prioritized_summary: List[MemoryItem],
+        episodic_memories: List[MemoryItem],
+        working_memories: List[MemoryItem],
+    ) -> Dict[str, List[MemoryItem]]:
+        selections = {"summary": [], "episodic": [], "working": []}
+        layer_limits = {
+            "summary": max(0, int(memory_budget)) if allow_summary else 0,
+            "episodic": self.EPISODIC_RETRIEVAL_LIMIT if allow_episodic else 0,
+            "working": self.WORKING_RETRIEVAL_LIMIT if allow_working else 0,
+        }
+        layer_candidates = {
+            "summary": list(prioritized_summary),
+            "episodic": list(episodic_memories),
+            "working": list(working_memories),
+        }
+        remaining_budget = max(0, int(memory_budget))
+
+        while remaining_budget > 0:
+            best_layer = ""
+            best_score = None
+            for layer_name, candidates in layer_candidates.items():
+                if not candidates or len(selections[layer_name]) >= layer_limits[layer_name]:
+                    continue
+                score = self._get_dynamic_score(candidates[0], layer_name)
+                if best_score is None or score > best_score:
+                    best_layer = layer_name
+                    best_score = score
+            if not best_layer:
+                break
+            selections[best_layer].append(layer_candidates[best_layer].pop(0))
+            remaining_budget -= 1
+
+        return selections
+
+    def _rank_memories_with_dynamic_score(
+        self,
+        memories: List[MemoryItem],
+        memory_tier: str,
+        query: str,
+        query_mode: str,
+        layer_weight: float,
+        previous_memory_ids: set[str],
+        player_state: Dict,
+        summary_records: Dict[str, Dict],
+        detail_focus: bool,
+        summary_category_hint: str,
+    ) -> List[MemoryItem]:
+        ranked = list(memories)
+        for memory in ranked:
+            metadata = getattr(memory, "metadata", {}) or {}
+            metadata["_dynamic_score"] = self._compute_memory_dynamic_score(
+                memory=memory,
+                memory_tier=memory_tier,
+                query=query,
+                query_mode=query_mode,
+                layer_weight=layer_weight,
+                previous_memory_ids=previous_memory_ids,
+                player_state=player_state,
+                summary_records=summary_records,
+                detail_focus=detail_focus,
+                summary_category_hint=summary_category_hint,
+            )
+            memory.metadata = metadata
+        ranked.sort(
+            key=lambda memory: self._get_dynamic_score(memory, memory_tier),
+            reverse=True,
+        )
+        return ranked
+
+    def _compute_memory_dynamic_score(
+        self,
+        memory: MemoryItem,
+        memory_tier: str,
+        query: str,
+        query_mode: str,
+        layer_weight: float,
+        previous_memory_ids: set[str],
+        player_state: Dict,
+        summary_records: Dict[str, Dict],
+        detail_focus: bool,
+        summary_category_hint: str,
+    ) -> float:
+        metadata = getattr(memory, "metadata", {}) or {}
+        query_relevance = self._estimate_query_relevance(query, getattr(memory, "content", "") or "")
+        repeated_injection_count = int((player_state.get("memory_injection_counts", {}) or {}).get(memory.id, 0))
+        is_repeated_last_turn = memory.id in previous_memory_ids
+        base = self._base_importance_for_memory(memory_tier, memory, summary_records)
+        score = base
+        score += self.MEMORY_RELEVANCE_BONUS * query_relevance
+        score += self.MEMORY_RECENCY_BONUS * self._estimate_recency_factor(memory)
+        score += self.MEMORY_UNRESOLVED_BONUS * self._estimate_unresolved_factor(memory)
+        score -= self._estimate_time_decay_penalty(memory, memory_tier, summary_records)
+        score -= repeated_injection_count * self.MEMORY_REPEAT_INJECTION_STEP_PENALTY
+        if is_repeated_last_turn and query_mode != "recall":
+            score -= 0.03
+
+        if memory_tier == "summary":
+            summary_record = self._get_summary_record(summary_records, memory)
+            summary_category = self._infer_summary_category(memory, summary_record)
+            if summary_category_hint != "general":
+                if summary_category == summary_category_hint:
+                    score += self.SUMMARY_CATEGORY_MATCH_BONUS
+                else:
+                    score -= self.SUMMARY_CATEGORY_MISMATCH_PENALTY
+            if detail_focus:
+                score -= self.MEMORY_DETAIL_SUMMARY_PENALTY
+            if self._is_generic_summary_text(getattr(memory, "content", "") or ""):
+                score -= self.SUMMARY_GENERIC_PENALTY
+            if summary_record.get("summary_level", "base") == "merged" and detail_focus:
+                score -= 0.05
+
+        score *= max(0.45, float(layer_weight or 1.0))
+        return round(score, 6)
+
+    def _get_dynamic_score(self, memory: MemoryItem, memory_tier: str) -> float:
+        metadata = getattr(memory, "metadata", {}) or {}
+        return float(metadata.get("_dynamic_score", getattr(memory, "importance", 0.0)) or 0.0)
+
+    def _base_importance_for_memory(
+        self,
+        memory_tier: str,
+        memory: MemoryItem,
+        summary_records: Dict[str, Dict],
+    ) -> float:
+        if memory_tier == "summary":
+            summary_record = self._get_summary_record(summary_records, memory)
+            if summary_record.get("summary_level", "base") == "merged":
+                return self.MEMORY_BASE_IMPORTANCE["summary_merged"]
+            return self.MEMORY_BASE_IMPORTANCE["summary_base"]
+        return self.MEMORY_BASE_IMPORTANCE.get(memory_tier, float(getattr(memory, "importance", 0.5) or 0.5))
+
+    def _estimate_query_relevance(self, query: str, content: str) -> float:
+        query_text = re.sub(r"\s+", "", (query or "").lower())
+        content_text = re.sub(r"\s+", "", (content or "").lower())
+        if not query_text or not content_text:
+            return 0.0
+        if query_text in content_text or content_text in query_text:
+            return 1.0
+        query_ngrams = self._build_char_ngrams(query_text)
+        content_ngrams = self._build_char_ngrams(content_text)
+        if not query_ngrams or not content_ngrams:
+            return 0.0
+        overlap = len(query_ngrams & content_ngrams)
+        union = len(query_ngrams | content_ngrams)
+        return overlap / union if union else 0.0
+
+    def _estimate_unresolved_factor(self, memory: MemoryItem) -> float:
+        text = (getattr(memory, "content", "") or "").lower()
+        markers = ["待办", "下一步", "未完成", "还没", "尚未", "风险", "约束", "需要确认", "继续", "跟进"]
+        return 1.0 if any(marker in text for marker in markers) else 0.0
+
+    def _estimate_recency_factor(self, memory: MemoryItem) -> float:
+        timestamp = getattr(memory, "timestamp", None)
+        if not timestamp:
+            return 0.0
+        age_days = max(0.0, (datetime.now() - timestamp).total_seconds() / 86400.0)
+        if age_days <= 1:
+            return 1.0
+        if age_days <= 3:
+            return 0.7
+        if age_days <= 7:
+            return 0.4
+        return 0.15
+
+    def _estimate_time_decay_penalty(
+        self,
+        memory: MemoryItem,
+        memory_tier: str,
+        summary_records: Dict[str, Dict],
+    ) -> float:
+        reference_at = ""
+        if memory_tier == "summary":
+            summary_record = self._get_summary_record(summary_records, memory)
+            reference_at = summary_record.get("last_hit_at") or summary_record.get("timestamp") or ""
+        timestamp = self._parse_iso_datetime(reference_at) or getattr(memory, "timestamp", None)
+        if not timestamp:
+            return 0.0
+        age_days = max(0.0, (datetime.now() - timestamp).total_seconds() / 86400.0)
+        if age_days <= 7:
+            return 0.0
+        penalty_ratio = min(1.0, (age_days - 7.0) / 30.0)
+        return penalty_ratio * self.MEMORY_TIME_DECAY_MAX_PENALTY
+
+    def _parse_iso_datetime(self, value: str) -> Optional[datetime]:
+        if not value:
+            return None
+        try:
+            return datetime.fromisoformat(value)
+        except Exception:
+            return None
+
+    def _infer_summary_category(self, memory: MemoryItem, summary_record: Optional[Dict] = None) -> str:
+        metadata = getattr(memory, "metadata", {}) or {}
+        if metadata.get("summary_category"):
+            return str(metadata.get("summary_category"))
+        if summary_record and summary_record.get("summary_category"):
+            return str(summary_record.get("summary_category"))
+        return self._classify_summary_category(getattr(memory, "content", "") or "")
+
+    def _classify_summary_category(self, text: str) -> str:
+        content = (text or "").lower()
+        category_rules = [
+            ("project_progress", ["项目", "方案", "进度", "推进", "任务", "待办", "风险", "约束", "计划", "版本"]),
+            ("emotion_trigger", ["情绪", "焦虑", "紧张", "害怕", "压力", "安抚", "安慰", "触发", "安全感"]),
+            ("relationship", ["关系", "信任", "好感", "边界", "相处", "我们之间", "态度变化"]),
+            ("preference", ["偏好", "喜欢", "不喜欢", "习惯", "更适合", "讨厌", "回应方式"]),
+        ]
+        for category, markers in category_rules:
+            if any(marker in content for marker in markers):
+                return category
+        return "general"
+
+    def _is_generic_summary_text(self, text: str) -> bool:
+        content = (text or "").strip()
+        generic_markers = ["主要围绕这些内容交流", "关系保持稳定", "最近主要在讨论", "做了总结", "保持友好互动"]
+        return len(content) <= 36 or any(marker in content for marker in generic_markers)
+
     def _build_memory_layer_debug(
         self,
         memory_tier: str,
@@ -2165,7 +2541,7 @@ class NPCAgentManager:
             "candidate_count": len(candidates),
             "selected_count": len(selected),
             "selected_ids": [memory.id for memory in selected],
-            "importance_summary": [round(memory.importance, 3) for memory in selected],
+            "importance_summary": [round(self._get_dynamic_score(memory, memory_tier), 3) for memory in selected],
             "filtered_reason": filtered_reason,
             "dedupe": dedupe_stats or {
                 "input_count": len(candidates),
@@ -2376,9 +2752,11 @@ class NPCAgentManager:
         query_mode: str,
         query: str = "",
         memory_budget: int = 1,
+        summary_category_hint: str = "general",
     ) -> List[MemoryItem]:
         """按 merged > active base > compressed fallback 的顺序挑选摘要。"""
-        visible = []
+        matched_visible = []
+        other_visible = []
         compressed_fallback = []
         allow_compressed = query_mode == "recall"
         query_text = (query or "").strip()
@@ -2395,7 +2773,11 @@ class NPCAgentManager:
                 if allow_compressed:
                     compressed_fallback.append(memory)
                 continue
-            visible.append(memory)
+            summary_category = self._infer_summary_category(memory, record)
+            if summary_category_hint == "general" or summary_category == summary_category_hint:
+                matched_visible.append(memory)
+            else:
+                other_visible.append(memory)
 
         def _sort_key(memory: MemoryItem):
             record = self._get_summary_record(summary_records, memory)
@@ -2412,8 +2794,10 @@ class NPCAgentManager:
                 -summary_index,
             )
 
-        visible.sort(key=_sort_key)
+        matched_visible.sort(key=_sort_key)
+        other_visible.sort(key=_sort_key)
         compressed_fallback.sort(key=_sort_key)
+        visible = matched_visible + other_visible
         if not allow_compressed:
             return visible
 
@@ -2452,6 +2836,7 @@ class NPCAgentManager:
         state_record = dict(summary_records.get(memory.id, {}))
         default_record = {
             "summary_level": metadata.get("summary_level", "base"),
+            "summary_category": metadata.get("summary_category", "general"),
             "compressed_from_ids": metadata.get("compressed_from_ids", []),
             "is_compressed": metadata.get("is_compressed", False),
             "low_priority": metadata.get("low_priority", False),
@@ -2468,6 +2853,15 @@ class NPCAgentManager:
         default_record.update(state_record)
         return default_record
 
+    def _classify_merged_summary_category(self, summary_records: List[Dict], merged_text: str) -> str:
+        counts: Dict[str, int] = {}
+        for record in summary_records:
+            category = record.get("summary_category") or self._classify_summary_category(record.get("summary_text", ""))
+            counts[category] = counts.get(category, 0) + 1
+        if counts:
+            return max(counts.items(), key=lambda item: item[1])[0]
+        return self._classify_summary_category(merged_text)
+
     def _build_summary_state_record(
         self,
         memory_id: str,
@@ -2480,6 +2874,7 @@ class NPCAgentManager:
         is_compressed: bool = False,
         summary_text: str = "",
         importance: Optional[float] = None,
+        summary_category: str = "general",
         timestamp: str = "",
     ) -> Dict:
         """构建落盘到 summary_state 的摘要治理记录。"""
@@ -2495,6 +2890,7 @@ class NPCAgentManager:
             "hit_count": 0,
             "last_hit_at": "",
             "summary_text": summary_text,
+            "summary_category": summary_category,
             "content_preview": self._clip_text(summary_text, 80) if summary_text else "",
             "importance": importance,
             "timestamp": timestamp,
@@ -2524,6 +2920,7 @@ class NPCAgentManager:
                 "recent_turns": [],
                 "last_injected_memory_ids": [],
                 "last_injected_knowledge_keys": [],
+                "memory_injection_counts": {},
             }
         )
         pending_turns = player_state.get("pending_turns", [])
@@ -2559,16 +2956,21 @@ class NPCAgentManager:
             source_memory_ids.extend(turn.get("source_memory_ids", []))
             if self._should_archive_turn(turn):
                 archived_ids.update(turn.get("source_memory_ids", []))
+        summary_category = self._classify_summary_category(
+            f"{summary_text}\n" + "\n".join(turn.get("player_message", "") for turn in turns_to_summarize)
+        )
+        summary_importance = self.MEMORY_BASE_IMPORTANCE["summary_base"]
 
         summary_id = memory_manager.add_memory(
             content=summary_text,
             memory_type="episodic",
-            importance=0.85,
+            importance=summary_importance,
             metadata={
                 "speaker": npc_name,
                 "player_id": player_id,
                 "session_id": player_id,
                 "memory_tier": "summary",
+                "summary_category": summary_category,
                 "summary_index": player_state.get("summary_count", 0) + 1,
                 "summary_source_count": len(turns_to_summarize),
                 "summary_level": "base",
@@ -2595,7 +2997,8 @@ class NPCAgentManager:
             summary_index=player_state["summary_count"],
             summary_level="base",
             summary_text=summary_text,
-            importance=0.85,
+            importance=summary_importance,
+            summary_category=summary_category,
             timestamp=datetime.now().isoformat(),
         )
         state["archived_memory_ids"] = sorted(archived_ids)
@@ -2703,15 +3106,18 @@ class NPCAgentManager:
         compression_round = max(
             [int(record.get("compression_round", 0) or 0) for record in records.values() if record.get("player_id") == player_id] or [0]
         ) + 1
+        merged_summary_category = self._classify_merged_summary_category([record for _, record in candidates], merged_text)
+        merged_summary_importance = self.MEMORY_BASE_IMPORTANCE["summary_merged"]
         merged_summary_id = memory_manager.add_memory(
             content=merged_text,
             memory_type="episodic",
-            importance=0.9,
+            importance=merged_summary_importance,
             metadata={
                 "speaker": npc_name,
                 "player_id": player_id,
                 "session_id": player_id,
                 "memory_tier": "summary",
+                "summary_category": merged_summary_category,
                 "summary_index": next_summary_index,
                 "summary_source_count": len(candidates),
                 "summary_level": "merged",
@@ -2737,7 +3143,8 @@ class NPCAgentManager:
             compressed_from_ids=source_memory_ids,
             compression_round=compression_round,
             summary_text=merged_text,
-            importance=0.9,
+            importance=merged_summary_importance,
+            summary_category=merged_summary_category,
             timestamp=datetime.now().isoformat(),
         )
 
@@ -2779,7 +3186,10 @@ class NPCAgentManager:
         except Exception as e:
             log_summary_skipped(npc_name, f"llm_merged_summary_failed:{e}")
 
-        fallback = "；".join(memory.content.replace("摘要记忆:", "").strip() for memory in summaries[:2])[:120]
+        fallback = "；".join(
+            (record.get("summary_text", "") or "").replace("摘要记忆:", "").strip()
+            for record in summary_records[:2]
+        )[:120]
         return f"摘要记忆: {fallback}"
 
     def _append_pending_turn(
@@ -2805,6 +3215,7 @@ class NPCAgentManager:
                 "recent_turns": [],
                 "last_injected_memory_ids": [],
                 "last_injected_knowledge_keys": [],
+                "memory_injection_counts": {},
             },
         )
         player_state["pending_turns"].append({
@@ -2846,6 +3257,7 @@ class NPCAgentManager:
                 "recent_turns": [],
                 "last_injected_memory_ids": [],
                 "last_injected_knowledge_keys": [],
+                "memory_injection_counts": {},
             },
         )
         memory_ids = []
@@ -2858,18 +3270,20 @@ class NPCAgentManager:
             if chunk_key not in knowledge_keys:
                 knowledge_keys.append(chunk_key)
 
+        injection_counts = dict(player_state.get("memory_injection_counts", {}) or {})
+        for memory_id in memory_ids:
+            injection_counts[memory_id] = int(injection_counts.get(memory_id, 0) or 0) + 1
+        player_state["memory_injection_counts"] = dict(
+            sorted(injection_counts.items(), key=lambda item: item[1], reverse=True)[:48]
+        )
+
         player_state["last_injected_memory_ids"] = memory_ids[: max(1, self.CROSS_TURN_INJECTION_HISTORY_LIMIT * 8)]
         player_state["last_injected_knowledge_keys"] = knowledge_keys[: max(1, self.CROSS_TURN_INJECTION_HISTORY_LIMIT * 4)]
         self._save_summary_state(npc_name, state)
 
     def _get_summary_state_path(self, npc_name: str) -> str:
         """获取摘要状态文件路径"""
-        return os.path.join(
-            os.path.dirname(__file__),
-            "memory_data",
-            npc_name,
-            "summary_state.json"
-        )
+        return str(BACKEND_DIR / "memory_data" / npc_name / "summary_state.json")
 
     def _load_summary_state(self, npc_name: str) -> Dict:
         """读取摘要状态"""
@@ -2889,6 +3303,7 @@ class NPCAgentManager:
                     player_state.setdefault("recent_turns", [])
                     player_state.setdefault("last_injected_memory_ids", [])
                     player_state.setdefault("last_injected_knowledge_keys", [])
+                    player_state.setdefault("memory_injection_counts", {})
                 return state
         except Exception:
             return {"players": {}, "archived_memory_ids": [], "summary_records": {}}

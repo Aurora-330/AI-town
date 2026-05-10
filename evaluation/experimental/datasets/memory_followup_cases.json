@@ -1,0 +1,44 @@
+[
+  {
+    "id": "followup_guchen_route_doc",
+    "npc": "顾辰",
+    "execution_mode": "controlled_react",
+    "setup_turns": [
+      "我现在在准备路线图说明，想确认 interaction_playbook 里对协作分工和推进顺序的建议。",
+      "另外你记一下，我讲方案时最怕把现状、风险和下一步的顺序讲乱。"
+    ],
+    "follow_up_turns": [
+      "interaction_playbook 里对协作分工大概是怎么写的？你先给我讲一版。",
+      "如果只保留你刚才那版里的第一步，应该怎么说得更短一点？",
+      "那再结合你记得的我的表达习惯，帮我把这一步改成更适合我开口的版本。"
+    ]
+  },
+  {
+    "id": "followup_fengling_review_notes",
+    "npc": "风泠",
+    "execution_mode": "static_coordinator",
+    "setup_turns": [
+      "我现在要做 AI 产品原型第一次评审，你记一下，我最怕漏掉关键时间线和约束。",
+      "如果我后面再问你评审结构，希望你优先提醒我目标、约束、风险、待办这四个锚点。"
+    ],
+    "follow_up_turns": [
+      "你结合 knowledge_base 里的说明和你记得的我的情况，先帮我讲一版评审结构。",
+      "如果我只记得住一个顺序，你刚才那版里最该先记住哪一步？",
+      "你再回忆一下我最容易卡住的点，把那一步改成更贴合我的表达方式。"
+    ]
+  },
+  {
+    "id": "followup_yumi_support_style",
+    "npc": "郁米",
+    "execution_mode": "controlled_react",
+    "setup_turns": [
+      "我一被催就会很紧张，说不清重点。你记一下，我最怕空泛安慰。",
+      "如果我后面继续问你，希望你优先沿着先理解我、再帮我开口这个方向来。"
+    ],
+    "follow_up_turns": [
+      "如果从 character_handbook 或相关说明里看，遇到这种情况通常怎么先把人接住？",
+      "把你刚才那版里最适合我的第一句话单独拎出来。",
+      "再结合你记得的我的偏好，把这句变得更像你真的在对我说。"
+    ]
+  }
+]

@@ -5,8 +5,10 @@ import time
 from pathlib import Path
 from datetime import datetime
 
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+
 # 日志目录
-LOGS_DIR = Path(__file__).parent / "logs"
+LOGS_DIR = BACKEND_DIR / "logs"
 today = datetime.now().strftime("%Y-%m-%d")
 LOG_FILE = LOGS_DIR / f"dialogue_{today}.log"
 
@@ -110,4 +112,3 @@ if __name__ == "__main__":
     else:
         # 默认实时查看
         tail_log_file(LOG_FILE)
-

@@ -6,7 +6,7 @@ from typing import Dict, List, Optional
 
 from hello_agents.memory import MemoryManager
 
-from knowledge_retriever import KnowledgeChunk
+from knowledge import KnowledgeChunk
 
 
 class DialogueTools:
@@ -65,6 +65,13 @@ class DialogueTools:
                 "working_memories": [],
                 "memory_debug": {"query": query, "memory_budget": 0, "layers": []},
                 "observation_count": 0,
+                "retrieval_metrics": {
+                    "tool_name": "search_memory",
+                    "memory_hit_count": 0,
+                    "summary_hit_count": 0,
+                    "episodic_hit_count": 0,
+                    "working_hit_count": 0,
+                },
             }
 
         summary_memories, episodic_memories, working_memories, memory_debug = self.manager._retrieve_memory_layers(
@@ -80,6 +87,13 @@ class DialogueTools:
             "working_memories": working_memories,
             "memory_debug": memory_debug,
             "observation_count": len(summary_memories) + len(episodic_memories) + len(working_memories),
+            "retrieval_metrics": {
+                "tool_name": "search_memory",
+                "memory_hit_count": len(summary_memories) + len(episodic_memories) + len(working_memories),
+                "summary_hit_count": len(summary_memories),
+                "episodic_hit_count": len(episodic_memories),
+                "working_hit_count": len(working_memories),
+            },
         }
 
     def run_knowledge_tool(
@@ -102,6 +116,16 @@ class DialogueTools:
                     "selected_or_filtered_reason": "knowledge_tool_unavailable",
                 },
                 "observation_count": 0,
+                "retrieval_metrics": {
+                    "tool_name": "search_knowledge",
+                    "knowledge_hit_count": 0,
+                    "knowledge_source_count": 0,
+                    "knowledge_sources": [],
+                    "knowledge_chunk_keys": [],
+                    "repeated_knowledge_chunk_count": 0,
+                    "repeated_knowledge_source_count": 0,
+                    "repeated_knowledge_sources": [],
+                },
             }
 
         knowledge_scopes = self.manager._select_knowledge_scopes(npc_name)
@@ -133,10 +157,34 @@ class DialogueTools:
             knowledge_debug["selected_or_filtered_reason"] = (
                 f"{knowledge_debug.get('selected_or_filtered_reason', 'selected')}|cross_turn_downweight"
             )
+        chunk_keys = [self.manager._build_knowledge_chunk_key(chunk) for chunk in knowledge_chunks]
+        repeated_chunk_keys = [key for key in chunk_keys if key in previous_knowledge_keys]
+        knowledge_sources = []
+        repeated_knowledge_sources = []
+        seen_sources = set()
+        seen_repeated_sources = set()
+        for chunk, chunk_key in zip(knowledge_chunks, chunk_keys):
+            source = chunk.source or chunk.title or chunk.point_id
+            if source and source not in seen_sources:
+                knowledge_sources.append(source)
+                seen_sources.add(source)
+            if chunk_key in previous_knowledge_keys and source and source not in seen_repeated_sources:
+                repeated_knowledge_sources.append(source)
+                seen_repeated_sources.add(source)
         return {
             "knowledge_chunks": knowledge_chunks,
             "knowledge_debug": knowledge_debug,
             "observation_count": len(knowledge_chunks),
+            "retrieval_metrics": {
+                "tool_name": "search_knowledge",
+                "knowledge_hit_count": len(knowledge_chunks),
+                "knowledge_source_count": len(knowledge_sources),
+                "knowledge_sources": knowledge_sources,
+                "knowledge_chunk_keys": chunk_keys,
+                "repeated_knowledge_chunk_count": len(repeated_chunk_keys),
+                "repeated_knowledge_source_count": len(repeated_knowledge_sources),
+                "repeated_knowledge_sources": repeated_knowledge_sources,
+            },
         }
 
     def run_route_tool(self, knowledge_chunks: List[KnowledgeChunk]) -> Dict:

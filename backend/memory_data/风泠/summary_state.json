@@ -3,128 +3,50 @@
     "player": {
       "pending_turns": [
         {
-          "player_message": "我最近状态不太好，但还是想来找你聊聊。",
-          "npc_response": "嗯嗯，最近状态不太好找人聊聊确实是件好事。咱们之前一起面对的大项目，是不是让你有些疲惫了？要不要来杯咖啡，边喝边聊呢？",
-          "timestamp": "2026-05-04T23:41:22.688004",
-          "affinity": 90.0,
-          "affinity_change": 0,
-          "sentiment": "neutral",
-          "source_memory_ids": [
-            "28769bfc-8652-4240-9fb2-b0a040a83ce6",
-            "a759c904-03bc-4f0c-bfe4-65aab16c3e03"
-          ]
-        },
-        {
-          "player_message": "我最近状态不太好，但还是想来找你聊聊。",
-          "npc_response": "嗯嗯，最近状态不太好找人聊聊确实是件好事。咱们之前一起面对的大项目，你当时是怎么调整心态的？",
-          "timestamp": "2026-05-05T19:42:33.616875",
+          "player_message": "你好，今天在忙什么？",
+          "npc_response": "今天主要是整理一些访客记录呢，你来档案室找人聊聊，是不是也有点事想说？",
+          "timestamp": "2026-05-11T01:49:32.894977",
           "affinity": 53.0,
           "affinity_change": 3,
           "sentiment": "positive",
           "source_memory_ids": [
-            "ddf09a79-d72e-4d44-862f-309f8afec8bb",
-            "fe1cdb1d-a729-4899-8924-4fee570f72c9"
+            "82da1073-b8f2-4d31-bf6d-9175627cd5bf",
+            "7b5e25dd-1104-4351-a9ed-d2eb4eeb0d9c"
           ]
         },
         {
-          "player_message": "我最近状态不太好，但还是想来找你聊聊。",
-          "npc_response": "嗯嗯，最近状态不太好找人聊聊确实是件好事。咱们之前一起面对的大项目，是不是让你有些疲惫了？",
-          "timestamp": "2026-05-05T19:42:36.628709",
-          "affinity": 50.0,
-          "affinity_change": -3,
-          "sentiment": "negative",
+          "player_message": "你好，今天在忙什么？",
+          "npc_response": "今天主要是整理一些访客记录呢，你来档案室找人聊聊，是不是也有点事想说？",
+          "timestamp": "2026-05-11T01:56:50.817734",
+          "affinity": 53.0,
+          "affinity_change": 3,
+          "sentiment": "positive",
           "source_memory_ids": [
-            "897fd580-9498-4106-b7bc-4bd7d568096b",
-            "365b4bb2-513b-41ca-bd27-71fa60c1f152"
-          ]
-        },
-        {
-          "player_message": "我最近状态不太好，但还是想来找你聊聊。",
-          "npc_response": "嗯嗯，最近状态不太好找人聊聊确实是件好事。咱们之前一起面对的大项目，是不是让你有些疲惫了？要不要来杯咖啡，边喝边聊呢？",
-          "timestamp": "2026-05-05T19:43:19.839985",
-          "affinity": 47.0,
-          "affinity_change": -3,
-          "sentiment": "negative",
-          "source_memory_ids": [
-            "479417d4-b359-4c0e-9507-c5dc742456b6",
-            "f565427d-3971-439a-aca4-f3b861dfcde9"
-          ]
-        },
-        {
-          "player_message": "我最近状态不太好，但还是想来找你聊聊。",
-          "npc_response": "嗯嗯，最近状态不太好找人聊聊确实是件好事呢。咱们之前一起面对的大项目，是不是让你有些疲惫了？",
-          "timestamp": "2026-05-05T19:43:23.183063",
-          "affinity": 44.0,
-          "affinity_change": -3,
-          "sentiment": "negative",
-          "source_memory_ids": [
-            "98376ee6-1196-4f69-a4ec-7c9bca5b5b62",
-            "2706c0de-1b9a-4792-8785-50f9a49e8644"
+            "1d26d285-75d0-4617-a593-971d324d62ca",
+            "4b43f491-5b55-4071-a271-02666035e99b"
           ]
         }
       ],
-      "summary_count": 2,
+      "summary_count": 0,
       "recent_turns": [
         {
-          "player_message": "我最近状态不太好，但还是想来找你聊聊。",
-          "npc_response": "嗯嗯，最近状态不太好找人聊聊确实是件好事。咱们之前一起面对的大项目，是不是让你有些疲惫了？",
-          "timestamp": "2026-05-05T19:42:36.628709"
+          "player_message": "你好，今天在忙什么？",
+          "npc_response": "今天主要是整理一些访客记录呢，你来档案室找人聊聊，是不是也有点事想说？",
+          "timestamp": "2026-05-11T01:49:32.894977"
         },
         {
-          "player_message": "我最近状态不太好，但还是想来找你聊聊。",
-          "npc_response": "嗯嗯，最近状态不太好找人聊聊确实是件好事。咱们之前一起面对的大项目，是不是让你有些疲惫了？要不要来杯咖啡，边喝边聊呢？",
-          "timestamp": "2026-05-05T19:43:19.839985"
-        },
-        {
-          "player_message": "我最近状态不太好，但还是想来找你聊聊。",
-          "npc_response": "嗯嗯，最近状态不太好找人聊聊确实是件好事呢。咱们之前一起面对的大项目，是不是让你有些疲惫了？",
-          "timestamp": "2026-05-05T19:43:23.183063"
+          "player_message": "你好，今天在忙什么？",
+          "npc_response": "今天主要是整理一些访客记录呢，你来档案室找人聊聊，是不是也有点事想说？",
+          "timestamp": "2026-05-11T01:56:50.817734"
         }
       ],
-      "last_injected_memory_ids": [
-        "479417d4-b359-4c0e-9507-c5dc742456b6"
+      "last_injected_memory_ids": [],
+      "last_injected_knowledge_keys": [
+        "7109fa35144e87ad4dd4b843a6a0b070"
       ],
-      "last_injected_knowledge_keys": []
+      "memory_injection_counts": {}
     }
   },
-  "archived_memory_ids": [
-    "572c5d50-4f72-4d89-9b20-09e18ceef592",
-    "811a37df-b5fa-4fdf-b292-efa41b586ed4",
-    "c385a6bb-dd95-44b7-8bf7-58ed28bde515",
-    "ef09b09f-d275-4a21-8a17-9facfeb12a9a"
-  ],
-  "summary_records": {
-    "4ea089dd-7852-45cf-9434-3b40bbf44814": {
-      "memory_id": "4ea089dd-7852-45cf-9434-3b40bbf44814",
-      "player_id": "player",
-      "summary_index": 1,
-      "summary_level": "base",
-      "compressed_from_ids": [],
-      "compression_round": 0,
-      "low_priority": false,
-      "is_compressed": false,
-      "hit_count": 0,
-      "last_hit_at": "",
-      "summary_text": "摘要记忆: 玩家近期状态不佳，向风泠倾诉。风泠建议玩家在汇报前调整汇报顺序，并提醒玩家在汇报中需详细阐述风险因素。玩家提到自己最近状态不好，风泠提议两人一起喝杯咖啡边聊天边缓解压力。两人关系更加密切，风泠关心玩家当前状况，认为玩家的状态与之前棘手项目时的情况相似。",
-      "content_preview": "摘要记忆: 玩家近期状态不佳，向风泠倾诉。风泠建议玩家在汇报前调整汇报顺序，并提醒玩家在汇报中需详细阐述风险因素。玩家提到自己最近状态不好，风泠提议两人一...",
-      "importance": 0.85,
-      "timestamp": "2026-05-04T23:11:39.136733"
-    },
-    "aa8e55df-ec7d-43ff-af6c-1b9d9f9386d3": {
-      "memory_id": "aa8e55df-ec7d-43ff-af6c-1b9d9f9386d3",
-      "player_id": "player",
-      "summary_index": 2,
-      "summary_level": "base",
-      "compressed_from_ids": [],
-      "compression_round": 0,
-      "low_priority": false,
-      "is_compressed": false,
-      "hit_count": 0,
-      "last_hit_at": "",
-      "summary_text": "摘要记忆: 玩家最近状态不佳，多次向风泠倾诉。两人回忆了之前一起处理的棘手项目，玩家表示最近遇到困难，希望再次寻求帮助。风泠建议玩家来杯咖啡边聊，鼓励玩家分享最近的不易之处，如疲惫的大项目。玩家提到上一个项目的应对方式，希望得到进一步的建议。",
-      "content_preview": "摘要记忆: 玩家最近状态不佳，多次向风泠倾诉。两人回忆了之前一起处理的棘手项目，玩家表示最近遇到困难，希望再次寻求帮助。风泠建议玩家来杯咖啡边聊，鼓励玩家...",
-      "importance": 0.85,
-      "timestamp": "2026-05-04T23:41:19.007294"
-    }
-  }
+  "archived_memory_ids": [],
+  "summary_records": {}
 }

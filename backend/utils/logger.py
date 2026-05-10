@@ -5,8 +5,10 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+
 # 创建logs目录
-LOGS_DIR = Path(__file__).parent / "logs"
+LOGS_DIR = BACKEND_DIR / "logs"
 LOGS_DIR.mkdir(exist_ok=True)
 
 # 创建日志文件名 (按日期)

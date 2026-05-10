@@ -3,57 +3,78 @@
     "player": {
       "pending_turns": [
         {
-          "player_message": "我想去银河电台待一会儿，你还记得什么样的回应方式会让我更安心吗？顺便告诉我银河电台在什么位置。",
-          "npc_response": "哦，你想到银河电台去放松一下。听起来像是想找个地方静一静。既然这样，银河电台的位置你有没有了解过呢？",
-          "timestamp": "2026-05-06T03:32:31.794720",
-          "affinity": 71.0,
+          "player_message": "郁米我饿了",
+          "npc_response": "哦，听起来像是有点饿了呢。饿的时候是不是会感觉肚子有些不舒服？",
+          "timestamp": "2026-05-08T00:56:21.071520",
+          "affinity": 50.0,
+          "affinity_change": 0,
+          "sentiment": "neutral",
+          "source_memory_ids": [
+            "54a6a06e-0f58-470c-826e-7433f758a7ae",
+            "a5bb5e00-2d55-4118-91e7-0b462e19be7b"
+          ]
+        },
+        {
+          "player_message": "你们这有什么推荐吃的",
+          "npc_response": "哦，想吃点儿什么呢？可能是肚子饿了吧。感觉有些空空的，对吧？",
+          "timestamp": "2026-05-08T00:56:36.396214",
+          "affinity": 53.0,
           "affinity_change": 3,
           "sentiment": "positive",
           "source_memory_ids": [
-            "6cfb316b-bfc2-4665-842c-3c62652c485d",
-            "badde9be-814e-4f21-9b88-81f6f4d8522f"
+            "50756b93-373f-48f5-92a3-5f2b2a00b092",
+            "4a734c95-bd03-43d0-ab61-91b246644514"
+          ]
+        },
+        {
+          "player_message": "咖啡馆有吃的吗",
+          "npc_response": "哦，咖啡馆有各种各样的选择呢。你想吃什么类型的呢？",
+          "timestamp": "2026-05-08T00:56:50.896939",
+          "affinity": 53.0,
+          "affinity_change": 0,
+          "sentiment": "neutral",
+          "source_memory_ids": [
+            "dbe6998b-014c-45f1-809b-d6a145c86525",
+            "ae16f173-6598-4262-980e-4e703a617713"
+          ]
+        },
+        {
+          "player_message": "特色饮品有吗",
+          "npc_response": "哦，特色饮品听起来挺吸引人的呢。咖啡馆里的特色饮品是不是让你期待呢？你特别想要尝试哪种口味的呢？",
+          "timestamp": "2026-05-08T00:57:04.791438",
+          "affinity": 56.0,
+          "affinity_change": 3,
+          "sentiment": "positive",
+          "source_memory_ids": [
+            "6e5af464-ea25-40f2-ae71-160da413fd34",
+            "c800186a-ea5e-43b0-b293-f1ee165bef08"
           ]
         }
       ],
-      "summary_count": 1,
+      "summary_count": 0,
       "recent_turns": [
         {
-          "player_message": "只要语气温和一点，我通常就能自己把重点说出来。",
-          "npc_response": "哦，原来是这样。你希望语气温和一点，就能更容易地说出重点。这样你觉得会舒服一些呢？",
-          "timestamp": "2026-05-06T03:32:21.305051"
+          "player_message": "你们这有什么推荐吃的",
+          "npc_response": "哦，想吃点儿什么呢？可能是肚子饿了吧。感觉有些空空的，对吧？",
+          "timestamp": "2026-05-08T00:56:36.396214"
         },
         {
-          "player_message": "如果你能帮我复述关键词，我会觉得更被接住。",
-          "npc_response": "哦，原来如此。那你是不是希望能有人帮你提炼关键词，这样就能更好地整理思绪呢？这样感觉会好一些吗？",
-          "timestamp": "2026-05-06T03:32:24.237775"
+          "player_message": "咖啡馆有吃的吗",
+          "npc_response": "哦，咖啡馆有各种各样的选择呢。你想吃什么类型的呢？",
+          "timestamp": "2026-05-08T00:56:50.896939"
         },
         {
-          "player_message": "我想去银河电台待一会儿，你还记得什么样的回应方式会让我更安心吗？顺便告诉我银河电台在什么位置。",
-          "npc_response": "哦，你想到银河电台去放松一下。听起来像是想找个地方静一静。既然这样，银河电台的位置你有没有了解过呢？",
-          "timestamp": "2026-05-06T03:32:31.794720"
+          "player_message": "特色饮品有吗",
+          "npc_response": "哦，特色饮品听起来挺吸引人的呢。咖啡馆里的特色饮品是不是让你期待呢？你特别想要尝试哪种口味的呢？",
+          "timestamp": "2026-05-08T00:57:04.791438"
         }
       ],
       "last_injected_memory_ids": [],
-      "last_injected_knowledge_keys": []
+      "last_injected_knowledge_keys": [
+        "c7e3eca686a07d8e8d8358ed5f32213e"
+      ]
     }
   },
   "archived_memory_ids": [],
-  "summary_records": {
-    "5f11f43d-d5af-4fcf-899e-6936b724ca7a": {
-      "memory_id": "5f11f43d-d5af-4fcf-899e-6936b724ca7a",
-      "player_id": "player",
-      "summary_index": 1,
-      "summary_level": "base",
-      "compressed_from_ids": [],
-      "compression_round": 0,
-      "low_priority": false,
-      "is_compressed": false,
-      "hit_count": 0,
-      "last_hit_at": "",
-      "summary_text": "摘要记忆: 玩家近期在沟通中遇到困难，容易因为紧张而口齿不清，尤其是在需要完整表达背景时。郁米的理解和建议让玩家感到安心，玩家认为先被理解再逐渐整理思路是关键。玩家担心回应太快会让对方感到生硬，希望得到更多的时间来组织语言。郁米提出帮助玩家复述关键词的想法，玩家对此表示认可，认为这有助于更好地表达自己的想法。",
-      "content_preview": "摘要记忆: 玩家近期在沟通中遇到困难，容易因为紧张而口齿不清，尤其是在需要完整表达背景时。郁米的理解和建议让玩家感到安心，玩家认为先被理解再逐渐整理思路是...",
-      "importance": 0.85,
-      "timestamp": "2026-05-06T03:32:26.676611"
-    }
-  }
+  "summary_records": {}
 }

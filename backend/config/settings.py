@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 
 # 显式加载 backend/.env，避免直接运行 main.py 时依赖外部 shell 手动 export。
-BACKEND_DIR = Path(__file__).resolve().parent
+BACKEND_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BACKEND_DIR / ".env"
 load_dotenv(dotenv_path=ENV_PATH, override=False)
 

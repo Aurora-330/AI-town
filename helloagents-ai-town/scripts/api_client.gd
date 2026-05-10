@@ -53,8 +53,13 @@ func send_chat(npc_name: String, message: String) -> void:
 		print("[ERROR] 发送对话请求失败: ", error)
 		chat_error.emit("网络请求失败")
 
-func _on_chat_request_completed(_result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+func _on_chat_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	"""处理对话响应"""
+	if result != HTTPRequest.RESULT_SUCCESS:
+		print("[ERROR] 对话请求未成功完成, result=", result, " response_code=", response_code)
+		chat_error.emit("无法连接后端，请检查 API 端口和服务状态")
+		return
+
 	if response_code != 200:
 		print("[ERROR] 对话请求失败: HTTP ", response_code)
 		chat_error.emit("服务器错误: " + str(response_code))

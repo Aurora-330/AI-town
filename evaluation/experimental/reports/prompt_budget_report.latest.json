@@ -1,0 +1,145 @@
+{
+  "title": "Prompt Budget Evaluation",
+  "total": 3,
+  "summary": {
+    "total": 3,
+    "avg_before_total_tokens_est": 2170.33,
+    "avg_after_total_tokens_est": 1646.33,
+    "avg_compression_ratio": 0.2382,
+    "max_compression_ratio": 0.2819,
+    "overflow_error_count": 0,
+    "trimmed_case_count": 3
+  },
+  "results": [
+    {
+      "case_id": "budget_fengling_long_recall",
+      "npc": "风泠",
+      "passed": true,
+      "detail": {
+        "execution_mode": "static_coordinator",
+        "query_mode": "recall",
+        "before_section_tokens": {
+          "system_prompt": 1163,
+          "affinity_context": 461,
+          "recent_dialogue_context": 175,
+          "summary_context": 0,
+          "episodic_context": 0,
+          "working_context": 0,
+          "knowledge_context": 0,
+          "response_guidance": 159,
+          "current_message": 60
+        },
+        "after_section_tokens": {
+          "system_prompt": 1163,
+          "affinity_context": 72,
+          "recent_dialogue_context": 175,
+          "summary_context": 0,
+          "episodic_context": 0,
+          "working_context": 0,
+          "knowledge_context": 0,
+          "response_guidance": 90,
+          "current_message": 60
+        },
+        "before_total_tokens_est": 2018,
+        "after_total_tokens_est": 1560,
+        "total_input_tokens_est": 1560,
+        "trimmed_sections": [
+          "response_guidance",
+          "affinity_context"
+        ],
+        "input_limit_tokens": 3328,
+        "compression_ratio": 0.227,
+        "overflow_error": false,
+        "error_type": "",
+        "reply_preview": "了解了，那我们来捋一捋吧。你之前提到容易卡在切换内容时丢掉主线，记得每次开头都简要复述一下整体目标。还有就是时间线、约束、风险、待办这四个关键点。如果只保留最关键的一步，接下来应该回到时间线、约束、风险和待办这四个锚点，再理顺思路。你觉得这"
+      }
+    },
+    {
+      "case_id": "budget_guchen_long_mixed",
+      "npc": "顾辰",
+      "passed": true,
+      "detail": {
+        "execution_mode": "static_coordinator",
+        "query_mode": "default",
+        "before_section_tokens": {
+          "system_prompt": 1207,
+          "affinity_context": 461,
+          "recent_dialogue_context": 168,
+          "summary_context": 0,
+          "episodic_context": 0,
+          "working_context": 0,
+          "knowledge_context": 355,
+          "response_guidance": 222,
+          "current_message": 81
+        },
+        "after_section_tokens": {
+          "system_prompt": 1207,
+          "affinity_context": 72,
+          "recent_dialogue_context": 168,
+          "summary_context": 0,
+          "episodic_context": 0,
+          "working_context": 0,
+          "knowledge_context": 173,
+          "response_guidance": 90,
+          "current_message": 81
+        },
+        "before_total_tokens_est": 2494,
+        "after_total_tokens_est": 1791,
+        "total_input_tokens_est": 1791,
+        "trimmed_sections": [
+          "knowledge_context",
+          "response_guidance",
+          "affinity_context"
+        ],
+        "input_limit_tokens": 3328,
+        "compression_ratio": 0.2819,
+        "overflow_error": false,
+        "error_type": "",
+        "reply_preview": "明白了，我会先判断现状和目标，再按结构化原则拆解并给出紧凑的路线图说明。行动起来！"
+      }
+    },
+    {
+      "case_id": "budget_yumi_long_summary",
+      "npc": "郁米",
+      "passed": true,
+      "detail": {
+        "execution_mode": "static_coordinator",
+        "query_mode": "summary",
+        "before_section_tokens": {
+          "system_prompt": 1197,
+          "affinity_context": 461,
+          "recent_dialogue_context": 157,
+          "summary_context": 0,
+          "episodic_context": 0,
+          "working_context": 0,
+          "knowledge_context": 0,
+          "response_guidance": 122,
+          "current_message": 62
+        },
+        "after_section_tokens": {
+          "system_prompt": 1197,
+          "affinity_context": 72,
+          "recent_dialogue_context": 157,
+          "summary_context": 0,
+          "episodic_context": 0,
+          "working_context": 0,
+          "knowledge_context": 0,
+          "response_guidance": 100,
+          "current_message": 62
+        },
+        "before_total_tokens_est": 1999,
+        "after_total_tokens_est": 1588,
+        "total_input_tokens_est": 1588,
+        "trimmed_sections": [
+          "response_guidance",
+          "affinity_context"
+        ],
+        "input_limit_tokens": 3328,
+        "compression_ratio": 0.2056,
+        "overflow_error": false,
+        "error_type": "",
+        "reply_preview": "好的，我能感受到你希望整理记忆，以便更好地向前推进。那么，我们先回顾一下之前沟通中的几个要点：\n\n- 在压力面前你会感到有些混乱和不知所措。\n- 你倾向于先回顾背景信息，这样有助于我们更快找到切入点。\n- 你提到的稳定偏好、容易触发紧张的点"
+      }
+    }
+  ]
+}

@@ -6,14 +6,14 @@ from contextlib import asynccontextmanager
 import uvicorn
 
 from config import settings
-from models import (
+from api.models import (
     ChatRequest, ChatResponse, 
     NPCStatusResponse, NPCListResponse, NPCInfo,
     DelegatePreviewRequest, DelegatePreviewResponse,
     MultiChatRequest, MultiChatResponse, MultiChatAgentOutput,
 )
 from agents import get_npc_manager
-from state_manager import get_state_manager
+from runtime.state_manager import get_state_manager
 
 # 生命周期管理
 @asynccontextmanager
@@ -144,6 +144,9 @@ async def chat_with_npc(request: ChatRequest):
             tool_call_count=int(response.get("tool_call_count", 0)),
             input_tokens_est=int(response.get("input_tokens_est", 0)),
             latency_ms=int(response.get("latency_ms", 0)),
+            error_type=str(response.get("error_type", "")),
+            prompt_budget_debug=dict(response.get("prompt_budget_debug", {}) or {}),
+            retrieval_metrics=dict(response.get("retrieval_metrics", {}) or {}),
         )
         
     except Exception as e:

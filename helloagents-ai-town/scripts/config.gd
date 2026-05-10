@@ -2,7 +2,9 @@
 extends Node
 
 # ==================== API配置 ====================
-const API_BASE_URL = "http://localhost:8001"
+# 默认对接 FastAPI 后端 8000 端口。
+# 如果本地把后端显式跑在 8001，可再改回对应端口。
+const API_BASE_URL = "http://127.0.0.1:8000"
 const API_CHAT = API_BASE_URL + "/chat"
 const API_NPCS = API_BASE_URL + "/npcs"
 const API_NPC_STATUS = API_BASE_URL + "/npcs/status"
